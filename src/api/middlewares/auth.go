@@ -5,13 +5,16 @@ import (
 	"dit_backend/src/api/handlers/dto/response"
 	"dit_backend/src/core/domain/authorization"
 	"dit_backend/src/core/domain/errors"
+	"dit_backend/src/core/helpers/permissions"
 	"dit_backend/src/core/utils"
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
 	casbin "github.com/casbin/casbin/v2"
+	"github.com/casbin/casbin/v2/model"
+	jsonadapter "github.com/casbin/json-adapter/v2"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -19,13 +22,13 @@ import (
 
 var logger = Logger()
 var authService = dicontainer.AuthUseCase()
+var permissionsHelper = permissions.New()
 
 func GuardMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	enforcer, err := newCasbinEnforcer()
 	if err != nil {
 		log.Fatal().Err(err)
 	}
-
 	return func(ctx echo.Context) error {
 		authHeader := ctx.Request().Header.Get("Authorization")
 		method := ctx.Request().Method
@@ -57,14 +60,30 @@ func GuardMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func newCasbinEnforcer() (*casbin.Enforcer, error) {
-	authModel := os.Getenv("SERVER_CASBIN_AUTH_MODEL")
-	authPolicy := os.Getenv("SERVER_CASBIN_AUTH_POLICY")
-	enforcer, err := casbin.NewEnforcer(authModel, authPolicy)
+	authModel, err := model.NewModelFromString(permissionsHelper.AuthMatcherTemplate())
+	if err != nil {
+		return nil, err
+	}
+	authAdapter, err := newCasbinJSONAdapter()
+	if err != nil {
+		return nil, err
+	}
+	enforcer, err := casbin.NewEnforcer(authModel, authAdapter)
 	if err != nil {
 		fmt.Println("Error when building enforcer:", err)
 		return nil, err
 	}
 	return enforcer, nil
+}
+
+func newCasbinJSONAdapter() (*jsonadapter.Adapter, error) {
+	authPolicy := permissionsHelper.AuthCasbinPolicies()
+	authPolicyBytes, err := json.Marshal(&authPolicy)
+	if err != nil {
+		return nil, err
+	}
+	authAdapter := jsonadapter.NewAdapter(&authPolicyBytes)
+	return authAdapter, nil
 }
 
 func sessionIsValidWith(authToken string) (bool, errors.Error) {

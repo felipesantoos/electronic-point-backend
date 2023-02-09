@@ -14,8 +14,10 @@ import (
 var logger zerolog.Logger = core.Logger()
 
 const (
-	TOKEN_TIMEOUT       = time.Hour
-	ANONYMOUS_ROLE_CODE = "anonymous"
+	TOKEN_TIMEOUT          = time.Hour
+	ANONYMOUS_ROLE_CODE    = "anonymous"
+	ADMIN_ROLE_CODE        = "admin"
+	PROFESSIONAL_ROLE_CODE = "professional"
 )
 
 type Authorization interface {

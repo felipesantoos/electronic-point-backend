@@ -3,7 +3,8 @@ module dit_backend
 go 1.18
 
 require (
-	github.com/casbin/casbin/v2 v2.57.0
+	github.com/casbin/casbin/v2 v2.60.0
+	github.com/casbin/json-adapter/v2 v2.1.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
