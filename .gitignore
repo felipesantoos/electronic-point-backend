@@ -1,0 +1,9 @@
+# Project files
+go.sum
+
+# Misc
+.env
+env-file
+set-env.sh
+
+/docs
