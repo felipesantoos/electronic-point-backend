@@ -1,6 +1,8 @@
 package router
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -17,7 +19,9 @@ func New() Router {
 }
 
 func (r *router) Load(group *echo.Group) {
-	group.GET("/docs/*", echoSwagger.WrapHandler)
+	if os.Getenv("SERVER_MODE") == "dev" || os.Getenv("SERVER_MODE") == "stage" {
+		group.GET("/docs/*", echoSwagger.WrapHandler)
+	}
 
 	NewAuthRouter().Load(group)
 	NewAccountRouter().Load(group)

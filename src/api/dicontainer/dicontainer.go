@@ -5,7 +5,6 @@ import (
 	"dit_backend/src/core/services"
 	"dit_backend/src/infra/repository/postgres"
 	"dit_backend/src/infra/repository/redis"
-	"os"
 )
 
 func AccountUseCase() usecases.AccountUseCase {
@@ -23,8 +22,4 @@ func AuthUseCase() usecases.AuthUseCase {
 func ResourcesUseCase() usecases.ResourcesUseCase {
 	repo := postgres.NewResourcesPostgresAdapter()
 	return services.NewResourcesService(repo)
-}
-
-func getAppType() string {
-	return os.Getenv("APPLICATION_TYPE")
 }

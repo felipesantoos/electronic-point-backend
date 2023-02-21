@@ -1,0 +1,3 @@
+FROM postgres:14
+
+COPY src/infra/repository/postgres/migrations/fixtures /fixtures

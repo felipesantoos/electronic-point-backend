@@ -33,8 +33,8 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.24.2 // indirect
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a // indirect

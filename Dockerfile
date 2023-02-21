@@ -24,7 +24,4 @@ RUN bash -c "cd src/api/app && swag init -g ../api.go --output ../docs --dir ../
 RUN go build -o ./main ./src/api/app/main.go
 RUN chmod +x ./src/api/app/start.sh
 
-# Copy application database migrations
-COPY tools/database ./tools/database
-
 CMD /opt/bin/wait-for-it.sh --timeout=20 $DATABASE_HOST:$DATABASE_PORT -- ./src/api/app/start.sh

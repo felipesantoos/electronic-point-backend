@@ -8,8 +8,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 type API interface {
@@ -43,7 +41,9 @@ func (instance *api) Serve() {
 }
 
 func (instance *api) setupMiddlewares() {
-	instance.echoInstance.Use(middleware.Logger())
+	instance.echoInstance.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "[${method}] ${status} ${uri} - ${time_rfc3339}, error: \"${error}\"\n",
+	}))
 	instance.echoInstance.Use(middleware.Recover())
 	instance.echoInstance.Use(middlewares.CORSMiddleware())
 	instance.echoInstance.Use(middlewares.GuardMiddleware)
@@ -62,8 +62,4 @@ func (instance *api) start() {
 	address := fmt.Sprintf("%s:%d", instance.host, instance.port)
 	err := instance.echoInstance.Start(address)
 	instance.echoInstance.Logger.Fatal(err)
-}
-
-func Logger() zerolog.Logger {
-	return log.With().Str("layer", "api").Logger()
 }

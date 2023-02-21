@@ -41,7 +41,7 @@ func NewAccountHandler(service usecases.AccountUseCase) AccountHandler {
 func (instance *accountHandler) List(context echo.Context) error {
 	accounts, err := instance.service.List()
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	serializedAccounts := []response.Account{}
 	for _, account := range accounts {
@@ -65,11 +65,11 @@ func (instance *accountHandler) List(context echo.Context) error {
 func (instance *accountHandler) FindProfile(context echo.Context) error {
 	accountID, err := getAccountIDFromAuthorization(context)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	account, err := instance.service.FindByID(*accountID)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.JSON(http.StatusOK, *response.AccountBuilder().FromDomain(account))
 }
@@ -95,15 +95,15 @@ func (instance *accountHandler) Create(context echo.Context) error {
 	}
 	data, err := dto.Validate[request.CreateAccount](body)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	dto, err := request.CreateAccountBuilder().FromBody(data)
 	if err != nil {
-		return responseFromErrorAndStatus(context, err, http.StatusUnprocessableEntity)
+		return responseFromErrorAndStatus(err, http.StatusUnprocessableEntity)
 	}
 	id, err := instance.service.Create(dto.ToDomain())
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.JSON(http.StatusCreated, map[string]interface{}{
 		"id": id.String(),
@@ -128,20 +128,20 @@ func (instance *accountHandler) UpdateProfile(context echo.Context) error {
 	}
 	data, err := dto.Validate[request.UpdateAccountProfile](body)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	accountDTO, err := request.UpdateAccount().FromBody(data)
 	if err != nil {
-		return responseFromErrorAndStatus(context, err, http.StatusUnprocessableEntity)
+		return responseFromErrorAndStatus(err, http.StatusUnprocessableEntity)
 	}
 	account := accountDTO.ToDomain()
 	if accountID, err := getAccountIDFromAuthorization(context); err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	} else {
 		account.SetID(*accountID)
 	}
 	if err := instance.service.UpdateAccountProfile(account); err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
 }
@@ -164,16 +164,16 @@ func (instance *accountHandler) UpdatePassword(context echo.Context) error {
 	}
 	data, err := dto.Validate[request.UpdatePassword](body)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	dto := request.UpdatePasswordBuilder().FromBody(data)
 	accountID, err := getAccountIDFromAuthorization(context)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	err = instance.service.UpdateAccountPassword(*accountID, dto.ToDomain())
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
 }

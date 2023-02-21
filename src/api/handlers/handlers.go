@@ -11,14 +11,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func responseFromError(context echo.Context, err errors.Error) error {
+func responseFromError(err errors.Error) error {
 	statusCode := statusCodeByError(err)
-	return responseFromErrorAndStatus(context, err, statusCode)
+	return responseFromErrorAndStatus(err, statusCode)
 }
 
-func responseFromErrorAndStatus(context echo.Context, err errors.Error, statusCode int) error {
+func responseFromErrorAndStatus(err errors.Error, statusCode int) error {
 	dtoErr := response.NewErrorFromCore(err, statusCode)
-	return context.JSON(statusCode, dtoErr)
+	return echo.NewHTTPError(statusCode, dtoErr.Message)
 }
 
 func statusCodeByError(err errors.Error) int {

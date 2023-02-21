@@ -45,15 +45,15 @@ func (instance *authHandler) Login(context echo.Context) error {
 	}
 	data, err := dto.Validate[request.Credentials](body)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	dto, err := request.CredentialsBuilder().FromBody(data)
 	if err != nil {
-		return responseFromErrorAndStatus(context, err, http.StatusBadRequest)
+		return responseFromErrorAndStatus(err, http.StatusBadRequest)
 	}
 	authorization, err := instance.service.Login(dto.ToDomain())
 	if err != nil {
-		return responseFromErrorAndStatus(context, err, http.StatusBadRequest)
+		return responseFromError(err)
 	}
 	return context.JSON(http.StatusOK, response.AuthorizationBuilder().FromDomain(authorization))
 }
@@ -70,11 +70,11 @@ func (instance *authHandler) Login(context echo.Context) error {
 func (instance *authHandler) Logout(context echo.Context) error {
 	accountId, err := getAccountIDFromAuthorization(context)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	err = instance.service.Logout(*accountId)
 	if err != nil {
-		return responseFromErrorAndStatus(context, err, http.StatusBadRequest)
+		return responseFromErrorAndStatus(err, http.StatusBadRequest)
 	}
 	return context.NoContent(http.StatusNoContent)
 }
@@ -99,14 +99,14 @@ func (instance *authHandler) AskPasswordResetMail(context echo.Context) error {
 	}
 	data, err := dto.Validate[request.CreatePasswordReset](body)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	dto, err := request.CreatePasswordResetBuilder().FromBody(data)
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	if err := instance.service.AskPasswordResetMail(dto.Email); err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusCreated)
 }
@@ -126,7 +126,7 @@ func (instance *authHandler) FindPasswordResetByToken(context echo.Context) erro
 	if token, err := instance.getPasswordResetToken(context); err != nil {
 		return err
 	} else if err := instance.service.FindPasswordResetByToken(token); err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
 }
@@ -154,11 +154,11 @@ func (instance *authHandler) UpdatePasswordByPasswordReset(context echo.Context)
 	}
 	data, validationErr := dto.Validate[request.UpdatePasswordByPasswordReset](body)
 	if validationErr != nil {
-		return responseFromError(context, validationErr)
+		return responseFromError(validationErr)
 	}
 	dto := request.UpdatePasswordByPasswordResetBuilder().FromBody(data)
 	if err := instance.service.UpdatePasswordByPasswordReset(token, dto.NewPassword); err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
 }

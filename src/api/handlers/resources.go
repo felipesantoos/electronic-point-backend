@@ -35,7 +35,7 @@ func NewResourcesHandler(usecase usecases.ResourcesUseCase) ResourcesHandler {
 func (instance *resourcesHandler) ListAccountRoles(context echo.Context) error {
 	roles, err := instance.usecase.ListAccountRoles()
 	if err != nil {
-		return responseFromError(context, err)
+		return responseFromError(err)
 	}
 	var serializedRoles = []response.Role{}
 	for _, role := range roles {

@@ -47,23 +47,12 @@ CREATE TABLE password_reset (
   CONSTRAINT account_fk FOREIGN KEY (account_id) REFERENCES account(id)
 );
 
-CREATE TABLE knowledge_area (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name varchar(30)
-);
-
 CREATE TABLE professional (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   person_id uuid UNIQUE,
   CONSTRAINT person_fk FOREIGN KEY (person_id) REFERENCES person(id)
 );
 
-CREATE TABLE professional_knowledge_area (
-  professional_id uuid NOT NULL,
-  knowledge_area_id uuid NOT NULL,
-  CONSTRAINT professional_knowledge_area_prof_fk FOREIGN KEY (professional_id) REFERENCES professional(id),
-  CONSTRAINT professional_knowledge_area_knowledge_areas_fk FOREIGN KEY (knowledge_area_id) REFERENCES knowledge_area(id)
-);
 --- ######################
 
 --- Creating Triggers
@@ -84,15 +73,8 @@ COPY account(id, email, password, person_id, role_id)
   FROM '/fixtures/000001/account.csv'
   DELIMITER ';' csv header;
 
-COPY knowledge_area(id, name)
-  FROM '/fixtures/000001/knowledge_area.csv'
-  DELIMITER ';' csv header;
-
 COPY professional(id, person_id)
   FROM '/fixtures/000001/professional.csv'
   DELIMITER ';' csv header;
 
-COPY professional_knowledge_area(professional_id, knowledge_area_id)
-  FROM '/fixtures/000001/professional_knowledge_area.csv'
-  DELIMITER ';' csv header;
 --- ######################

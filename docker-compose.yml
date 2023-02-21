@@ -2,9 +2,7 @@ version: '3'
 services:
   api:
     container_name: dit_backend_api
-    build:
-      context: .
-      dockerfile: tools/docker/Dockerfile.api
+    build: .
     env_file: src/api/app/env-file
     depends_on:
       - database
@@ -14,12 +12,17 @@ services:
     container_name: dit_backend_database
     build:
       context: .
-      dockerfile: tools/docker/Dockerfile.postgres
+      dockerfile: docker/Dockerfile.postgres
     environment:
       - POSTGRES_USER=dit_backend
       - POSTGRES_PASSWORD=12345678
   redis:
     image: redis
     container_name: dit_backend_redis
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
     ports:
       - "6379:6379"
+    env_file: src/api/app/env-file
