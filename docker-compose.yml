@@ -3,7 +3,7 @@ services:
   api:
     container_name: dit_backend_api
     build: .
-    env_file: src/api/app/env-file
+    env_file: env-file
     depends_on:
       - database
     ports:
@@ -25,4 +25,4 @@ services:
       - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
     ports:
       - "6379:6379"
-    env_file: src/api/app/env-file
+    env_file: env-file
