@@ -1,10 +1,10 @@
 package validator
 
 import (
-	"dit_backend/src/core"
-	"dit_backend/src/core/domain/errors"
-	"dit_backend/src/core/helpers/validator/rules"
-	"dit_backend/src/core/utils"
+	"backend_template/src/core"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/helpers/validator/rules"
+	"backend_template/src/core/utils"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -38,12 +38,17 @@ func (instance *Field) IsValid() ([]errors.Error, bool) {
 const (
 	fieldDelimiter = "."
 	ifExistsRule   = "ifExists"
+
+	// Rule Types
+	lengthRuleType     = "length"
+	validationRuleType = "validation"
 )
 
 // Rule Compilers
-var lengthRuleCompiler = regexp.MustCompile(`len=(\d+)`)
-var minLengthRuleCompiler = regexp.MustCompile(`minlen=(\d+)`)
-var maxLengthRuleCompiler = regexp.MustCompile(`maxlen=(\d+)`)
+var lengthRuleCompiler = regexp.MustCompile(`^len=(\d+)$`)
+var minLengthRuleCompiler = regexp.MustCompile(`^minlen=(\d+)$`)
+var maxLengthRuleCompiler = regexp.MustCompile(`^maxlen=(\d+)$`)
+var emailRuleCompiler = regexp.MustCompile(`^validemail$`)
 
 // TODO: add struct array validation
 func ValidateDTO[T interface{}](data interface{}) ([]string, bool) {
@@ -147,15 +152,16 @@ func getValidatorsByFieldTag(fieldType reflect.StructField, fieldValue reflect.V
 		validators = append(validators, validator)
 	}
 	for _, hint := range hints {
-		validator := getRuleByHint(hint)
-		if validator != nil {
-			validators = append(validators, validator)
+		var validator *rules.Rule = getRuleByHint(hint)
+		if validator == nil {
+			continue
 		}
+		validators = append(validators, validator)
 	}
 	return validators
 }
 
-func getRuleByHint(hint string) *rules.Rule {
+func getLengthRuleByHint(hint string) *rules.Rule {
 	var ruleBuilder func(length int) *rules.Rule
 	var matchValue string
 	if lengthRuleCompiler.Match([]byte(hint)) {
@@ -178,12 +184,36 @@ func getRuleByHint(hint string) *rules.Rule {
 	return ruleBuilder(value)
 }
 
+func getValidationRuleByHint(hint string) *rules.Rule {
+	var ruleBuilder func() *rules.Rule
+	if emailRuleCompiler.Match([]byte(hint)) {
+		ruleBuilder = rules.ValidateEmailRule
+	}
+	if ruleBuilder == nil {
+		return nil
+	}
+	return ruleBuilder()
+}
+
+func getRuleByHint(hint string) *rules.Rule {
+	if validator := getLengthRuleByHint(hint); validator != nil {
+		return validator
+	} else if validator := getValidationRuleByHint(hint); validator != nil {
+		return validator
+	}
+	return nil
+}
+
 func tryValidators(data interface{}, fields []*Field) []errors.Error {
 	var errs []errors.Error
 	var formattedData map[string]interface{} = utils.FormatJSONData(data)
 	for _, field := range fields {
 		field.Value = getFieldValue(field.Name, formattedData)
-		if field.ValidateIfValueExists && field.Value == nil {
+		canJump := field.ValidateIfValueExists && field.Value == nil
+		if field.Value != nil && reflect.TypeOf(field.Value).Kind() == reflect.Slice {
+			canJump = field.ValidateIfValueExists && reflect.ValueOf(field.Value).Len() == 0
+		}
+		if canJump {
 			continue
 		}
 		if fieldErrs, ok := field.IsValid(); !ok {
@@ -210,7 +240,7 @@ func getFieldValue(key string, data map[string]interface{}) interface{} {
 func groupErrors(errs []errors.Error) []string {
 	var messages []string
 	for _, err := range errs {
-		messages = append(messages, err.Errors()...)
+		messages = append(messages, err.Messages()...)
 	}
 	return messages
 }

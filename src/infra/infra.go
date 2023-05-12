@@ -1,10 +1,11 @@
 package infra
 
 import (
+	"backend_template/src/core"
+
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 func Logger() zerolog.Logger {
-	return log.With().Str("layer", "infrastructure").Logger()
+	return core.CoreLogger().With().Str("layer", "infrastructure").Logger()
 }

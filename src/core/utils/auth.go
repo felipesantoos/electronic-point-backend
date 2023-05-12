@@ -1,8 +1,10 @@
 package utils
 
 import (
-	"dit_backend/src/core"
-	"dit_backend/src/core/domain/authorization"
+	"backend_template/src/core"
+	"backend_template/src/core/domain/authorization"
+	"backend_template/src/core/domain/role"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -16,11 +18,21 @@ var logger = core.Logger()
 func ExtractAuthorizationAccountRole(authHeader string) (string, bool) {
 	authType, authToken := ExtractToken(authHeader)
 	if authType == "" || authToken == "" {
-		return authorization.ANONYMOUS_ROLE_CODE, true
+		return role.ANONYMOUS_ROLE_CODE, true
 	} else if claims, ok := authorizationIsValid(authType, authToken); !ok {
-		return authorization.ANONYMOUS_ROLE_CODE, false
+		return role.ANONYMOUS_ROLE_CODE, false
 	} else {
-		return claims.RoleCode, true
+		unmarshedRoleData := make(map[string]interface{})
+		roleData, err := base64.StdEncoding.DecodeString(claims.Role)
+		if err != nil {
+			logger.Error().Msg("an error occurred when decoding the role data: " + err.Error())
+			return role.ANONYMOUS_ROLE_CODE, false
+		}
+		if err := json.Unmarshal(roleData, &unmarshedRoleData); err != nil {
+			logger.Error().Msg("an error occurred when unmarshaling the role data: " + err.Error())
+			return role.ANONYMOUS_ROLE_CODE, false
+		}
+		return strings.ToLower(fmt.Sprint(unmarshedRoleData["code"])), true
 	}
 }
 

@@ -1,9 +1,9 @@
 package authorization
 
 import (
-	"dit_backend/src/core"
-	"dit_backend/src/core/domain/account"
-	"dit_backend/src/core/domain/errors"
+	"backend_template/src/core"
+	"backend_template/src/core/domain/account"
+	"backend_template/src/core/domain/errors"
 	"os"
 	"time"
 
@@ -14,10 +14,8 @@ import (
 var logger zerolog.Logger = core.Logger()
 
 const (
-	TOKEN_TIMEOUT          = time.Hour
-	ANONYMOUS_ROLE_CODE    = "anonymous"
-	ADMIN_ROLE_CODE        = "admin"
-	PROFESSIONAL_ROLE_CODE = "professional"
+	TOKEN_TIMEOUT     = time.Hour
+	BEARER_TOKEN_TYPE = "bearer"
 )
 
 type Authorization interface {
@@ -51,14 +49,13 @@ func (instance *authorization) Token() string {
 func (instance *authorization) GenerateToken(account account.Account) errors.Error {
 	secret := os.Getenv("SERVER_SECRET")
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims(
-		account.ID().String(),
-		account.Role().Code(),
-		"bearer",
+		account,
+		BEARER_TOKEN_TYPE,
 		time.Now().Add(TOKEN_TIMEOUT).Unix(),
 	)).SignedString([]byte(secret))
 	if err != nil {
 		logger.Error().Msg(err.Error())
-		return errors.NewUnexpectedError()
+		return errors.NewUnexpected()
 	}
 	instance.token = token
 	return nil

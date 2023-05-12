@@ -1,9 +1,10 @@
 package repository
 
 import (
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/utils"
+	"backend_template/src/infra"
 	"database/sql"
-	"dit_backend/src/core/utils"
-	"dit_backend/src/infra"
 	"fmt"
 	"os"
 	"regexp"
@@ -11,21 +12,27 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/rs/zerolog"
 
 	"github.com/jmoiron/sqlx"
 )
 
 var logger = infra.Logger()
 var keyConstraintCompiler = regexp.MustCompile(`^.+?_(.*)_key`)
-var primaryKeyConstraintCompiler = regexp.MustCompile(`"(\w.+)_pkey?`)
-var foreignKeyConstraintCompiler = regexp.MustCompile(`(\w.+)_fk`)
+var primaryKeyConstraintCompiler = regexp.MustCompile(`"(\w+)_pkey?`)
+var foreignKeyConstraintCompiler = regexp.MustCompile(`(\w+)_fk`)
 
 type SQLTransaction struct {
+	Query     func(query string, args ...interface{}) (*sql.Rows, errors.Error)
 	QueryRow  func(query string, args ...interface{}) *sql.Row
-	ExecQuery func(query string, args ...interface{}) (sql.Result, infra.Error)
-	Rollback  func(err error) error
+	ExecQuery func(query string, args ...interface{}) (sql.Result, errors.Error)
+	Rollback  func() errors.Error
 	CloseConn func() error
-	Commit    func() error
+	Commit    func() errors.Error
+}
+
+func init() {
+	logger = logger.With().Str("schema", getDatabaseSchema()).Logger()
 }
 
 func getDatabaseSchema() string {
@@ -45,7 +52,7 @@ func getDatabaseURI() string {
 	return fmt.Sprintf("%s://%s@%s?sslmode=%s", schema, authentication, dst, sslMode)
 }
 
-func getConnection() (*sqlx.DB, infra.Error) {
+func getConnection() (*sqlx.DB, errors.Error) {
 	schema := getDatabaseSchema()
 	connection, err := sqlx.Open(schema, getDatabaseURI())
 	if err != nil {
@@ -66,23 +73,23 @@ func closeConnection(conn *sqlx.DB) error {
 	return nil
 }
 
-func internalRollback(tx *sql.Tx, err error) error {
+func internalRollback(tx *sql.Tx) errors.Error {
 	rollbackErr := tx.Rollback()
 	if rollbackErr != nil {
-		return rollbackErr
-	}
-	return err
-}
-
-func internalCommit(tx *sql.Tx) error {
-	err := tx.Commit()
-	if err != nil {
-		return err
+		return TranslateError(rollbackErr)
 	}
 	return nil
 }
 
-func Queryx(sqlQuery string, args ...interface{}) (*sqlx.Rows, infra.Error) {
+func internalCommit(tx *sql.Tx) errors.Error {
+	err := tx.Commit()
+	if err != nil {
+		return TranslateError(err)
+	}
+	return nil
+}
+
+func Queryx(sqlQuery string, args ...interface{}) (*sqlx.Rows, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return nil, err
@@ -95,7 +102,7 @@ func Queryx(sqlQuery string, args ...interface{}) (*sqlx.Rows, infra.Error) {
 	return rows, nil
 }
 
-func ExecQuery(sqlQuery string, args ...interface{}) (sql.Result, infra.Error) {
+func ExecQuery(sqlQuery string, args ...interface{}) (sql.Result, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return nil, err
@@ -108,7 +115,7 @@ func ExecQuery(sqlQuery string, args ...interface{}) (sql.Result, infra.Error) {
 	return result, nil
 }
 
-func BeginTransaction() (*SQLTransaction, infra.Error) {
+func BeginTransaction() (*SQLTransaction, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return nil, err
@@ -120,22 +127,27 @@ func BeginTransaction() (*SQLTransaction, infra.Error) {
 	queryRow := func(query string, args ...interface{}) *sql.Row {
 		return tx.QueryRow(query, args...)
 	}
-	execQuery := func(query string, args ...interface{}) (sql.Result, infra.Error) {
+	execQuery := func(query string, args ...interface{}) (sql.Result, errors.Error) {
 		result, err := tx.Exec(query, args...)
 		return result, TranslateError(err)
+	}
+	query := func(query string, args ...interface{}) (*sql.Rows, errors.Error) {
+		rows, err := tx.Query(query, args...)
+		return rows, TranslateError(err)
 	}
 	closeConnection := func() error {
 		return closeConnection(conn)
 	}
-	rollBack := func(err error) error {
+	rollBack := func() errors.Error {
 		defer closeConnection()
-		return internalRollback(tx, err)
+		return internalRollback(tx)
 	}
-	commit := func() error {
+	commit := func() errors.Error {
 		defer closeConnection()
 		return internalCommit(tx)
 	}
 	transaction := &SQLTransaction{
+		Query:     query,
 		QueryRow:  queryRow,
 		ExecQuery: execQuery,
 		Rollback:  rollBack,
@@ -145,31 +157,31 @@ func BeginTransaction() (*SQLTransaction, infra.Error) {
 	return transaction, nil
 }
 
-func TranslateError(err error) infra.Error {
+func TranslateError(err error) errors.Error {
 	if err == nil {
 		return nil
 	}
-	logger.Error().Msg(err.Error())
+	logger.Error().Caller(zerolog.CallerSkipFrameCount).Msg(err.Error())
 	if strings.Contains(err.Error(), "duplicate key") {
 		keyMatch := keyConstraintCompiler.FindStringSubmatch(err.Error())
 		var key = ""
 		if keyMatch == nil {
 			pkeyMatch := primaryKeyConstraintCompiler.FindStringSubmatch(err.Error())
 			if pkeyMatch == nil {
-				return infra.NewInternalSourceErr(err)
+				return errors.NewInternal(err)
 			}
 			key = pkeyMatch[1]
 		} else {
 			key = keyMatch[1]
 		}
-		return infra.NewSourceErrFromStr(fmt.Sprintf("the value defined for %s is already in use", key))
+		return errors.NewFromString(fmt.Sprintf("the value provided for the \"%s\" field is already in use", key))
 	} else if strings.Contains(err.Error(), "violates foreign key constraint") {
 		keyMatch := foreignKeyConstraintCompiler.FindStringSubmatch(err.Error())
 		if keyMatch == nil {
-			return infra.NewInternalSourceErr(err)
+			return errors.NewInternal(err)
 		}
 		key := keyMatch[1]
-		return infra.NewSourceErrFromStr(fmt.Sprintf("the key defined for %s doesn't exists", key))
+		return errors.NewFromString(fmt.Sprintf("the key defined for \"%s\" doesn't exists", key))
 	}
-	return infra.NewUnexpectedSourceErr()
+	return errors.NewUnexpected()
 }

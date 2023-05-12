@@ -10,7 +10,7 @@ import (
 	"gopkg.in/mail.v2"
 )
 
-const emailBodyFooter = "<p>Atenciosamente&nbsp;<strong>CIEVS - Acompanhamento de Plantões Profissionais</strong>.</p>"
+const emailBodyFooter = "<p>Atenciosamente&nbsp;<strong>BACKEND TEMPLATE - TEST MAIL</strong>.</p>"
 
 func SendNewAccountEmail(email, password string) error {
 	title := fmt.Sprintf("Acesso ao %s", getFromName())

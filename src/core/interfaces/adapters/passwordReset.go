@@ -1,9 +1,9 @@
 package adapters
 
-import "dit_backend/src/infra"
+import "backend_template/src/core/domain/errors"
 
 type PasswordResetAdapter interface {
-	AskPasswordResetMail(email string) infra.Error
-	FindPasswordResetByToken(token string) infra.Error
-	UpdatePasswordByPasswordReset(token, newPassword string) infra.Error
+	AskPasswordResetMail(email string) errors.Error
+	FindPasswordResetByToken(token string) errors.Error
+	UpdatePasswordByPasswordReset(token, newPassword string) errors.Error
 }

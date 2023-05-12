@@ -22,16 +22,16 @@ Caso você seja do time de QA:
 Se você é um membro do time de desenvolvimento desse projeto, siga os passos abaixo para executar as configurações apropriadas:
 
 1. Execute o comando `go mod tidy` para baixar as dependências do projeto;
-2. Copie todo o conteúdo do arquivo [src/api/app/.env.example](src/api/app/.env.example) e cole em um novo arquivo chamado `.env` na mesma pasta ([src/api/app/](src/api/app/));
+2. Copie todo o conteúdo do arquivo [src/ui/api/app/.env.example](src/ui/api/app/.env.example) e cole em um novo arquivo chamado `.env` na mesma pasta ([src/ui/api/app/](src/ui/api/app/));
 3. Execute o banco de dados e instância redis com o seguinte comando: `docker compose up database redis --build -d`
 
-Pronto! O projeto está configurado. A partir de agora, toda vez que quiser iniciar o projeto basta executar o comando `go run main.go` dentro da pasta `src/api/app`. Assim, o projeto estará disponível no endereço `http://localhost:8000`.
+Pronto! O projeto está configurado. A partir de agora, toda vez que quiser iniciar o projeto basta executar o comando `go run main.go` dentro da pasta `src/ui/api/app`. Assim, o projeto estará disponível no endereço `http://localhost:8000`.
 
 ### **Para Testes de Qualidade (QA)**
 
 Se você é um membro do time de qualidade (QA), siga os passos abaixo para executar as configurações apropriadas:
 
-1. Copie todo o conteúdo do arquivo [src/api/app/.env.example](src/api/app/.env.example) e cole em um novo arquivo chamado `env-file` na mesma pasta ([src/api/app/](src/api/app/));
+1. Copie todo o conteúdo do arquivo [src/ui/api/app/.env.example](src/ui/api/app/.env.example) e cole em um novo arquivo chamado `env-file` na mesma pasta ([src/ui/api/app/](src/ui/api/app/));
 
 Pronto! O projeto está configurado. A partir de agora, toda vez que quiser iniciar o projeto basta executar o comando `docker compose up`. Assim, o projeto estará disponível no endereço `http://localhost:8000`.
 

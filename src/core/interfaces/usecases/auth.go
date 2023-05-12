@@ -1,9 +1,9 @@
 package usecases
 
 import (
-	"dit_backend/src/core/domain/authorization"
-	"dit_backend/src/core/domain/credentials"
-	"dit_backend/src/core/domain/errors"
+	"backend_template/src/core/domain/authorization"
+	"backend_template/src/core/domain/credentials"
+	"backend_template/src/core/domain/errors"
 
 	"github.com/google/uuid"
 )

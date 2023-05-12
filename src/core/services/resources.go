@@ -1,10 +1,10 @@
 package services
 
 import (
-	"dit_backend/src/core/domain/errors"
-	"dit_backend/src/core/domain/role"
-	"dit_backend/src/core/interfaces/adapters"
-	"dit_backend/src/core/interfaces/usecases"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/domain/role"
+	"backend_template/src/core/interfaces/adapters"
+	"backend_template/src/core/interfaces/usecases"
 )
 
 type resourcesService struct {
@@ -16,9 +16,5 @@ func NewResourcesService(adapter adapters.ResourcesAdapter) usecases.ResourcesUs
 }
 
 func (instance *resourcesService) ListAccountRoles() ([]role.Role, errors.Error) {
-	roles, err := instance.adapter.ListAccountRoles()
-	if err != nil {
-		return nil, errors.NewFromInfra(err)
-	}
-	return roles, nil
+	return instance.adapter.ListAccountRoles()
 }

@@ -1,37 +1,67 @@
 package postgres
 
 import (
-	"dit_backend/src/infra"
-	"dit_backend/src/infra/repository"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/infra"
+	"backend_template/src/infra/repository"
+	"strings"
 )
 
-func defaultExecQuery(sqlQuery string, args ...interface{}) infra.Error {
+var logger = infra.Logger().With().Str("port", "postgres").Logger()
+
+func defaultExecQuery(sqlQuery string, args ...interface{}) errors.Error {
 	result, err := repository.ExecQuery(sqlQuery, args...)
 	if err != nil {
 		return err
 	} else if rowsAff, err := result.RowsAffected(); err != nil {
-		return infra.NewInternalSourceErr(err)
+		return errors.NewInternal(err)
 	} else if rowsAff == 0 {
-		return infra.NewUnexpectedSourceErr()
+		if strings.Contains(strings.ToLower(sqlQuery), "update") {
+			return errors.NewFromString("no entries were found to be updated")
+		} else if strings.Contains(strings.ToLower(sqlQuery), "delete") {
+			return errors.NewFromString("no entries were found to be deleted")
+		}
+		return errors.NewUnexpected()
 	}
 	return nil
 }
 
-func txQueryRowReturningID(tx *repository.SQLTransaction, sqlQuery string, args ...interface{}) (string, infra.Error) {
+func defaultTxExecQuery(tx *repository.SQLTransaction, sqlQuery string, args ...interface{}) errors.Error {
+	result, err := tx.ExecQuery(sqlQuery, args...)
+	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			return rollbackErr
+		}
+		return err
+	} else if rowsAff, err := result.RowsAffected(); err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			return rollbackErr
+		}
+		return errors.NewInternal(err)
+	} else if rowsAff == 0 {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			return rollbackErr
+		}
+		return errors.NewUnexpected()
+	}
+	return nil
+}
+
+func txQueryRowReturningID(tx *repository.SQLTransaction, sqlQuery string, args ...interface{}) (string, errors.Error) {
 	row := tx.QueryRow(sqlQuery, args...)
 	if err := row.Err(); err != nil {
-		rollBackErr := tx.Rollback(err)
+		rollBackErr := tx.Rollback()
 		if rollBackErr != nil {
-			return "", repository.TranslateError(rollBackErr)
+			return "", rollBackErr
 		}
 		return "", repository.TranslateError(row.Err())
 	}
 	var strUUID = ""
 	scanErr := row.Scan(&strUUID)
 	if scanErr != nil {
-		rollBackErr := tx.Rollback(row.Err())
+		rollBackErr := tx.Rollback()
 		if rollBackErr != nil {
-			return "", repository.TranslateError(rollBackErr)
+			return "", rollBackErr
 		}
 		return "", repository.TranslateError(scanErr)
 	}

@@ -1,7 +1,7 @@
 package rules
 
 import (
-	"dit_backend/src/core/domain/errors"
+	"backend_template/src/core/domain/errors"
 	"fmt"
 	"reflect"
 )

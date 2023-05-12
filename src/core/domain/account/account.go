@@ -1,18 +1,19 @@
 package account
 
 import (
-	"dit_backend/src/core/domain"
-	"dit_backend/src/core/domain/person"
-	"dit_backend/src/core/domain/professional"
-	"dit_backend/src/core/domain/role"
-	"errors"
-	"fmt"
-	"strings"
+	"backend_template/src/core/domain"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/domain/person"
+	"backend_template/src/core/domain/professional"
+	"backend_template/src/core/domain/role"
+	"net/mail"
 
 	"github.com/google/uuid"
 )
 
 type Account interface {
+	domain.Model
+
 	ID() *uuid.UUID
 	Email() string
 	Password() string
@@ -37,34 +38,9 @@ type account struct {
 	professional professional.Professional
 }
 
-func New(id *uuid.UUID, email, password string, role role.Role, person person.Person, professional professional.Professional) Account {
-	return &account{id, email, password, role, person, professional}
-}
-
-func NewFromMap(data map[string]interface{}) (Account, error) {
-	account := &account{
-		email:    fmt.Sprint(data["email"]),
-		password: fmt.Sprint(data["password"]),
-	}
-	if id, err := uuid.Parse(string(data["id"].([]uint8))); err != nil {
-		return nil, err
-	} else {
-		account.id = &id
-	}
-	if role, err := role.NewFromDerivedMap(data); err != nil {
-		return nil, err
-	} else {
-		account.SetRole(role)
-	}
-	if person, err := person.NewFromDerivedMap(data); err != nil {
-		return nil, err
-	} else {
-		account.person = person
-	}
-	if err := account.fillAccountRoleInfo(data); err != nil {
-		return nil, err
-	}
-	return account, nil
+func New(id *uuid.UUID, email, password string, role role.Role, person person.Person, professional professional.Professional) (Account, errors.Error) {
+	data := &account{id, email, password, role, person, professional}
+	return data, data.IsValid()
 }
 
 func (instance *account) ID() *uuid.UUID {
@@ -115,18 +91,21 @@ func (instance *account) SetProfessional(professional professional.Professional)
 	instance.professional = professional
 }
 
-func (instance *account) fillAccountRoleInfo(data map[string]interface{}) error {
-	if strings.ToLower(instance.role.Code()) == role.ProfessionalRoleCode() {
-		if professionalData := domain.BuildMapWithParentName(data, role.ProfessionalRoleCode()); len(professionalData) == 0 {
-			return errors.New("you must provide the professional instance properties")
-		} else {
-			professionalData["person_id"] = data["person_id"]
-			professional, err := professional.NewFromMap(professionalData)
-			if err != nil {
-				return err
-			}
-			instance.professional = professional
-		}
+func (instance *account) IsValid() errors.Error {
+	var errorMessages = []string{}
+	var metadata = map[string]interface{}{"fields": []string{}}
+	if addr, _ := mail.ParseAddress(instance.email); addr == nil {
+		errorMessages = append(errorMessages, "you must provide a valid email!")
+		metadata["fields"] = append(metadata["fields"].([]string), "email")
+	}
+	if err := instance.person.IsValid(); err != nil {
+		return err
+	}
+	if instance.professional != nil && instance.professional.IsValid() != nil {
+		return instance.professional.IsValid()
+	}
+	if len(errorMessages) != 0 {
+		return errors.NewValidationWithMetadata(errorMessages, metadata)
 	}
 	return nil
 }

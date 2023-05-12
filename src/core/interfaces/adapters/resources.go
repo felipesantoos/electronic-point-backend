@@ -1,10 +1,10 @@
 package adapters
 
 import (
-	"dit_backend/src/core/domain/role"
-	"dit_backend/src/infra"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/domain/role"
 )
 
 type ResourcesAdapter interface {
-	ListAccountRoles() ([]role.Role, infra.Error)
+	ListAccountRoles() ([]role.Role, errors.Error)
 }

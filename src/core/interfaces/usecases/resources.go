@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"dit_backend/src/core/domain/errors"
-	"dit_backend/src/core/domain/role"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/domain/role"
 )
 
 type ResourcesUseCase interface {

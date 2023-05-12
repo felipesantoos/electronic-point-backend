@@ -71,7 +71,7 @@ func (instance *accountQuerySelectBuilder) SimplifiedByEmail() string {
 }
 
 func (instance *accountQuerySelectBuilder) ByCredentials() string {
-	return instance.defaultStatement("a.email=$1")
+	return `SELECT id, password FROM account WHERE email=$1;`
 }
 
 func (*accountQuerySelectBuilder) defaultStatement(whereClause string) string {
@@ -81,7 +81,7 @@ func (*accountQuerySelectBuilder) defaultStatement(whereClause string) string {
 	return fmt.Sprintf(`
 		SELECT
 			a.id AS id,
-			a.email AS account_email,
+			a.email AS email,
 			a.person_id AS person_id,
 			p.name AS person_name,
 			p.birth_date AS person_birth_date,
@@ -90,10 +90,10 @@ func (*accountQuerySelectBuilder) defaultStatement(whereClause string) string {
 			p.created_at AS person_created_at,
 			p.updated_at AS person_updated_at,
 			a.password AS password,
-			d.id as professional_id,
 			ar.id AS role_id,
 			ar.name AS role_name,
 			ar.code AS role_code,
+			prof.id AS professional_id,
 			a.created_at AS created_at,
 			a.updated_at AS updated_at
 		FROM
@@ -102,8 +102,9 @@ func (*accountQuerySelectBuilder) defaultStatement(whereClause string) string {
 			ON ar.id = a.role_id
 		INNER JOIN person p
 			ON p.id = a.person_id
-		LEFT JOIN professional d
-			ON d.person_id = p.id
+
+		LEFT JOIN professional prof
+			ON prof.person_id = p.id
 		%s
 	`, whereClause)
 }

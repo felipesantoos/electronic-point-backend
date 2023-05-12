@@ -1,14 +1,18 @@
 package professional
 
 import (
+	"backend_template/src/core/domain"
+	"backend_template/src/core/domain/errors"
+
 	"github.com/google/uuid"
 )
 
 type Professional interface {
+	domain.Model
+
 	ID() *uuid.UUID
 	PersonID() *uuid.UUID
 
-	SetID(*uuid.UUID)
 	SetPersonID(*uuid.UUID)
 }
 
@@ -17,23 +21,9 @@ type professional struct {
 	personID *uuid.UUID
 }
 
-func New(id *uuid.UUID, personID *uuid.UUID) Professional {
-	return &professional{id, personID}
-}
-
-func NewFromMap(data map[string]interface{}) (Professional, error) {
-	professional := &professional{}
-	if id, err := uuid.Parse(string(data["id"].([]uint8))); err != nil {
-		return nil, err
-	} else {
-		professional.id = &id
-	}
-	if id, err := uuid.Parse(string(data["person_id"].([]uint8))); err != nil {
-		return nil, err
-	} else {
-		professional.personID = &id
-	}
-	return professional, nil
+func New(id *uuid.UUID, personID *uuid.UUID) (Professional, errors.Error) {
+	data := &professional{id, personID}
+	return data, data.IsValid()
 }
 
 func (instance *professional) ID() *uuid.UUID {
@@ -44,10 +34,10 @@ func (instance *professional) PersonID() *uuid.UUID {
 	return instance.personID
 }
 
-func (instance *professional) SetID(id *uuid.UUID) {
-	instance.id = id
-}
-
 func (instance *professional) SetPersonID(personID *uuid.UUID) {
 	instance.personID = personID
+}
+
+func (instance *professional) IsValid() errors.Error {
+	return nil
 }

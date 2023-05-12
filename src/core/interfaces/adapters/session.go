@@ -1,14 +1,14 @@
 package adapters
 
 import (
-	"dit_backend/src/infra"
+	"backend_template/src/core/domain/errors"
 
 	"github.com/google/uuid"
 )
 
 type SessionAdapter interface {
-	Store(uID uuid.UUID, accessToken string) infra.Error
-	Exists(uID uuid.UUID, token string) (bool, infra.Error)
-	RemoveSession(uID uuid.UUID) infra.Error
-	GetSessionByAccountID(uID uuid.UUID) (string, infra.Error)
+	Store(uID uuid.UUID, accessToken string) errors.Error
+	Exists(uID uuid.UUID, token string) (bool, errors.Error)
+	RemoveSession(uID uuid.UUID) errors.Error
+	GetSessionByAccountID(uID uuid.UUID) (string, errors.Error)
 }

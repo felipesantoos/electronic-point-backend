@@ -1,7 +1,7 @@
 package rules
 
 import (
-	"dit_backend/src/core/domain/errors"
+	"backend_template/src/core/domain/errors"
 	builtinErrors "errors"
 )
 
@@ -28,6 +28,7 @@ const (
 	LENGTH
 	MINLENGTH
 	MAXLENGTH
+	EMAIL_VALIDATION
 )
 
 func newErrorByType(t int, fieldName, argument string) errors.Error {

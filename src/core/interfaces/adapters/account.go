@@ -1,17 +1,18 @@
 package adapters
 
 import (
-	"dit_backend/src/core/domain/account"
-	updatepassword "dit_backend/src/core/domain/updatePassword"
-	"dit_backend/src/infra"
+	"backend_template/src/core/domain/account"
+	"backend_template/src/core/domain/errors"
+	"backend_template/src/core/domain/person"
+	updatepassword "backend_template/src/core/domain/updatePassword"
 
 	"github.com/google/uuid"
 )
 
 type AccountAdapter interface {
-	List() ([]account.Account, infra.Error)
-	FindByID(uID uuid.UUID) (account.Account, infra.Error)
-	Create(account.Account) (*uuid.UUID, infra.Error)
-	UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) infra.Error
-	UpdateAccountProfile(account account.Account) infra.Error
+	List() ([]account.Account, errors.Error)
+	FindByID(uID uuid.UUID) (account.Account, errors.Error)
+	Create(account.Account) (*uuid.UUID, errors.Error)
+	UpdateAccountProfile(person person.Person) errors.Error
+	UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error
 }

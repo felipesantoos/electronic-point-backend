@@ -1,11 +1,11 @@
 package adapters
 
 import (
-	"dit_backend/src/core/domain/account"
-	"dit_backend/src/core/domain/credentials"
-	"dit_backend/src/infra"
+	"backend_template/src/core/domain/account"
+	"backend_template/src/core/domain/credentials"
+	"backend_template/src/core/domain/errors"
 )
 
 type AuthAdapter interface {
-	Login(credentials credentials.Credentials) (account.Account, infra.Error)
+	Login(credentials credentials.Credentials) (account.Account, errors.Error)
 }
