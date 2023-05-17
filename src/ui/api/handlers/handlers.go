@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/wallrony/go-validator/validator"
 )
 
 var unprocessableEntityError = &echo.HTTPError{
@@ -50,6 +51,18 @@ func unsupportedMediaTypeErrorWithMessage(message string) *echo.HTTPError {
 
 func responseFromError(err errors.Error) error {
 	var e *echo.HTTPError = badRequestError
+	if err.CausedInternally() {
+		e = internalServerError
+	} else if err.CausedByValidation() {
+		e = unprocessableEntityError
+	}
+	e.Message = strings.Join(err.Messages(), ";")
+	return e
+}
+
+func responseFromValidationError(valErr validator.ValidationError) error {
+	var e *echo.HTTPError = badRequestError
+	var err = errors.NewValidation(valErr.Messages())
 	if err.CausedInternally() {
 		e = internalServerError
 	} else if err.CausedByValidation() {

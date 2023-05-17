@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"backend_template/src/core/interfaces/usecases"
-	"backend_template/src/ui/api/handlers/dto"
 	"backend_template/src/ui/api/handlers/dto/request"
 	"backend_template/src/ui/api/handlers/dto/response"
 	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/wallrony/go-validator/validator"
 )
 
 type AccountHandler interface {
@@ -94,8 +94,8 @@ func (instance *accountHandler) Create(context echo.Context) error {
 	if err := context.Bind(&body); err != nil {
 		return unsupportedMediaTypeError
 	}
-	if dto, err := dto.Validate[request.CreateAccount](body); err != nil {
-		return responseFromError(err)
+	if dto, err := validator.ValidateDTO[request.CreateAccount](body); err != nil {
+		return responseFromValidationError((err))
 	} else if data, err := dto.ToDomain(); err != nil {
 		return responseFromError(err)
 	} else if id, err := instance.service.Create(data); err != nil {
@@ -123,9 +123,9 @@ func (instance *accountHandler) UpdateProfile(context echo.Context) error {
 	if err := context.Bind(&body); err != nil {
 		return unsupportedMediaTypeError
 	}
-	data, err := dto.Validate[request.UpdateAccountProfile](body)
-	if err != nil {
-		return responseFromError(err)
+	data, vErr := validator.ValidateDTO[request.UpdateAccountProfile](body)
+	if vErr != nil {
+		return responseFromValidationError((vErr))
 	}
 	profile, err := data.ToDomain()
 	if err != nil {
@@ -159,9 +159,9 @@ func (instance *accountHandler) UpdatePassword(context echo.Context) error {
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return unsupportedMediaTypeError
 	}
-	data, err := dto.Validate[request.UpdatePassword](body)
-	if err != nil {
-		return responseFromError(err)
+	data, vErr := validator.ValidateDTO[request.UpdatePassword](body)
+	if vErr != nil {
+		return responseFromValidationError((vErr))
 	}
 	accountID, err := getAccountIDFromAuthorization(context)
 	if err != nil {

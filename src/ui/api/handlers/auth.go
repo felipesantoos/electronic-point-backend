@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"backend_template/src/ui/api/handlers/dto"
+	"backend_template/src/core/interfaces/usecases"
 	"backend_template/src/ui/api/handlers/dto/request"
 	"backend_template/src/ui/api/handlers/dto/response"
-	"backend_template/src/core/interfaces/usecases"
 	"encoding/hex"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/wallrony/go-validator/validator"
 )
 
 type AuthHandler interface {
@@ -43,9 +43,9 @@ func (instance *authHandler) Login(context echo.Context) error {
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return unsupportedMediaTypeError
 	}
-	dto, err := dto.Validate[request.Credentials](body)
-	if err != nil {
-		return responseFromError(err)
+	dto, vErr := validator.ValidateDTO[request.Credentials](body)
+	if vErr != nil {
+		return responseFromValidationError(vErr)
 	}
 	authorization, err := instance.service.Login(dto.ToDomain())
 	if err != nil {
@@ -93,9 +93,9 @@ func (instance *authHandler) AskPasswordResetMail(context echo.Context) error {
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return context.NoContent(http.StatusUnsupportedMediaType)
 	}
-	dto, err := dto.Validate[request.CreatePasswordReset](body)
+	dto, err := validator.ValidateDTO[request.CreatePasswordReset](body)
 	if err != nil {
-		return responseFromError(err)
+		return responseFromValidationError(err)
 	}
 	if err := instance.service.AskPasswordResetMail(dto.Email); err != nil {
 		return responseFromError(err)
@@ -144,9 +144,9 @@ func (instance *authHandler) UpdatePasswordByPasswordReset(context echo.Context)
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return context.NoContent(http.StatusUnsupportedMediaType)
 	}
-	dto, validationErr := dto.Validate[request.UpdatePasswordByPasswordReset](body)
-	if validationErr != nil {
-		return responseFromError(validationErr)
+	dto, vErr := validator.ValidateDTO[request.UpdatePasswordByPasswordReset](body)
+	if vErr != nil {
+		return responseFromValidationError(vErr)
 	}
 	if err := instance.service.UpdatePasswordByPasswordReset(token, dto.NewPassword); err != nil {
 		return responseFromError(err)

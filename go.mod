@@ -17,6 +17,7 @@ require (
 	github.com/swaggo/echo-swagger v1.3.4
 	github.com/swaggo/swag v1.8.1
 	github.com/thanhpk/randstr v1.0.4
+	github.com/wallrony/go-validator v0.1.1
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
 	gopkg.in/mail.v2 v2.3.1
