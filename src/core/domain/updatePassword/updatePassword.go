@@ -14,10 +14,10 @@ func New(currentPassword, newPassword string) UpdatePassword {
 	return &updatePassword{currentPassword, newPassword}
 }
 
-func (instance *updatePassword) CurrentPassword() string {
-	return instance.currentPassword
+func (upwd *updatePassword) CurrentPassword() string {
+	return upwd.currentPassword
 }
 
-func (instance *updatePassword) NewPassword() string {
-	return instance.newPassword
+func (upwd *updatePassword) NewPassword() string {
+	return upwd.newPassword
 }

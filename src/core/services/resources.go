@@ -15,6 +15,6 @@ func NewResourcesService(adapter adapters.ResourcesAdapter) usecases.ResourcesUs
 	return &resourcesService{adapter}
 }
 
-func (instance *resourcesService) ListAccountRoles() ([]role.Role, errors.Error) {
-	return instance.adapter.ListAccountRoles()
+func (s *resourcesService) ListAccountRoles() ([]role.Role, errors.Error) {
+	return s.adapter.ListAccountRoles()
 }

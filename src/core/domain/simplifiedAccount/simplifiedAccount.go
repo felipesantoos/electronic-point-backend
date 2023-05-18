@@ -46,42 +46,42 @@ func NewFromMap(data map[string]interface{}) (SimplifiedAccount, error) {
 	return account, nil
 }
 
-func (instance *simplifiedAccount) ID() *uuid.UUID {
-	return instance.id
+func (sacc *simplifiedAccount) ID() *uuid.UUID {
+	return sacc.id
 }
 
-func (instance *simplifiedAccount) Name() string {
-	return instance.name
+func (sacc *simplifiedAccount) Name() string {
+	return sacc.name
 }
 
-func (instance *simplifiedAccount) BirthDate() string {
-	return instance.birthDate
+func (sacc *simplifiedAccount) BirthDate() string {
+	return sacc.birthDate
 }
 
-func (instance *simplifiedAccount) Email() string {
-	return instance.email
+func (sacc *simplifiedAccount) Email() string {
+	return sacc.email
 }
 
-func (instance *simplifiedAccount) CPF() string {
-	return instance.cpf
+func (sacc *simplifiedAccount) CPF() string {
+	return sacc.cpf
 }
 
-func (instance *simplifiedAccount) SetID(id *uuid.UUID) {
-	instance.id = id
+func (sacc *simplifiedAccount) SetID(id *uuid.UUID) {
+	sacc.id = id
 }
 
-func (instance *simplifiedAccount) SetName(name string) {
-	instance.name = name
+func (sacc *simplifiedAccount) SetName(name string) {
+	sacc.name = name
 }
 
-func (instance *simplifiedAccount) SetBirthDate(birthDate string) {
-	instance.birthDate = birthDate
+func (sacc *simplifiedAccount) SetBirthDate(birthDate string) {
+	sacc.birthDate = birthDate
 }
 
-func (instance *simplifiedAccount) SetEmail(email string) {
-	instance.email = email
+func (sacc *simplifiedAccount) SetEmail(email string) {
+	sacc.email = email
 }
 
-func (instance *simplifiedAccount) SetCPF(cpf string) {
-	instance.cpf = cpf
+func (sacc *simplifiedAccount) SetCPF(cpf string) {
+	sacc.cpf = cpf
 }

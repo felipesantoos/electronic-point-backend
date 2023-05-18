@@ -43,66 +43,66 @@ func New(id *uuid.UUID, email, password string, role role.Role, person person.Pe
 	return data, data.IsValid()
 }
 
-func (instance *account) ID() *uuid.UUID {
-	return instance.id
+func (acc *account) ID() *uuid.UUID {
+	return acc.id
 }
 
-func (instance *account) Email() string {
-	return instance.email
+func (acc *account) Email() string {
+	return acc.email
 }
 
-func (instance *account) Password() string {
-	return instance.password
+func (acc *account) Password() string {
+	return acc.password
 }
 
-func (instance *account) Role() role.Role {
-	return instance.role
+func (acc *account) Role() role.Role {
+	return acc.role
 }
 
-func (instance *account) Person() person.Person {
-	return instance.person
+func (acc *account) Person() person.Person {
+	return acc.person
 }
 
-func (instance *account) Professional() professional.Professional {
-	return instance.professional
+func (acc *account) Professional() professional.Professional {
+	return acc.professional
 }
 
-func (instance *account) SetID(id uuid.UUID) {
-	instance.id = &id
+func (acc *account) SetID(id uuid.UUID) {
+	acc.id = &id
 }
 
-func (instance *account) SetEmail(email string) {
-	instance.email = email
+func (acc *account) SetEmail(email string) {
+	acc.email = email
 }
 
-func (instance *account) SetPassword(password string) {
-	instance.password = password
+func (acc *account) SetPassword(password string) {
+	acc.password = password
 }
 
-func (instance *account) SetRole(role role.Role) {
-	instance.role = role
+func (acc *account) SetRole(role role.Role) {
+	acc.role = role
 }
 
-func (instance *account) SetPerson(person person.Person) {
-	instance.person = person
+func (acc *account) SetPerson(person person.Person) {
+	acc.person = person
 }
 
-func (instance *account) SetProfessional(professional professional.Professional) {
-	instance.professional = professional
+func (acc *account) SetProfessional(professional professional.Professional) {
+	acc.professional = professional
 }
 
-func (instance *account) IsValid() errors.Error {
+func (acc *account) IsValid() errors.Error {
 	var errorMessages = []string{}
 	var metadata = map[string]interface{}{"fields": []string{}}
-	if addr, _ := mail.ParseAddress(instance.email); addr == nil {
+	if addr, _ := mail.ParseAddress(acc.email); addr == nil {
 		errorMessages = append(errorMessages, "you must provide a valid email!")
 		metadata["fields"] = append(metadata["fields"].([]string), "email")
 	}
-	if err := instance.person.IsValid(); err != nil {
+	if err := acc.person.IsValid(); err != nil {
 		return err
 	}
-	if instance.professional != nil && instance.professional.IsValid() != nil {
-		return instance.professional.IsValid()
+	if acc.professional != nil && acc.professional.IsValid() != nil {
+		return acc.professional.IsValid()
 	}
 	if len(errorMessages) != 0 {
 		return errors.NewValidationWithMetadata(errorMessages, metadata)

@@ -9,7 +9,7 @@ services:
     depends_on:
       - database
     ports:
-      - "8001:8001"
+      - "8000:8000"
   database:
     container_name: backend_template_database
     build:
@@ -19,7 +19,7 @@ services:
       - POSTGRES_USER=backend_template
       - POSTGRES_PASSWORD=12345678
     ports:
-      - "5433:5432"
+      - "5432:5432"
   redis:
     image: redis
     container_name: backend_template_redis
@@ -28,5 +28,5 @@ services:
       - -c
       - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
     ports:
-      - "6378:6379"
+      - "6379:6379"
     env_file: env-file

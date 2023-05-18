@@ -4,7 +4,6 @@ import (
 	"backend_template/src/core/interfaces/usecases"
 	"backend_template/src/ui/api/handlers/dto/request"
 	"backend_template/src/ui/api/handlers/dto/response"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -39,8 +38,8 @@ func NewAccountHandler(service usecases.AccountUseCase) AccountHandler {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [get]
-func (instance *accountHandler) List(context echo.Context) error {
-	accounts, err := instance.service.List()
+func (h *accountHandler) List(context echo.Context) error {
+	accounts, err := h.service.List()
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -63,12 +62,12 @@ func (instance *accountHandler) List(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/profile [get]
-func (instance *accountHandler) FindProfile(context echo.Context) error {
+func (h *accountHandler) FindProfile(context echo.Context) error {
 	accountID, err := getAccountIDFromAuthorization(context)
 	if err != nil {
 		return responseFromError(err)
 	}
-	account, err := instance.service.FindByID(*accountID)
+	account, err := h.service.FindByID(*accountID)
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -89,7 +88,7 @@ func (instance *accountHandler) FindProfile(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [post]
-func (instance *accountHandler) Create(context echo.Context) error {
+func (h *accountHandler) Create(context echo.Context) error {
 	var body interface{}
 	if err := context.Bind(&body); err != nil {
 		return unsupportedMediaTypeError
@@ -98,7 +97,7 @@ func (instance *accountHandler) Create(context echo.Context) error {
 		return responseFromValidationError((err))
 	} else if data, err := dto.ToDomain(); err != nil {
 		return responseFromError(err)
-	} else if id, err := instance.service.Create(data); err != nil {
+	} else if id, err := h.service.Create(data); err != nil {
 		return responseFromError(err)
 	} else {
 		return context.JSON(http.StatusCreated, map[string]interface{}{
@@ -118,7 +117,7 @@ func (instance *accountHandler) Create(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/profile [put]
-func (instance *accountHandler) UpdateProfile(context echo.Context) error {
+func (h *accountHandler) UpdateProfile(context echo.Context) error {
 	var body interface{}
 	if err := context.Bind(&body); err != nil {
 		return unsupportedMediaTypeError
@@ -132,12 +131,11 @@ func (instance *accountHandler) UpdateProfile(context echo.Context) error {
 		return responseFromError(err)
 	}
 	if profileID, err := getProfileIDFromAuthorization(context); err != nil {
-		fmt.Println(profileID)
 		return responseFromError(err)
 	} else {
 		profile.SetID(profileID)
 	}
-	if err := instance.service.UpdateAccountProfile(profile); err != nil {
+	if err := h.service.UpdateAccountProfile(profile); err != nil {
 		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
@@ -154,7 +152,7 @@ func (instance *accountHandler) UpdateProfile(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/update-password [put]
-func (instance *accountHandler) UpdatePassword(context echo.Context) error {
+func (h *accountHandler) UpdatePassword(context echo.Context) error {
 	var body = map[string]interface{}{}
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return unsupportedMediaTypeError
@@ -167,7 +165,7 @@ func (instance *accountHandler) UpdatePassword(context echo.Context) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	err = instance.service.UpdateAccountPassword(*accountID, data.ToDomain())
+	err = h.service.UpdateAccountPassword(*accountID, data.ToDomain())
 	if err != nil {
 		return responseFromError(err)
 	}

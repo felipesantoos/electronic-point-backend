@@ -16,14 +16,14 @@ func NewPolicy(sub, obj, act string) Policy {
 	return &policy{sub, obj, act}
 }
 
-func (instance *policy) Subject() string {
-	return instance.subject
+func (p *policy) Subject() string {
+	return p.subject
 }
 
-func (instance *policy) Object() string {
-	return instance.object
+func (p *policy) Object() string {
+	return p.object
 }
 
-func (instance *policy) Action() string {
-	return instance.action
+func (p *policy) Action() string {
+	return p.action
 }

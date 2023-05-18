@@ -65,35 +65,35 @@ func NewUnexpected() Error {
 	return NewInternal(errors.New(unexpectedErrorMessage))
 }
 
-func (instance *errorImpl) String() string {
-	return strings.Join(instance.err, " & ")
+func (e *errorImpl) String() string {
+	return strings.Join(e.err, " & ")
 }
 
-func (instance *errorImpl) Messages() []string {
-	return instance.err
+func (e *errorImpl) Messages() []string {
+	return e.err
 }
 
-func (instance *errorImpl) CausedInternally() bool {
-	return instance.origin == INTERNAL
+func (e *errorImpl) CausedInternally() bool {
+	return e.origin == INTERNAL
 }
 
-func (instance *errorImpl) CausedByValidation() bool {
-	return instance.origin == VALIDATION
+func (e *errorImpl) CausedByValidation() bool {
+	return e.origin == VALIDATION
 }
 
-func (instance *errorImpl) Metadata() map[string]interface{} {
-	return instance.metadata
+func (e *errorImpl) Metadata() map[string]interface{} {
+	return e.metadata
 }
 
-func (instance *errorImpl) ValidationMessagesByMetadataFields(fields []string) []string {
-	if instance.metadata == nil || instance.metadata["fields"] == nil {
+func (e *errorImpl) ValidationMessagesByMetadataFields(fields []string) []string {
+	if e.metadata == nil || e.metadata["fields"] == nil {
 		return nil
 	}
-	var metadataFields = instance.metadata["fields"].([]string)
+	var metadataFields = e.metadata["fields"].([]string)
 	var messages = []string{}
 	for index, f := range metadataFields {
 		if slices.Contains(fields, f) {
-			messages = append(messages, instance.Messages()[index])
+			messages = append(messages, e.Messages()[index])
 		}
 	}
 	return messages

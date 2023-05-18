@@ -19,9 +19,9 @@ type API interface {
 }
 
 type api struct {
-	host         string
-	port         int
-	echoInstance *echo.Echo
+	host   string
+	port   int
+	server *echo.Echo
 }
 
 // @title DIT Backend API
@@ -34,18 +34,18 @@ type api struct {
 // @in header
 // @name Authorization
 func NewAPI(host string, port int) API {
-	echoInstance := echo.New()
-	return &api{host, port, echoInstance}
+	server := echo.New()
+	return &api{host, port, server}
 }
 
-func (instance *api) Serve() {
-	instance.setupMiddlewares()
-	instance.loadRoutes()
-	instance.start()
+func (a *api) Serve() {
+	a.setupMiddlewares()
+	a.loadRoutes()
+	a.start()
 }
 
-func (instance *api) setupMiddlewares() {
-	instance.echoInstance.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+func (a *api) setupMiddlewares() {
+	a.server.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogMethod:   true,
 		LogError:    true,
 		LogRemoteIP: true,
@@ -67,22 +67,22 @@ func (instance *api) setupMiddlewares() {
 			return nil
 		},
 	}))
-	instance.echoInstance.Use(middleware.Recover())
-	instance.echoInstance.Use(middlewares.CORSMiddleware())
-	instance.echoInstance.Use(middlewares.GuardMiddleware)
+	a.server.Use(middleware.Recover())
+	a.server.Use(middlewares.CORSMiddleware())
+	a.server.Use(middlewares.GuardMiddleware)
 }
 
-func (instance *api) rootGroup() *echo.Group {
-	return instance.echoInstance.Group("/api")
+func (a *api) rootGroup() *echo.Group {
+	return a.server.Group("/api")
 }
 
-func (instance *api) loadRoutes() {
+func (a *api) loadRoutes() {
 	router := router.New()
-	router.Load(instance.rootGroup())
+	router.Load(a.rootGroup())
 }
 
-func (instance *api) start() {
-	address := fmt.Sprintf("%s:%d", instance.host, instance.port)
-	err := instance.echoInstance.Start(address)
-	instance.echoInstance.Logger.Fatal(err)
+func (a *api) start() {
+	address := fmt.Sprintf("%s:%d", a.host, a.port)
+	err := a.server.Start(address)
+	a.server.Logger.Fatal(err)
 }

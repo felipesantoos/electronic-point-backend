@@ -38,7 +38,7 @@ func NewAuthHandler(service usecases.AuthUseCase) AuthHandler {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /auth/login [post]
-func (instance *authHandler) Login(context echo.Context) error {
+func (h *authHandler) Login(context echo.Context) error {
 	var body map[string]interface{}
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return unsupportedMediaTypeError
@@ -47,7 +47,7 @@ func (instance *authHandler) Login(context echo.Context) error {
 	if vErr != nil {
 		return responseFromValidationError(vErr)
 	}
-	authorization, err := instance.service.Login(dto.ToDomain())
+	authorization, err := h.service.Login(dto.ToDomain())
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -63,12 +63,12 @@ func (instance *authHandler) Login(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /auth/logout [post]
-func (instance *authHandler) Logout(context echo.Context) error {
+func (h *authHandler) Logout(context echo.Context) error {
 	accountId, err := getAccountIDFromAuthorization(context)
 	if err != nil {
 		return responseFromError(err)
 	}
-	err = instance.service.Logout(*accountId)
+	err = h.service.Logout(*accountId)
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -88,7 +88,7 @@ func (instance *authHandler) Logout(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /auth/reset-password [post]
-func (instance *authHandler) AskPasswordResetMail(context echo.Context) error {
+func (h *authHandler) AskPasswordResetMail(context echo.Context) error {
 	var body map[string]interface{}
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return context.NoContent(http.StatusUnsupportedMediaType)
@@ -97,7 +97,7 @@ func (instance *authHandler) AskPasswordResetMail(context echo.Context) error {
 	if err != nil {
 		return responseFromValidationError(err)
 	}
-	if err := instance.service.AskPasswordResetMail(dto.Email); err != nil {
+	if err := h.service.AskPasswordResetMail(dto.Email); err != nil {
 		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusCreated)
@@ -114,10 +114,10 @@ func (instance *authHandler) AskPasswordResetMail(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /auth/reset-password/{token} [get]
-func (instance *authHandler) FindPasswordResetByToken(context echo.Context) error {
-	if token, err := instance.getPasswordResetToken(context); err != nil {
+func (h *authHandler) FindPasswordResetByToken(context echo.Context) error {
+	if token, err := h.getPasswordResetToken(context); err != nil {
 		return err
-	} else if err := instance.service.FindPasswordResetByToken(token); err != nil {
+	} else if err := h.service.FindPasswordResetByToken(token); err != nil {
 		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
@@ -135,8 +135,8 @@ func (instance *authHandler) FindPasswordResetByToken(context echo.Context) erro
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /auth/reset-password/{token} [put]
-func (instance *authHandler) UpdatePasswordByPasswordReset(context echo.Context) error {
-	token, err := instance.getPasswordResetToken(context)
+func (h *authHandler) UpdatePasswordByPasswordReset(context echo.Context) error {
+	token, err := h.getPasswordResetToken(context)
 	if err != nil {
 		return err
 	}
@@ -148,13 +148,13 @@ func (instance *authHandler) UpdatePasswordByPasswordReset(context echo.Context)
 	if vErr != nil {
 		return responseFromValidationError(vErr)
 	}
-	if err := instance.service.UpdatePasswordByPasswordReset(token, dto.NewPassword); err != nil {
+	if err := h.service.UpdatePasswordByPasswordReset(token, dto.NewPassword); err != nil {
 		return responseFromError(err)
 	}
 	return context.NoContent(http.StatusOK)
 }
 
-func (instance *authHandler) getPasswordResetToken(context echo.Context) (string, error) {
+func (h *authHandler) getPasswordResetToken(context echo.Context) (string, error) {
 	token := context.Param("token")
 	if _, err := hex.DecodeString(token); err != nil {
 		return "", &echo.HTTPError{

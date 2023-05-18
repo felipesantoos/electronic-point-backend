@@ -28,7 +28,7 @@ func NewAccountRepository() adapters.AccountAdapter {
 	return &accountRepository{}
 }
 
-func (instance *accountRepository) List() ([]account.Account, errors.Error) {
+func (r *accountRepository) List() ([]account.Account, errors.Error) {
 	rows, err := repository.Queryx(query.Account().Select().All())
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (instance *accountRepository) List() ([]account.Account, errors.Error) {
 	return accounts, nil
 }
 
-func (instance *accountRepository) FindByID(uID uuid.UUID) (account.Account, errors.Error) {
+func (r *accountRepository) FindByID(uID uuid.UUID) (account.Account, errors.Error) {
 	rows, err := repository.Queryx(query.Account().Select().ByID(), uID.String())
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (instance *accountRepository) FindByID(uID uuid.UUID) (account.Account, err
 	return account, nil
 }
 
-func (instance *accountRepository) Create(account account.Account) (*uuid.UUID, errors.Error) {
+func (r *accountRepository) Create(account account.Account) (*uuid.UUID, errors.Error) {
 	account.SetPassword(randstr.Hex(8))
 	encryptedPassword, err := utils.EncryptPassword(account.Password())
 	if err != nil {
@@ -114,7 +114,7 @@ func (instance *accountRepository) Create(account account.Account) (*uuid.UUID, 
 	return &id, nil
 }
 
-func (instance *accountRepository) UpdateAccountProfile(person person.Person) errors.Error {
+func (r *accountRepository) UpdateAccountProfile(person person.Person) errors.Error {
 	return defaultExecQuery(
 		query.Account().Update().Profile(),
 		person.Name(),
@@ -124,7 +124,7 @@ func (instance *accountRepository) UpdateAccountProfile(person person.Person) er
 	)
 }
 
-func (instance *accountRepository) UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error {
+func (r *accountRepository) UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error {
 	rows, err := repository.Queryx(query.Account().Select().PasswordByID(), accountID.String())
 	if err != nil {
 		return err
@@ -218,18 +218,18 @@ func newPersonFromMapRows(data map[string]interface{}) (person.Person, errors.Er
 	return person.New(&id, name, birthDate, email, cpf, phone, createdAt, updatedAt)
 }
 
-func fillAccountWithProfessionalRoleEntry(instance account.Account, data map[string]interface{}) errors.Error {
+func fillAccountWithProfessionalRoleEntry(r account.Account, data map[string]interface{}) errors.Error {
 	var roleCode = fmt.Sprint(data["role_code"])
 	if strings.ToLower(roleCode) == role.PROFESSIONAL_ROLE_CODE {
 		if professionalData := domain.BuildMapWithoutParentName(data, role.PROFESSIONAL_ROLE_CODE); len(professionalData) == 0 {
-			return errors.NewFromString("you must provide the professional instance properties")
+			return errors.NewFromString("you must provide the professional r properties")
 		} else {
 			professional, err := newProfessionalFromMapRows(professionalData)
-			professional.SetPersonID(instance.Person().ID())
+			professional.SetPersonID(r.Person().ID())
 			if err != nil {
 				return err
 			}
-			instance.SetProfessional(professional)
+			r.SetProfessional(professional)
 		}
 	}
 	return nil

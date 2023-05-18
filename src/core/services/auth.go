@@ -24,12 +24,12 @@ func NewAuthService(
 	return &authService{adapter, sessionAdapter, passwordResetAdapter}
 }
 
-func (instance *authService) Login(credentials credentials.Credentials) (authorization.Authorization, errors.Error) {
-	account, err := instance.adapter.Login(credentials)
+func (s *authService) Login(credentials credentials.Credentials) (authorization.Authorization, errors.Error) {
+	account, err := s.adapter.Login(credentials)
 	if err != nil {
 		return nil, err
 	}
-	token, err := instance.sessionAdapter.GetSessionByAccountID(*account.ID())
+	token, err := s.sessionAdapter.GetSessionByAccountID(*account.ID())
 	var auth authorization.Authorization
 	var authErr errors.Error
 	if err != nil {
@@ -41,29 +41,29 @@ func (instance *authService) Login(credentials credentials.Credentials) (authori
 		if authErr != nil {
 			return nil, authErr
 		}
-		if err := instance.sessionAdapter.Store(*account.ID(), auth.Token()); err != nil {
+		if err := s.sessionAdapter.Store(*account.ID(), auth.Token()); err != nil {
 			return nil, err
 		}
 	}
 	return auth, nil
 }
 
-func (instance *authService) Logout(accountID uuid.UUID) errors.Error {
-	return instance.sessionAdapter.RemoveSession(accountID)
+func (s *authService) Logout(accountID uuid.UUID) errors.Error {
+	return s.sessionAdapter.RemoveSession(accountID)
 }
 
-func (instance *authService) SessionExists(accountID uuid.UUID, token string) (bool, errors.Error) {
-	return instance.sessionAdapter.Exists(accountID, token)
+func (s *authService) SessionExists(accountID uuid.UUID, token string) (bool, errors.Error) {
+	return s.sessionAdapter.Exists(accountID, token)
 }
 
-func (instance *authService) AskPasswordResetMail(email string) errors.Error {
-	return instance.passwordResetAdapter.AskPasswordResetMail(email)
+func (s *authService) AskPasswordResetMail(email string) errors.Error {
+	return s.passwordResetAdapter.AskPasswordResetMail(email)
 }
 
-func (instance *authService) FindPasswordResetByToken(token string) errors.Error {
-	return instance.passwordResetAdapter.FindPasswordResetByToken(token)
+func (s *authService) FindPasswordResetByToken(token string) errors.Error {
+	return s.passwordResetAdapter.FindPasswordResetByToken(token)
 }
 
-func (instance *authService) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
-	return instance.passwordResetAdapter.UpdatePasswordByPasswordReset(token, newPassword)
+func (s *authService) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
+	return s.passwordResetAdapter.UpdatePasswordByPasswordReset(token, newPassword)
 }

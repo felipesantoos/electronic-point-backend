@@ -19,22 +19,22 @@ func NewAccountService(repository adapters.AccountAdapter) usecases.AccountUseCa
 	return &accountService{repository}
 }
 
-func (instance *accountService) List() ([]account.Account, errors.Error) {
-	return instance.adapter.List()
+func (s *accountService) List() ([]account.Account, errors.Error) {
+	return s.adapter.List()
 }
 
-func (instance *accountService) FindByID(uID uuid.UUID) (account.Account, errors.Error) {
-	return instance.adapter.FindByID(uID)
+func (s *accountService) FindByID(uID uuid.UUID) (account.Account, errors.Error) {
+	return s.adapter.FindByID(uID)
 }
 
-func (instance *accountService) Create(account account.Account) (*uuid.UUID, errors.Error) {
-	return instance.adapter.Create(account)
+func (s *accountService) Create(account account.Account) (*uuid.UUID, errors.Error) {
+	return s.adapter.Create(account)
 }
 
-func (instance *accountService) UpdateAccountProfile(person person.Person) errors.Error {
-	return instance.adapter.UpdateAccountProfile(person)
+func (s *accountService) UpdateAccountProfile(person person.Person) errors.Error {
+	return s.adapter.UpdateAccountProfile(person)
 }
 
-func (instance *accountService) UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error {
-	return instance.adapter.UpdateAccountPassword(accountID, data)
+func (s *accountService) UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error {
+	return s.adapter.UpdateAccountPassword(accountID, data)
 }

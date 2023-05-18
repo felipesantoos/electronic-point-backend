@@ -45,71 +45,71 @@ func New(id *uuid.UUID, name, birthDate, email, cpf, phone, createdAt, updatedAt
 	return data, data.IsValid()
 }
 
-func (instance *person) ID() *uuid.UUID {
-	return instance.id
+func (p *person) ID() *uuid.UUID {
+	return p.id
 }
 
-func (instance *person) Name() string {
-	return instance.name
+func (p *person) Name() string {
+	return p.name
 }
 
-func (instance *person) Email() string {
-	return instance.email
+func (p *person) Email() string {
+	return p.email
 }
 
-func (instance *person) BirthDate() string {
-	return instance.birthDate
+func (p *person) BirthDate() string {
+	return p.birthDate
 }
 
-func (instance *person) CPF() string {
-	return instance.cpf
+func (p *person) CPF() string {
+	return p.cpf
 }
 
-func (instance *person) Phone() string {
-	return instance.phone
+func (p *person) Phone() string {
+	return p.phone
 }
 
-func (instance *person) CreatedAt() string {
-	return instance.createdAt
+func (p *person) CreatedAt() string {
+	return p.createdAt
 }
 
-func (instance *person) UpdatedAt() string {
-	return instance.updatedAt
+func (p *person) UpdatedAt() string {
+	return p.updatedAt
 }
 
-func (instance *person) SetID(id *uuid.UUID) {
-	instance.id = id
+func (p *person) SetID(id *uuid.UUID) {
+	p.id = id
 }
 
-func (instance *person) SetStringID(id string) error {
+func (p *person) SetStringID(id string) error {
 	if id, err := uuid.Parse(id); err != nil {
 		return err
 	} else {
-		instance.id = &id
+		p.id = &id
 	}
 	return nil
 }
 
-func (instance *person) IsValid() errors.Error {
+func (p *person) IsValid() errors.Error {
 	var errorMessages = []string{}
 	var fields = []string{}
-	if len(strings.Split(instance.name, " ")) == 1 {
+	if len(strings.Split(p.name, " ")) == 1 {
 		errorMessages = append(errorMessages, "you need to provide a name with two words or more.")
 		fields = append(fields, "name")
 	}
-	if len(instance.cpf) != 11 {
+	if len(p.cpf) != 11 {
 		errorMessages = append(errorMessages, "the CPF number must have 11 characters")
 		fields = append(fields, "cpf")
 	}
-	if !brdoc.IsCPF(instance.cpf) {
+	if !brdoc.IsCPF(p.cpf) {
 		errorMessages = append(errorMessages, "you need to provide a valid CPF")
 		fields = append(fields, "cpf")
 	}
-	if addr, _ := mail.ParseAddress(instance.email); addr == nil {
+	if addr, _ := mail.ParseAddress(p.email); addr == nil {
 		errorMessages = append(errorMessages, "you must provide a valid email!")
 		fields = append(fields, "email")
 	}
-	if ok, _ := regexp.Match(birthDatePattern, []byte(instance.birthDate)); !ok {
+	if ok, _ := regexp.Match(birthDatePattern, []byte(p.birthDate)); !ok {
 		errorMessages = append(errorMessages, "you must provide a date according to the following syntax: yyyy-MM-dd")
 		fields = append(fields, "birth_date")
 	}

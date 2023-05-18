@@ -48,29 +48,29 @@ func (*accountQueryBuilder) Update() AccountQueryUpdateBuilder {
 	return &accountQueryUpdateBuilder{}
 }
 
-func (instance *accountQuerySelectBuilder) All() string {
-	return instance.defaultStatement("")
+func (q *accountQuerySelectBuilder) All() string {
+	return q.defaultStatement("")
 }
 
-func (instance *accountQuerySelectBuilder) ByID() string {
-	return instance.defaultStatement("a.id=$1")
+func (q *accountQuerySelectBuilder) ByID() string {
+	return q.defaultStatement("a.id=$1")
 }
 
-func (instance *accountQuerySelectBuilder) PasswordByID() string {
+func (q *accountQuerySelectBuilder) PasswordByID() string {
 	return `
 		SELECT a.password FROM account a WHERE id=$1;
 	`
 }
 
-func (instance *accountQuerySelectBuilder) SimplifiedByID() string {
-	return instance.defaultSimplifiedStatement("a.id=$1")
+func (q *accountQuerySelectBuilder) SimplifiedByID() string {
+	return q.defaultSimplifiedStatement("a.id=$1")
 }
 
-func (instance *accountQuerySelectBuilder) SimplifiedByEmail() string {
-	return instance.defaultSimplifiedStatement("a.email=$1")
+func (q *accountQuerySelectBuilder) SimplifiedByEmail() string {
+	return q.defaultSimplifiedStatement("a.email=$1")
 }
 
-func (instance *accountQuerySelectBuilder) ByCredentials() string {
+func (q *accountQuerySelectBuilder) ByCredentials() string {
 	return `SELECT id, password FROM account WHERE email=$1;`
 }
 

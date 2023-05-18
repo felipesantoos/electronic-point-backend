@@ -14,10 +14,10 @@ func NewEntry(sub string, objects []string) Entry {
 	return &entry{sub, objects}
 }
 
-func (instance *entry) Subject() string {
-	return instance.subject
+func (e *entry) Subject() string {
+	return e.subject
 }
 
-func (instance *entry) Objects() []string {
-	return instance.objects
+func (e *entry) Objects() []string {
+	return e.objects
 }

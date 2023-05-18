@@ -17,8 +17,8 @@ func UpdateAccount() *updateAccountProfileBuilder {
 	return &updateAccountProfileBuilder{}
 }
 
-func (instance *UpdateAccountProfile) ToDomain() (person.Person, errors.Error) {
-	data, err := person.New(nil, instance.Name, instance.BirthDate, "", "", instance.Phone, "", "")
+func (u *UpdateAccountProfile) ToDomain() (person.Person, errors.Error) {
+	data, err := person.New(nil, u.Name, u.BirthDate, "", "", u.Phone, "", "")
 	messages := err.ValidationMessagesByMetadataFields([]string{"name", "birth_date"})
 	if len(messages) > 0 {
 		return nil, errors.NewValidation(messages)

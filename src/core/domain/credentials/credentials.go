@@ -16,18 +16,18 @@ func New() Credentials {
 	return &credentials{}
 }
 
-func (instance *credentials) Email() string {
-	return instance.username
+func (c *credentials) Email() string {
+	return c.username
 }
 
-func (instance *credentials) Password() string {
-	return instance.password
+func (c *credentials) Password() string {
+	return c.password
 }
 
-func (instance *credentials) SetEmail(username string) {
-	instance.username = username
+func (c *credentials) SetEmail(username string) {
+	c.username = username
 }
 
-func (instance *credentials) SetPassword(password string) {
-	instance.password = password
+func (c *credentials) SetPassword(password string) {
+	c.password = password
 }

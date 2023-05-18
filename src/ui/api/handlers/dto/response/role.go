@@ -26,10 +26,10 @@ func (*roleBuilder) BuildFromDomain(data role.Role) Role {
 	}
 }
 
-func (instance *roleBuilder) BuildFromDomainList(data []role.Role) []Role {
+func (r *roleBuilder) BuildFromDomainList(data []role.Role) []Role {
 	var result []Role
 	for _, item := range data {
-		result = append(result, instance.BuildFromDomain(item))
+		result = append(result, r.BuildFromDomain(item))
 	}
 	return result
 }

@@ -13,7 +13,7 @@ func AccountUseCase() usecases.AccountUseCase {
 }
 
 func AuthUseCase() usecases.AuthUseCase {
-	repo := postgres.NewAuthPostgres()
+	repo := postgres.NewAuthPostgresRepository()
 	sessionRepo := redis.NewSessionRepository()
 	passwordResetRepo := redis.NewPasswordResetRepository()
 	return services.NewAuthService(repo, sessionRepo, passwordResetRepo)

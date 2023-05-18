@@ -22,7 +22,7 @@ func NewPasswordResetRepository() adapters.PasswordResetAdapter {
 	return &redisPasswordResetRepository{}
 }
 
-func (instance *redisPasswordResetRepository) AskPasswordResetMail(email string) errors.Error {
+func (r *redisPasswordResetRepository) AskPasswordResetMail(email string) errors.Error {
 	rows, queryErr := repository.Queryx(query.Account().Select().SimplifiedByEmail(), email)
 	if queryErr != nil {
 		return queryErr
@@ -39,7 +39,7 @@ func (instance *redisPasswordResetRepository) AskPasswordResetMail(email string)
 	if buildErr != nil {
 		return errors.NewInternal(buildErr)
 	}
-	if accountID, _ := instance.getPasswordResetEntry("*", account.ID().String()); accountID != "" {
+	if accountID, _ := r.getPasswordResetEntry("*", account.ID().String()); accountID != "" {
 		return errors.NewFromString("A token was already generated for reseting the password of this account")
 	}
 	token := randstr.Hex(16)
@@ -48,28 +48,28 @@ func (instance *redisPasswordResetRepository) AskPasswordResetMail(email string)
 		return err
 	}
 	if _, err := redisConn.Set(getPasswordResetKey(token, account.ID().String()), account.ID().String(), time.Hour).Result(); err != nil {
-		errLogger.Log().Msg(fmt.Sprintf("an error occurred when trying to add a new token entry for reseting password for email: %s", email))
+		logger.Log().Msg(fmt.Sprintf("an error occurred when trying to add a new token entry for reseting password for email: %s", email))
 		return errors.NewUnexpected()
 	}
 	passwordResetLink := buildPasswordResetLink(token)
 	go func() {
 		err := mail.SendPasswordResetEmail(account.Name(), account.Email(), passwordResetLink)
 		if err != nil {
-			errLogger.Log().Msg(fmt.Sprintf("Error when sending reset password email to %s: %v", account.Email(), err))
+			logger.Log().Msg(fmt.Sprintf("Error when sending reset password email to %s: %v", account.Email(), err))
 		}
 	}()
 	return nil
 }
 
-func (instance *redisPasswordResetRepository) FindPasswordResetByToken(token string) errors.Error {
-	if _, err := instance.getPasswordResetEntry(token, "*"); err != nil {
+func (r *redisPasswordResetRepository) FindPasswordResetByToken(token string) errors.Error {
+	if _, err := r.getPasswordResetEntry(token, "*"); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (instance *redisPasswordResetRepository) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
-	accountId, err := instance.getPasswordResetEntry(token, "*")
+func (r *redisPasswordResetRepository) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
+	accountId, err := r.getPasswordResetEntry(token, "*")
 	if err != nil {
 		return err
 	}
@@ -84,13 +84,13 @@ func (instance *redisPasswordResetRepository) UpdatePasswordByPasswordReset(toke
 		return errors.NewInternal(err)
 	} else if rowsAff == 0 {
 		return errors.NewUnexpected()
-	} else if err := instance.deletePasswordResetEntryByAccountID(token); err != nil {
+	} else if err := r.deletePasswordResetEntryByAccountID(token); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (instance *redisPasswordResetRepository) getPasswordResetEntry(token, accountID string) (string, errors.Error) {
+func (r *redisPasswordResetRepository) getPasswordResetEntry(token, accountID string) (string, errors.Error) {
 	conn, connErr := getConnection()
 	if connErr != nil {
 		return "", connErr
@@ -108,13 +108,13 @@ func (instance *redisPasswordResetRepository) getPasswordResetEntry(token, accou
 	return accountID, nil
 }
 
-func (instance *redisPasswordResetRepository) deletePasswordResetEntryByAccountID(token string) errors.Error {
+func (r *redisPasswordResetRepository) deletePasswordResetEntryByAccountID(token string) errors.Error {
 	conn, connErr := getConnection()
 	if connErr != nil {
 		return connErr
 	}
 	if _, err := conn.Del(getPasswordResetKey(token, "*")).Result(); err != nil {
-		errLogger.Log().Msg(fmt.Sprintf("An unexpected error occurred when trying to delete the %s token entry: %v", token, err))
+		logger.Log().Msg(fmt.Sprintf("An unexpected error occurred when trying to delete the %s token entry: %v", token, err))
 		return errors.NewUnexpected()
 	}
 	return nil

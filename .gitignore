@@ -5,5 +5,3 @@ go.sum
 .env
 env-file
 set-env.sh
-
-/docs

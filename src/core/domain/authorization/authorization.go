@@ -31,22 +31,22 @@ func New() Authorization {
 }
 
 func NewFromAccount(acc account.Account) (Authorization, errors.Error) {
-	instance := &authorization{}
-	if err := instance.GenerateToken(acc); err != nil {
+	auth := &authorization{}
+	if err := auth.GenerateToken(acc); err != nil {
 		return nil, err
 	}
-	return instance, nil
+	return auth, nil
 }
 
 func NewFromToken(accessToken string) Authorization {
 	return &authorization{accessToken}
 }
 
-func (instance *authorization) Token() string {
-	return instance.token
+func (auth *authorization) Token() string {
+	return auth.token
 }
 
-func (instance *authorization) GenerateToken(account account.Account) errors.Error {
+func (auth *authorization) GenerateToken(account account.Account) errors.Error {
 	secret := os.Getenv("SERVER_SECRET")
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims(
 		account,
@@ -57,6 +57,6 @@ func (instance *authorization) GenerateToken(account account.Account) errors.Err
 		logger.Error().Msg(err.Error())
 		return errors.NewUnexpected()
 	}
-	instance.token = token
+	auth.token = token
 	return nil
 }

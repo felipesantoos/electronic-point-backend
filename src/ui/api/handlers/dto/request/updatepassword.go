@@ -20,6 +20,6 @@ func (*updatePasswordBuilder) FromBody(data map[string]interface{}) *UpdatePassw
 	}
 }
 
-func (instance *UpdatePassword) ToDomain() updatepassword.UpdatePassword {
-	return updatepassword.New(instance.CurrentPassword, instance.NewPassword)
+func (u *UpdatePassword) ToDomain() updatepassword.UpdatePassword {
+	return updatepassword.New(u.CurrentPassword, u.NewPassword)
 }

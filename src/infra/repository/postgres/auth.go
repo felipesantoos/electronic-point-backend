@@ -15,13 +15,13 @@ import (
 	"github.com/google/uuid"
 )
 
-type authPostgres struct{}
+type authPostgresRepository struct{}
 
-func NewAuthPostgres() adapters.AuthAdapter {
-	return &authPostgres{}
+func NewAuthPostgresRepository() adapters.AuthAdapter {
+	return &authPostgresRepository{}
 }
 
-func (instance *authPostgres) Login(credentials credentials.Credentials) (account.Account, errors.Error) {
+func (r *authPostgresRepository) Login(credentials credentials.Credentials) (account.Account, errors.Error) {
 	rows, err := repository.Queryx(query.Account().Select().ByCredentials(), credentials.Email())
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (instance *authPostgres) Login(credentials credentials.Credentials) (accoun
 	if err := comparePasswords(password, credentials.Password()); err != nil {
 		return nil, err
 	}
-	account, err := instance.getAccountByCustomQuery(query.Account().Select().ByID(), id)
+	account, err := r.getAccountByCustomQuery(query.Account().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, err
@@ -49,7 +49,7 @@ func (instance *authPostgres) Login(credentials credentials.Credentials) (accoun
 	return account, nil
 }
 
-func (instance *authPostgres) getAccountByCustomQuery(query string, args ...interface{}) (account.Account, errors.Error) {
+func (r *authPostgresRepository) getAccountByCustomQuery(query string, args ...interface{}) (account.Account, errors.Error) {
 	rows, queryErr := repository.Queryx(query, args...)
 	if queryErr != nil {
 		return nil, queryErr

@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"backend_template/src/ui/api/handlers/dto/response"
 	"backend_template/src/core/interfaces/usecases"
+	"backend_template/src/ui/api/handlers/dto/response"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -32,8 +32,8 @@ func NewResourcesHandler(usecase usecases.ResourcesUseCase) ResourcesHandler {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /res/account-roles [get]
-func (instance *resourcesHandler) ListAccountRoles(context echo.Context) error {
-	result, err := instance.usecase.ListAccountRoles()
+func (h *resourcesHandler) ListAccountRoles(context echo.Context) error {
+	result, err := h.usecase.ListAccountRoles()
 	if err != nil {
 		return responseFromError(err)
 	}

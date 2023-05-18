@@ -26,18 +26,18 @@ func New(id *uuid.UUID, personID *uuid.UUID) (Professional, errors.Error) {
 	return data, data.IsValid()
 }
 
-func (instance *professional) ID() *uuid.UUID {
-	return instance.id
+func (p *professional) ID() *uuid.UUID {
+	return p.id
 }
 
-func (instance *professional) PersonID() *uuid.UUID {
-	return instance.personID
+func (p *professional) PersonID() *uuid.UUID {
+	return p.personID
 }
 
-func (instance *professional) SetPersonID(personID *uuid.UUID) {
-	instance.personID = personID
+func (p *professional) SetPersonID(personID *uuid.UUID) {
+	p.personID = personID
 }
 
-func (instance *professional) IsValid() errors.Error {
+func (p *professional) IsValid() errors.Error {
 	return nil
 }

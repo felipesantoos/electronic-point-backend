@@ -43,16 +43,16 @@ func (*passwordResetQueryBuilder) Delete() PasswordResetQueryDeleteBuilder {
 	return &passwordResetQueryDeleteBuilder{}
 }
 
-func (instance *passwordResetQuerySelectBuilder) All() string {
-	return instance.defaultStatement("")
+func (q *passwordResetQuerySelectBuilder) All() string {
+	return q.defaultStatement("")
 }
 
-func (instance *passwordResetQuerySelectBuilder) ByAccountId() string {
-	return instance.defaultStatement("account_id=$1")
+func (q *passwordResetQuerySelectBuilder) ByAccountId() string {
+	return q.defaultStatement("account_id=$1")
 }
 
-func (instance *passwordResetQuerySelectBuilder) ByToken() string {
-	return instance.defaultStatement("token=$1")
+func (q *passwordResetQuerySelectBuilder) ByToken() string {
+	return q.defaultStatement("token=$1")
 }
 
 func (*passwordResetQuerySelectBuilder) defaultStatement(whereClause string) string {

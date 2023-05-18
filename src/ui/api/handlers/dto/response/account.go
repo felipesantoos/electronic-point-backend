@@ -20,7 +20,7 @@ func AccountBuilder() *accountBuilder {
 	return &accountBuilder{}
 }
 
-func (instance *accountBuilder) BuildFromDomain(data account.Account) Account {
+func (*accountBuilder) BuildFromDomain(data account.Account) Account {
 	var professional *Professional
 	if data.Professional() != nil {
 		professional = ProfessionalBuilder().BuildFromDomain(data.Professional())

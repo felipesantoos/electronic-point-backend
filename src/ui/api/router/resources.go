@@ -17,7 +17,7 @@ func NewResourcesRouter() Router {
 	return &resourcesRouter{handler}
 }
 
-func (instance *resourcesRouter) Load(apiGroup *echo.Group) {
+func (r *resourcesRouter) Load(apiGroup *echo.Group) {
 	router := apiGroup.Group("/res")
-	router.GET("/account-roles", instance.handler.ListAccountRoles)
+	router.GET("/account-roles", r.handler.ListAccountRoles)
 }

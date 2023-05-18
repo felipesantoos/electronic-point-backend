@@ -38,46 +38,46 @@ func New(id *uuid.UUID, name, code string) (data Role, err errors.Error) {
 	return
 }
 
-func (instance *role) ID() *uuid.UUID {
-	return instance.id
+func (r *role) ID() *uuid.UUID {
+	return r.id
 }
 
-func (instance *role) Name() string {
-	return instance.name
+func (r *role) Name() string {
+	return r.name
 }
 
-func (instance *role) Code() string {
-	return instance.code
+func (r *role) Code() string {
+	return r.code
 }
 
-func (instance *role) SetID(id *uuid.UUID) {
-	instance.id = id
+func (r *role) SetID(id *uuid.UUID) {
+	r.id = id
 }
 
-func (instance *role) SetName(name string) {
-	instance.name = name
+func (r *role) SetName(name string) {
+	r.name = name
 }
 
-func (instance *role) SetCode(code string) {
-	instance.code = code
+func (r *role) SetCode(code string) {
+	r.code = code
 }
 
-func (instance *role) IsAdmin() bool {
-	return strings.ToLower(instance.code) == ADMIN_ROLE_CODE
+func (r *role) IsAdmin() bool {
+	return strings.ToLower(r.code) == ADMIN_ROLE_CODE
 }
 
-func (instance *role) IsProfessional() bool {
-	return strings.ToLower(instance.code) == PROFESSIONAL_ROLE_CODE
+func (r *role) IsProfessional() bool {
+	return strings.ToLower(r.code) == PROFESSIONAL_ROLE_CODE
 }
 
 func PossibleRoleCodes() []string {
 	return possibleRoleCodes
 }
 
-func (instance *role) IsValid() errors.Error {
+func (r *role) IsValid() errors.Error {
 	var exists bool = false
 	for _, role := range possibleRoleCodes {
-		if strings.ToLower(role) == strings.ToLower(instance.code) {
+		if strings.ToLower(role) == strings.ToLower(r.code) {
 			exists = true
 			break
 		}

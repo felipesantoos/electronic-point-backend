@@ -17,12 +17,12 @@ func NewAccountRouter() Router {
 	return &accountRouter{handler}
 }
 
-func (instance *accountRouter) Load(group *echo.Group) {
+func (r *accountRouter) Load(group *echo.Group) {
 	adminRouter := group.Group("/admin/accounts")
-	adminRouter.GET("", instance.handler.List)
-	adminRouter.POST("", instance.handler.Create)
+	adminRouter.GET("", r.handler.List)
+	adminRouter.POST("", r.handler.Create)
 	router := group.Group("/accounts")
-	router.GET("/profile", instance.handler.FindProfile)
-	router.PUT("/profile", instance.handler.UpdateProfile)
-	router.PUT("/update-password", instance.handler.UpdatePassword)
+	router.GET("/profile", r.handler.FindProfile)
+	router.PUT("/profile", r.handler.UpdateProfile)
+	router.PUT("/update-password", r.handler.UpdatePassword)
 }

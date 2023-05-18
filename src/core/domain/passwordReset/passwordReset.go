@@ -18,14 +18,14 @@ func New() PasswordReset {
 	return &passwordReset{}
 }
 
-func (instance *passwordReset) AccountID() uuid.UUID {
-	return instance.accountID
+func (pwr *passwordReset) AccountID() uuid.UUID {
+	return pwr.accountID
 }
 
-func (instance *passwordReset) Token() string {
-	return instance.token
+func (pwr *passwordReset) Token() string {
+	return pwr.token
 }
 
-func (instance *passwordReset) CreatedAt() string {
-	return instance.createdAt
+func (pwr *passwordReset) CreatedAt() string {
+	return pwr.createdAt
 }

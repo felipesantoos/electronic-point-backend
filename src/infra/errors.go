@@ -34,14 +34,14 @@ func NewUnexpectedSourceErr() Error {
 	return &sourceErr{err, true}
 }
 
-func (instance *sourceErr) Err() string {
-	return instance.err.Error()
+func (e *sourceErr) Err() string {
+	return e.err.Error()
 }
 
-func (instance *sourceErr) IsInternal() bool {
-	return instance.isInternal
+func (e *sourceErr) IsInternal() bool {
+	return e.isInternal
 }
 
-func (instance *sourceErr) Native() error {
-	return instance.err
+func (e *sourceErr) Native() error {
+	return e.err
 }

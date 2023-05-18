@@ -4,13 +4,14 @@ import (
 	"backend_template/src/core"
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/utils"
+	"backend_template/src/infra"
 	"fmt"
 
 	"github.com/go-redis/redis"
 	"github.com/rs/zerolog"
 )
 
-var errLogger = Logger().Level(zerolog.ErrorLevel)
+var logger = infra.Logger().With().Str("port", "redis").Logger()
 
 func valueExists(conn *redis.Client, key, value string) (bool, errors.Error) {
 	storedValue, err := getValueFromKey(conn, key)
@@ -35,7 +36,7 @@ func getConnection() (*redis.Client, errors.Error) {
 		DB:       0,
 	})
 	if result := conn.Ping(); result.Err() != nil {
-		errLogger.Log().Msg(fmt.Sprintf("an error occurred when trying to connect to the redis instance: %s", result.Err().Error()))
+		logger.Log().Msg(fmt.Sprintf("an error occurred when trying to connect to the redis instance: %s", result.Err().Error()))
 		return nil, errors.NewUnexpected()
 	}
 	return conn, nil

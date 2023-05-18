@@ -15,34 +15,34 @@ func NewSessionRepository() adapters.SessionAdapter {
 	return &redisSessionRepository{}
 }
 
-func (instance *redisSessionRepository) Store(uID uuid.UUID, accessToken string) errors.Error {
+func (r *redisSessionRepository) Store(uID uuid.UUID, accessToken string) errors.Error {
 	conn, err := getConnection()
 	if err != nil {
 		return err
 	}
-	uSessionKey := instance.getUserSessionKey(uID)
+	uSessionKey := r.getUserSessionKey(uID)
 	if err := conn.Set(uSessionKey, accessToken, authorization.TOKEN_TIMEOUT).Err(); err != nil {
-		errLogger.Log().Msg(fmt.Sprintf("an error occurred when trying to save user session: %s", err.Error()))
+		logger.Log().Msg(fmt.Sprintf("an error occurred when trying to save user session: %s", err.Error()))
 		return errors.NewUnexpected()
 	}
 	return nil
 }
 
-func (instance *redisSessionRepository) Exists(uID uuid.UUID, token string) (bool, errors.Error) {
+func (r *redisSessionRepository) Exists(uID uuid.UUID, token string) (bool, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return false, err
 	}
-	uSessionKey := instance.getUserSessionKey(uID)
+	uSessionKey := r.getUserSessionKey(uID)
 	return valueExists(conn, uSessionKey, token)
 }
 
-func (instance *redisSessionRepository) GetSessionByAccountID(uID uuid.UUID) (string, errors.Error) {
+func (r *redisSessionRepository) GetSessionByAccountID(uID uuid.UUID) (string, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return "", err
 	}
-	uSessionKey := instance.getUserSessionKey(uID)
+	uSessionKey := r.getUserSessionKey(uID)
 	accessToken, err := getValueFromKey(conn, uSessionKey)
 	if err != nil {
 		return "", err
@@ -52,20 +52,20 @@ func (instance *redisSessionRepository) GetSessionByAccountID(uID uuid.UUID) (st
 	return accessToken, nil
 }
 
-func (instance *redisSessionRepository) RemoveSession(uID uuid.UUID) errors.Error {
+func (r *redisSessionRepository) RemoveSession(uID uuid.UUID) errors.Error {
 	conn, err := getConnection()
 	if err != nil {
 		return err
 	}
-	uSessionKey := instance.getUserSessionKey(uID)
+	uSessionKey := r.getUserSessionKey(uID)
 	if value, err := getValueFromKey(conn, uSessionKey); err != nil {
 		return err
 	} else if value == "" {
-		errLogger.Log().Msg(fmt.Sprintf("this user doesn't has a stored session"))
+		logger.Log().Msg(fmt.Sprintf("this user doesn't has a stored session"))
 		return errors.NewFromString("this user doesn't has a stored session")
 	}
 	if result := conn.Del(uSessionKey); result.Err() != nil {
-		errLogger.Log().Msg(fmt.Sprintf("an error occurred when removing user session: %s", result.Err().Error()))
+		logger.Log().Msg(fmt.Sprintf("an error occurred when removing user session: %s", result.Err().Error()))
 		return errors.NewUnexpected()
 	}
 	return nil

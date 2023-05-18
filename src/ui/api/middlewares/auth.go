@@ -3,10 +3,10 @@ package middlewares
 import (
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/domain/role"
-	"backend_template/src/core/helpers/permissions"
 	"backend_template/src/core/utils"
 	"backend_template/src/ui/api/dicontainer"
 	"backend_template/src/ui/api/handlers/dto/response"
+	"backend_template/src/ui/api/middlewares/permissions"
 	"encoding/json"
 	"fmt"
 	"net/http"

@@ -40,6 +40,6 @@ func NewErrorFromCore(err errors.Error, statusCode int) *ErrorMessage {
 	return errorMessage
 }
 
-func (instance *ErrorMessage) IsInternal() bool {
-	return instance.isInternal
+func (e *ErrorMessage) IsInternal() bool {
+	return e.isInternal
 }
