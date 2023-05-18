@@ -1,4 +1,4 @@
-# DIT DevOPS - Backend
+# GO Backend Template
 
 ## O que é o projeto?
 
