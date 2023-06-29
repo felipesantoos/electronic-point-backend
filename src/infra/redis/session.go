@@ -15,7 +15,7 @@ func NewSessionRepository() adapters.SessionAdapter {
 	return &redisSessionRepository{}
 }
 
-func (r *redisSessionRepository) Store(uID uuid.UUID, accessToken string) errors.Error {
+func (r *redisSessionRepository) Store(uID *uuid.UUID, accessToken string) errors.Error {
 	conn, err := getConnection()
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func (r *redisSessionRepository) Store(uID uuid.UUID, accessToken string) errors
 	return nil
 }
 
-func (r *redisSessionRepository) Exists(uID uuid.UUID, token string) (bool, errors.Error) {
+func (r *redisSessionRepository) Exists(uID *uuid.UUID, token string) (bool, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return false, err
@@ -37,7 +37,7 @@ func (r *redisSessionRepository) Exists(uID uuid.UUID, token string) (bool, erro
 	return valueExists(conn, uSessionKey, token)
 }
 
-func (r *redisSessionRepository) GetSessionByAccountID(uID uuid.UUID) (string, errors.Error) {
+func (r *redisSessionRepository) GetSessionByAccountID(uID *uuid.UUID) (string, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
 		return "", err
@@ -52,7 +52,7 @@ func (r *redisSessionRepository) GetSessionByAccountID(uID uuid.UUID) (string, e
 	return accessToken, nil
 }
 
-func (r *redisSessionRepository) RemoveSession(uID uuid.UUID) errors.Error {
+func (r *redisSessionRepository) RemoveSession(uID *uuid.UUID) errors.Error {
 	conn, err := getConnection()
 	if err != nil {
 		return err
@@ -71,6 +71,6 @@ func (r *redisSessionRepository) RemoveSession(uID uuid.UUID) errors.Error {
 	return nil
 }
 
-func (*redisSessionRepository) getUserSessionKey(uID uuid.UUID) string {
+func (*redisSessionRepository) getUserSessionKey(uID *uuid.UUID) string {
 	return fmt.Sprintf("user_session:%s", uID.String())
 }

@@ -3,6 +3,7 @@ package router
 import (
 	"backend_template/src/ui/api/dicontainer"
 	"backend_template/src/ui/api/handlers"
+	"backend_template/src/ui/api/middlewares"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,10 +20,10 @@ func NewAccountRouter() Router {
 
 func (r *accountRouter) Load(group *echo.Group) {
 	adminRouter := group.Group("/admin/accounts")
-	adminRouter.GET("", r.handler.List)
-	adminRouter.POST("", r.handler.Create)
+	adminRouter.GET("", middlewares.EnhanceContext(r.handler.List))
+	adminRouter.POST("", middlewares.EnhanceContext(r.handler.Create))
 	router := group.Group("/accounts")
-	router.GET("/profile", r.handler.FindProfile)
-	router.PUT("/profile", r.handler.UpdateProfile)
-	router.PUT("/update-password", r.handler.UpdatePassword)
+	router.GET("/profile", middlewares.EnhanceContext(r.handler.FindProfile))
+	router.PUT("/profile", middlewares.EnhanceContext(r.handler.UpdateProfile))
+	router.PUT("/update-password", middlewares.EnhanceContext(r.handler.UpdatePassword))
 }

@@ -4,12 +4,10 @@ import (
 	"backend_template/src/core/interfaces/usecases"
 	"backend_template/src/ui/api/handlers/dto/response"
 	"net/http"
-
-	"github.com/labstack/echo/v4"
 )
 
 type ResourcesHandler interface {
-	ListAccountRoles(echo.Context) error
+	ListAccountRoles(EnhancedContext) error
 }
 
 type resourcesHandler struct {
@@ -32,7 +30,7 @@ func NewResourcesHandler(usecase usecases.ResourcesUseCase) ResourcesHandler {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /res/account-roles [get]
-func (h *resourcesHandler) ListAccountRoles(context echo.Context) error {
+func (h *resourcesHandler) ListAccountRoles(context EnhancedContext) error {
 	result, err := h.usecase.ListAccountRoles()
 	if err != nil {
 		return responseFromError(err)

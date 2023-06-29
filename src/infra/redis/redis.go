@@ -1,14 +1,12 @@
 package redis
 
 import (
-	"backend_template/src/core"
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/utils"
 	"backend_template/src/infra"
 	"fmt"
 
 	"github.com/go-redis/redis"
-	"github.com/rs/zerolog"
 )
 
 var logger = infra.Logger().With().Str("port", "redis").Logger()
@@ -19,10 +17,6 @@ func valueExists(conn *redis.Client, key, value string) (bool, errors.Error) {
 		return false, err
 	}
 	return storedValue == value, nil
-}
-
-func Logger() zerolog.Logger {
-	return core.CoreLogger().With().Str("layer", "infra|redis").Logger()
 }
 
 func getRedisAddress() string {

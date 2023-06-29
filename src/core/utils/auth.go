@@ -6,6 +6,7 @@ import (
 	"backend_template/src/core/domain/role"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -71,7 +72,13 @@ func authorizationIsValid(authType, authToken string) (*authorization.AuthClaims
 }
 
 func ExtractTokenClaims(authToken string) (*authorization.AuthClaims, error) {
+	if authToken == "" {
+		return nil, errors.New("empty token")
+	}
 	parts := strings.Split(authToken, ".")
+	if len(parts) < 3 {
+		return nil, errors.New("invalid token format")
+	}
 	payload := parts[1]
 	payloadBytes, err := jwt.DecodeSegment(payload)
 	if err != nil {

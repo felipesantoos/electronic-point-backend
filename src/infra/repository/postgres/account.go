@@ -46,7 +46,7 @@ func (r *accountRepository) List() ([]account.Account, errors.Error) {
 	return accounts, nil
 }
 
-func (r *accountRepository) FindByID(uID uuid.UUID) (account.Account, errors.Error) {
+func (r *accountRepository) FindByID(uID *uuid.UUID) (account.Account, errors.Error) {
 	rows, err := repository.Queryx(query.Account().Select().ByID(), uID.String())
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (r *accountRepository) UpdateAccountProfile(person person.Person) errors.Er
 	)
 }
 
-func (r *accountRepository) UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error {
+func (r *accountRepository) UpdateAccountPassword(accountID *uuid.UUID, data updatepassword.UpdatePassword) errors.Error {
 	rows, err := repository.Queryx(query.Account().Select().PasswordByID(), accountID.String())
 	if err != nil {
 		return err

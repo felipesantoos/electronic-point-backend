@@ -84,6 +84,10 @@ func internalRollback(tx *sql.Tx) errors.Error {
 func internalCommit(tx *sql.Tx) errors.Error {
 	err := tx.Commit()
 	if err != nil {
+		rbErr := tx.Rollback()
+		if rbErr != nil {
+			return TranslateError(rbErr)
+		}
 		return TranslateError(err)
 	}
 	return nil
@@ -181,7 +185,9 @@ func TranslateError(err error) errors.Error {
 			return errors.NewInternal(err)
 		}
 		key := keyMatch[1]
-		return errors.NewFromString(fmt.Sprintf("the key defined for \"%s\" doesn't exists", key))
+		return errors.NewFromString(fmt.Sprintf("the value provided for the \"%s\" key doesn't exists", key))
+	} else if err == sql.ErrNoRows {
+		return errors.New(err)
 	}
 	return errors.NewUnexpected()
 }

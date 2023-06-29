@@ -6,16 +6,15 @@ import (
 	"backend_template/src/ui/api/handlers/dto/response"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
 	"github.com/wallrony/go-validator/validator"
 )
 
 type AccountHandler interface {
-	List(echo.Context) error
-	FindProfile(echo.Context) error
-	Create(echo.Context) error
-	UpdatePassword(echo.Context) error
-	UpdateProfile(echo.Context) error
+	List(EnhancedContext) error
+	FindProfile(EnhancedContext) error
+	Create(EnhancedContext) error
+	UpdatePassword(EnhancedContext) error
+	UpdateProfile(EnhancedContext) error
 }
 
 type accountHandler struct {
@@ -38,7 +37,7 @@ func NewAccountHandler(service usecases.AccountUseCase) AccountHandler {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [get]
-func (h *accountHandler) List(context echo.Context) error {
+func (h *accountHandler) List(context EnhancedContext) error {
 	accounts, err := h.service.List()
 	if err != nil {
 		return responseFromError(err)
@@ -62,12 +61,8 @@ func (h *accountHandler) List(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/profile [get]
-func (h *accountHandler) FindProfile(context echo.Context) error {
-	accountID, err := getAccountIDFromAuthorization(context)
-	if err != nil {
-		return responseFromError(err)
-	}
-	account, err := h.service.FindByID(*accountID)
+func (h *accountHandler) FindProfile(context EnhancedContext) error {
+	account, err := h.service.FindByID(context.AccountID())
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -88,7 +83,7 @@ func (h *accountHandler) FindProfile(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [post]
-func (h *accountHandler) Create(context echo.Context) error {
+func (h *accountHandler) Create(context EnhancedContext) error {
 	var body interface{}
 	if err := context.Bind(&body); err != nil {
 		return unsupportedMediaTypeError
@@ -117,7 +112,7 @@ func (h *accountHandler) Create(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/profile [put]
-func (h *accountHandler) UpdateProfile(context echo.Context) error {
+func (h *accountHandler) UpdateProfile(context EnhancedContext) error {
 	var body interface{}
 	if err := context.Bind(&body); err != nil {
 		return unsupportedMediaTypeError
@@ -130,11 +125,7 @@ func (h *accountHandler) UpdateProfile(context echo.Context) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	if profileID, err := getProfileIDFromAuthorization(context); err != nil {
-		return responseFromError(err)
-	} else {
-		profile.SetID(profileID)
-	}
+	profile.SetID(context.ProfileID())
 	if err := h.service.UpdateAccountProfile(profile); err != nil {
 		return responseFromError(err)
 	}
@@ -152,7 +143,7 @@ func (h *accountHandler) UpdateProfile(context echo.Context) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/update-password [put]
-func (h *accountHandler) UpdatePassword(context echo.Context) error {
+func (h *accountHandler) UpdatePassword(context EnhancedContext) error {
 	var body = map[string]interface{}{}
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return unsupportedMediaTypeError
@@ -161,11 +152,7 @@ func (h *accountHandler) UpdatePassword(context echo.Context) error {
 	if vErr != nil {
 		return responseFromValidationError((vErr))
 	}
-	accountID, err := getAccountIDFromAuthorization(context)
-	if err != nil {
-		return responseFromError(err)
-	}
-	err = h.service.UpdateAccountPassword(*accountID, data.ToDomain())
+	err := h.service.UpdateAccountPassword(context.AccountID(), data.ToDomain())
 	if err != nil {
 		return responseFromError(err)
 	}

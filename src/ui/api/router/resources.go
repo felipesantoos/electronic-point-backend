@@ -3,6 +3,7 @@ package router
 import (
 	"backend_template/src/ui/api/dicontainer"
 	"backend_template/src/ui/api/handlers"
+	"backend_template/src/ui/api/middlewares"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,5 +20,5 @@ func NewResourcesRouter() Router {
 
 func (r *resourcesRouter) Load(apiGroup *echo.Group) {
 	router := apiGroup.Group("/res")
-	router.GET("/account-roles", r.handler.ListAccountRoles)
+	router.GET("/account-roles", middlewares.EnhanceContext(r.handler.ListAccountRoles))
 }

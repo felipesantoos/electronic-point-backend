@@ -69,6 +69,7 @@ func GuardMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				}
 				return ctx.NoContent(http.StatusUnauthorized)
 			}
+			ctx.Set("authenticated", true)
 		}
 		return next(ctx)
 	}
@@ -120,7 +121,7 @@ func sessionIsValidWith(authToken string) (bool, errors.Error) {
 		return false, nil
 	} else if uID, err := uuid.Parse(claims.AccountID); err != nil {
 		return false, nil
-	} else if exists, err := authService.SessionExists(uID, authToken); err != nil {
+	} else if exists, err := authService.SessionExists(&uID, authToken); err != nil {
 		return false, err
 	} else if !exists {
 		return false, nil

@@ -7,8 +7,8 @@ import (
 )
 
 type SessionAdapter interface {
-	Store(uID uuid.UUID, accessToken string) errors.Error
-	Exists(uID uuid.UUID, token string) (bool, errors.Error)
-	RemoveSession(uID uuid.UUID) errors.Error
-	GetSessionByAccountID(uID uuid.UUID) (string, errors.Error)
+	Store(uID *uuid.UUID, accessToken string) errors.Error
+	Exists(uID *uuid.UUID, token string) (bool, errors.Error)
+	RemoveSession(uID *uuid.UUID) errors.Error
+	GetSessionByAccountID(uID *uuid.UUID) (string, errors.Error)
 }

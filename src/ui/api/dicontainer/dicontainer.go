@@ -3,8 +3,8 @@ package dicontainer
 import (
 	"backend_template/src/core/interfaces/usecases"
 	"backend_template/src/core/services"
+	"backend_template/src/infra/redis"
 	"backend_template/src/infra/repository/postgres"
-	"backend_template/src/infra/repository/redis"
 )
 
 func AccountUseCase() usecases.AccountUseCase {

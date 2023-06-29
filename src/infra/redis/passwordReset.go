@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/google/uuid"
 	"github.com/thanhpk/randstr"
 )
 
@@ -35,9 +36,9 @@ func (r *redisPasswordResetRepository) AskPasswordResetMail(email string) errors
 	if scanErr != nil {
 		return errors.NewUnexpected()
 	}
-	account, buildErr := simplifiedAccount.NewFromMap(serializedAccount)
+	account, buildErr := newSimplifiedAccountFromMapRows(serializedAccount)
 	if buildErr != nil {
-		return errors.NewInternal(buildErr)
+		return buildErr
 	}
 	if accountID, _ := r.getPasswordResetEntry("*", account.ID().String()); accountID != "" {
 		return errors.NewFromString("A token was already generated for reseting the password of this account")
@@ -118,6 +119,20 @@ func (r *redisPasswordResetRepository) deletePasswordResetEntryByAccountID(token
 		return errors.NewUnexpected()
 	}
 	return nil
+}
+
+func newSimplifiedAccountFromMapRows(data map[string]interface{}) (simplifiedAccount.SimplifiedAccount, errors.Error) {
+	var id uuid.UUID
+	if parsedID, err := uuid.Parse(string(data["account_id"].([]uint8))); err != nil {
+		return nil, errors.NewUnexpected()
+	} else {
+		id = parsedID
+	}
+	name := fmt.Sprint(data["person_name"])
+	birthDate := fmt.Sprint(data["person_birth_date"])
+	email := fmt.Sprint(data["account_email"])
+	cpf := fmt.Sprint(data["person_cpf"])
+	return simplifiedAccount.New(&id, name, birthDate, email, cpf), nil
 }
 
 func getPasswordResetKey(token, accountID string) string {

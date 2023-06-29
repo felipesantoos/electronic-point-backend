@@ -29,7 +29,7 @@ func (s *authService) Login(credentials credentials.Credentials) (authorization.
 	if err != nil {
 		return nil, err
 	}
-	token, err := s.sessionAdapter.GetSessionByAccountID(*account.ID())
+	token, err := s.sessionAdapter.GetSessionByAccountID(account.ID())
 	var auth authorization.Authorization
 	var authErr errors.Error
 	if err != nil {
@@ -41,18 +41,18 @@ func (s *authService) Login(credentials credentials.Credentials) (authorization.
 		if authErr != nil {
 			return nil, authErr
 		}
-		if err := s.sessionAdapter.Store(*account.ID(), auth.Token()); err != nil {
+		if err := s.sessionAdapter.Store(account.ID(), auth.Token()); err != nil {
 			return nil, err
 		}
 	}
 	return auth, nil
 }
 
-func (s *authService) Logout(accountID uuid.UUID) errors.Error {
+func (s *authService) Logout(accountID *uuid.UUID) errors.Error {
 	return s.sessionAdapter.RemoveSession(accountID)
 }
 
-func (s *authService) SessionExists(accountID uuid.UUID, token string) (bool, errors.Error) {
+func (s *authService) SessionExists(accountID *uuid.UUID, token string) (bool, errors.Error) {
 	return s.sessionAdapter.Exists(accountID, token)
 }
 

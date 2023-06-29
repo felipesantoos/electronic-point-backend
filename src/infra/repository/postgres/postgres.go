@@ -16,7 +16,9 @@ func defaultExecQuery(sqlQuery string, args ...interface{}) errors.Error {
 	} else if rowsAff, err := result.RowsAffected(); err != nil {
 		return errors.NewInternal(err)
 	} else if rowsAff == 0 {
-		if strings.Contains(strings.ToLower(sqlQuery), "update") {
+		if strings.Contains(strings.ToLower(sqlQuery), "insert") {
+			return errors.NewFromString("no data was inserted: some constraint failed")
+		} else if strings.Contains(strings.ToLower(sqlQuery), "update") {
 			return errors.NewFromString("no entries were found to be updated")
 		} else if strings.Contains(strings.ToLower(sqlQuery), "delete") {
 			return errors.NewFromString("no entries were found to be deleted")
@@ -41,6 +43,13 @@ func defaultTxExecQuery(tx *repository.SQLTransaction, sqlQuery string, args ...
 	} else if rowsAff == 0 {
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
 			return rollbackErr
+		}
+		if strings.Contains(strings.ToLower(sqlQuery), "insert") {
+			return errors.NewFromString("no data was inserted: some constraint failed")
+		} else if strings.Contains(strings.ToLower(sqlQuery), "update") {
+			return errors.NewFromString("no entries were found to be updated")
+		} else if strings.Contains(strings.ToLower(sqlQuery), "delete") {
+			return errors.NewFromString("no entries were found to be deleted")
 		}
 		return errors.NewUnexpected()
 	}

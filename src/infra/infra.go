@@ -7,5 +7,5 @@ import (
 )
 
 func Logger() zerolog.Logger {
-	return core.CoreLogger().With().Str("layer", "infrastructure").Logger()
+	return core.CoreLogger().With().Str("layer", "infra").Logger()
 }

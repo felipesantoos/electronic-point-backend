@@ -11,8 +11,8 @@ import (
 
 type AccountUseCase interface {
 	List() ([]account.Account, errors.Error)
-	FindByID(uID uuid.UUID) (account.Account, errors.Error)
+	FindByID(uID *uuid.UUID) (account.Account, errors.Error)
 	Create(account.Account) (*uuid.UUID, errors.Error)
 	UpdateAccountProfile(person person.Person) errors.Error
-	UpdateAccountPassword(accountID uuid.UUID, data updatepassword.UpdatePassword) errors.Error
+	UpdateAccountPassword(accountID *uuid.UUID, data updatepassword.UpdatePassword) errors.Error
 }

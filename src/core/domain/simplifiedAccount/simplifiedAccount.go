@@ -1,8 +1,6 @@
 package simplifiedAccount
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 )
 
@@ -30,20 +28,6 @@ type simplifiedAccount struct {
 
 func New(id *uuid.UUID, name, birthDate, email, cpf string) SimplifiedAccount {
 	return &simplifiedAccount{id, name, birthDate, email, cpf}
-}
-
-func NewFromMap(data map[string]interface{}) (SimplifiedAccount, error) {
-	account := &simplifiedAccount{}
-	if id, err := uuid.Parse(string(data["account_id"].([]uint8))); err != nil {
-		return nil, err
-	} else {
-		account.id = &id
-	}
-	account.SetName(fmt.Sprint(data["person_name"]))
-	account.SetBirthDate(fmt.Sprint(data["person_birth_date"]))
-	account.SetEmail(fmt.Sprint(data["account_email"]))
-	account.SetCPF(fmt.Sprint(data["person_cpf"]))
-	return account, nil
 }
 
 func (sacc *simplifiedAccount) ID() *uuid.UUID {
