@@ -23,17 +23,7 @@ func ExtractAuthorizationAccountRole(authHeader string) (string, bool) {
 	} else if claims, ok := authorizationIsValid(authType, authToken); !ok {
 		return role.ANONYMOUS_ROLE_CODE, false
 	} else {
-		unmarshedRoleData := make(map[string]interface{})
-		roleData, err := base64.StdEncoding.DecodeString(claims.Role)
-		if err != nil {
-			logger.Error().Msg("an error occurred when decoding the role data: " + err.Error())
-			return role.ANONYMOUS_ROLE_CODE, false
-		}
-		if err := json.Unmarshal(roleData, &unmarshedRoleData); err != nil {
-			logger.Error().Msg("an error occurred when unmarshaling the role data: " + err.Error())
-			return role.ANONYMOUS_ROLE_CODE, false
-		}
-		return strings.ToLower(fmt.Sprint(unmarshedRoleData["code"])), true
+		return DecodeRoleData(claims.Role)
 	}
 }
 
@@ -92,4 +82,18 @@ func ExtractTokenClaims(authToken string) (*authorization.AuthClaims, error) {
 		return nil, err
 	}
 	return &claims, nil
+}
+
+func DecodeRoleData(encodedRoleName string) (string, bool) {
+	unmarshedRoleData := make(map[string]interface{})
+	roleData, err := base64.StdEncoding.DecodeString(encodedRoleName)
+	if err != nil {
+		logger.Error().Msg("an error occurred when decoding the role data: " + err.Error())
+		return role.ANONYMOUS_ROLE_CODE, false
+	}
+	if err := json.Unmarshal(roleData, &unmarshedRoleData); err != nil {
+		logger.Error().Msg("an error occurred when unmarshaling the role data: " + err.Error())
+		return role.ANONYMOUS_ROLE_CODE, false
+	}
+	return fmt.Sprint(unmarshedRoleData["code"]), true
 }

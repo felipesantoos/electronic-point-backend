@@ -4,7 +4,9 @@ import (
 	"backend_template/src/core/domain/authorization"
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/domain/role"
+	"backend_template/src/core/utils"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -37,11 +39,12 @@ func NewEnhancedContext(ctx echo.Context, claims *authorization.AuthClaims) (Enh
 		isAuthenticated = true
 	}
 	if isAuthenticated && claims != nil {
+		role, _ := utils.DecodeRoleData(claims.Role)
 		accountID, _ := uuid.Parse(claims.AccountID)
 		profileID, _ := uuid.Parse(claims.ProfileID)
-		return &enhancedContext{ctx, &accountID, &profileID, claims.Role}, nil
+		return &enhancedContext{ctx, &accountID, &profileID, strings.ToLower(role)}, nil
 	}
-	return &enhancedContext{ctx, nil, nil, ""}, nil
+	return &enhancedContext{ctx, nil, nil, role.ANONYMOUS_ROLE_CODE}, nil
 }
 
 func (c *enhancedContext) AccountID() *uuid.UUID {
