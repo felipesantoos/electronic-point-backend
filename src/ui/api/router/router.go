@@ -20,10 +20,17 @@ func New() Router {
 
 func (r *router) Load(group *echo.Group) {
 	if os.Getenv("SERVER_MODE") == "dev" || os.Getenv("SERVER_MODE") == "stage" {
-		group.GET("/docs/*", echoSwagger.WrapHandler)
+		r.LoadDocs(group)
 	}
 
 	NewAuthRouter().Load(group)
 	NewAccountRouter().Load(group)
 	NewResourcesRouter().Load(group)
+}
+
+func (r *router) LoadDocs(group *echo.Group) {
+	group.GET("/docs/*", echoSwagger.WrapHandler)
+	group.GET("/docs", func(c echo.Context) error {
+		return c.Redirect(301, "/api/docs/index.html")
+	})
 }

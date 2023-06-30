@@ -56,7 +56,7 @@ func (c *enhancedContext) ProfileID() *uuid.UUID {
 }
 
 func (c *enhancedContext) RoleName() string {
-	return c.RoleName()
+	return c.roleName
 }
 
 func (c *enhancedContext) IsAdmin() bool {

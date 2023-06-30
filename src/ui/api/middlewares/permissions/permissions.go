@@ -14,7 +14,7 @@ var anonymousEntries = []string{
 	`\/api\/auth\/login`,
 	`\/api\/auth\/reset-password`,
 	`\/api\/auth\/reset-password\/[^\r\n]*`,
-	`\/api\/docs\/[^\r\n]*`,
+	`\/api\/docs\/?[^\r\n]*`,
 }
 var adminEntries = []string{
 	`\/[^\r\n]*`,
