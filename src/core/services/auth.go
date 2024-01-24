@@ -65,5 +65,17 @@ func (s *authService) FindPasswordResetByToken(token string) errors.Error {
 }
 
 func (s *authService) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
-	return s.passwordResetAdapter.UpdatePasswordByPasswordReset(token, newPassword)
+	accountID, err := s.passwordResetAdapter.GetAccountIDByResetPasswordToken(token)
+	if err != nil {
+		return err
+	}
+	err = s.adapter.ResetAccountPassword(accountID, newPassword)
+	if err != nil {
+		return err
+	}
+	err = s.passwordResetAdapter.DeleteResetPasswordEntry(token)
+	if err != nil {
+		return err
+	}
+	return nil
 }

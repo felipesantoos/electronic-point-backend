@@ -4,7 +4,6 @@ import (
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/domain/simplifiedAccount"
 	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/core/utils"
 	"backend_template/src/infra/mail"
 	"backend_template/src/infra/repository"
 	"backend_template/src/infra/repository/postgres/query"
@@ -69,23 +68,20 @@ func (r *redisPasswordResetRepository) FindPasswordResetByToken(token string) er
 	return nil
 }
 
-func (r *redisPasswordResetRepository) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
-	accountId, err := r.getPasswordResetEntry(token, "*")
+func (r *redisPasswordResetRepository) GetAccountIDByResetPasswordToken(token string) (*uuid.UUID, errors.Error) {
+	accountID, err := r.getPasswordResetEntry(token, "*")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	encryptedPassword, encryptErr := utils.EncryptPassword(newPassword)
-	if encryptErr != nil {
-		return errors.New(encryptErr)
+	if parsedUUID, err := uuid.Parse(accountID); err != nil {
+		return nil, errors.NewInternal(err)
+	} else {
+		return &parsedUUID, nil
 	}
-	result, queryErr := repository.ExecQuery(query.Account().Update().Password(), encryptedPassword, accountId)
-	if queryErr != nil {
-		return queryErr
-	} else if rowsAff, err := result.RowsAffected(); err != nil {
-		return errors.NewInternal(err)
-	} else if rowsAff == 0 {
-		return errors.NewUnexpected()
-	} else if err := r.deletePasswordResetEntryByAccountID(token); err != nil {
+}
+
+func (r *redisPasswordResetRepository) DeleteResetPasswordEntry(token string) errors.Error {
+	if err := r.deletePasswordResetEntryByAccountID(token); err != nil {
 		return err
 	}
 	return nil

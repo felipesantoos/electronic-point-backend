@@ -23,7 +23,7 @@ Se você é um membro do time de desenvolvimento desse projeto, siga os passos a
 
 1. Execute o comando `go mod tidy` para baixar as dependências do projeto;
 2. Copie todo o conteúdo do arquivo [src/ui/api/app/.env.example](src/ui/api/app/.env.example) e cole em um novo arquivo chamado `.env` na mesma pasta ([src/ui/api/app/](src/ui/api/app/));
-3. Execute o banco de dados e instância redis com o seguinte comando: `docker compose up database redis --build -d`
+3. Execute o banco de dados e instância redis com o seguinte comando: `docker compose -f docker-compose.dev.yml up database redis --build -d`
 
 Pronto! O projeto está configurado. A partir de agora, toda vez que quiser iniciar o projeto basta executar o comando `go run main.go` dentro da pasta `src/ui/api/app`. Assim, o projeto estará disponível no endereço `http://localhost:8000`.
 

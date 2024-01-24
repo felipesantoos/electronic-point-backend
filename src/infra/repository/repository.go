@@ -2,8 +2,8 @@ package repository
 
 import (
 	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/utils"
 	"backend_template/src/infra"
+	"backend_template/src/utils"
 	"database/sql"
 	"fmt"
 	"os"

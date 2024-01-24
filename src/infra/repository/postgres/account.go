@@ -9,16 +9,17 @@ import (
 	"backend_template/src/core/domain/role"
 	updatepassword "backend_template/src/core/domain/updatePassword"
 	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/core/utils"
 	mail "backend_template/src/infra/mail"
 	"backend_template/src/infra/repository"
 	"backend_template/src/infra/repository/postgres/query"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
 	"github.com/thanhpk/randstr"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type accountRepository struct {
@@ -65,7 +66,7 @@ func (r *accountRepository) FindByID(uID *uuid.UUID) (account.Account, errors.Er
 
 func (r *accountRepository) Create(account account.Account) (*uuid.UUID, errors.Error) {
 	account.SetPassword(randstr.Hex(8))
-	encryptedPassword, err := utils.EncryptPassword(account.Password())
+	encryptedPassword, err := encryptPassword(account.Password())
 	if err != nil {
 		return nil, errors.NewUnexpected()
 	}
@@ -135,7 +136,7 @@ func (r *accountRepository) UpdateAccountPassword(accountID *uuid.UUID, data upd
 	if err := comparePasswords(accountPassword, data.CurrentPassword()); err != nil {
 		return err
 	}
-	encryptedPassword, encryptErr := utils.EncryptPassword(data.NewPassword())
+	encryptedPassword, encryptErr := encryptPassword(data.NewPassword())
 	if encryptErr != nil {
 		return errors.New(encryptErr)
 	}
@@ -243,4 +244,13 @@ func newProfessionalFromMapRows(data map[string]interface{}) (professional.Profe
 		id = parsedID
 	}
 	return professional.New(&id, nil)
+}
+
+func encryptPassword(password string) (string, error) {
+	passwordBytes := []byte(password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(passwordBytes, bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(hashedPassword), nil
 }

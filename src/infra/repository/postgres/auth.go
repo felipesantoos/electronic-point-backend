@@ -6,13 +6,14 @@ import (
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/domain/role"
 	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/core/utils"
 	"backend_template/src/infra/repository"
 	"backend_template/src/infra/repository/postgres/query"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type authPostgresRepository struct{}
@@ -69,8 +70,30 @@ func (r *authPostgresRepository) getAccountByCustomQuery(query string, args ...i
 	return account, nil
 }
 
+func (r *authPostgresRepository) ResetAccountPassword(accountID *uuid.UUID, newPassword string) errors.Error {
+	encryptedPassword, encryptErr := encryptPassword(newPassword)
+	if encryptErr != nil {
+		return errors.New(encryptErr)
+	}
+	result, queryErr := repository.ExecQuery(query.Account().Update().Password(), encryptedPassword, accountID.String())
+	if queryErr != nil {
+		return queryErr
+	} else if rowsAff, err := result.RowsAffected(); err != nil {
+		return errors.NewInternal(err)
+	} else if rowsAff == 0 {
+		return errors.NewUnexpected()
+	}
+	return nil
+}
+
+func passwordIsValid(originalPassword, givenPassword string) bool {
+	decodedPassword, _ := hex.DecodeString(originalPassword)
+	err := bcrypt.CompareHashAndPassword(decodedPassword, []byte(givenPassword))
+	return err == nil
+}
+
 func comparePasswords(current, confirmation string) errors.Error {
-	if !utils.PasswordIsValid(current, confirmation) {
+	if !passwordIsValid(current, confirmation) {
 		return errors.NewFromString("invalid password")
 	}
 	return nil

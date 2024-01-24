@@ -1,4 +1,4 @@
-package core
+package middlewares
 
 import (
 	"backend_template/src/utils"
@@ -7,5 +7,5 @@ import (
 )
 
 func Logger() zerolog.Logger {
-	return utils.Logger().With().Str("layer", "application").Logger()
+	return utils.Logger().With().Str("layer", "middlewares").Logger()
 }
