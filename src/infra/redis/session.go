@@ -5,6 +5,7 @@ import (
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/interfaces/adapters"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -37,19 +38,21 @@ func (r *redisSessionRepository) Exists(uID *uuid.UUID, token string) (bool, err
 	return valueExists(conn, uSessionKey, token)
 }
 
-func (r *redisSessionRepository) GetSessionByAccountID(uID *uuid.UUID) (string, errors.Error) {
+func (r *redisSessionRepository) GetSessionByAccountID(uID *uuid.UUID) (authorization.Authorization, errors.Error) {
 	conn, err := getConnection()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	uSessionKey := r.getUserSessionKey(uID)
 	accessToken, err := getValueFromKey(conn, uSessionKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	} else if accessToken == "" {
-		return "", nil
+		return nil, nil
 	}
-	return accessToken, nil
+	expDuration, err := getKeyDuration(conn, uSessionKey)
+	expTime := time.Now().Add(*expDuration)
+	return authorization.NewFromToken(accessToken, &expTime), nil
 }
 
 func (r *redisSessionRepository) RemoveSession(uID *uuid.UUID) errors.Error {

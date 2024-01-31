@@ -68,6 +68,7 @@ definitions:
     type: object
   response.ErrorMessage:
     properties:
+      error: {}
       invalid_fields:
         items:
           $ref: '#/definitions/response.InvalidField'

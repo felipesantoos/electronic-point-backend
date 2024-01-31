@@ -20,10 +20,12 @@ const (
 
 type Authorization interface {
 	Token() string
+	ExpirationTime() *time.Time
 }
 
 type authorization struct {
-	token string
+	token   string
+	expTime *time.Time
 }
 
 func New() Authorization {
@@ -32,18 +34,15 @@ func New() Authorization {
 
 func NewFromAccount(acc account.Account) (Authorization, errors.Error) {
 	auth := &authorization{}
+	auth.expTime = generateTokenExpirationTime()
 	if err := auth.GenerateToken(acc); err != nil {
 		return nil, err
 	}
 	return auth, nil
 }
 
-func NewFromToken(accessToken string) Authorization {
-	return &authorization{accessToken}
-}
-
-func (auth *authorization) Token() string {
-	return auth.token
+func NewFromToken(accessToken string, expirationTime *time.Time) Authorization {
+	return &authorization{accessToken, expirationTime}
 }
 
 func (auth *authorization) GenerateToken(account account.Account) errors.Error {
@@ -51,7 +50,7 @@ func (auth *authorization) GenerateToken(account account.Account) errors.Error {
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, newClaims(
 		account,
 		BEARER_TOKEN_TYPE,
-		time.Now().Add(TOKEN_TIMEOUT).Unix(),
+		auth.expTime.Unix(),
 	)).SignedString([]byte(secret))
 	if err != nil {
 		logger.Error().Msg(err.Error())
@@ -59,4 +58,17 @@ func (auth *authorization) GenerateToken(account account.Account) errors.Error {
 	}
 	auth.token = token
 	return nil
+}
+
+func (auth *authorization) Token() string {
+	return auth.token
+}
+
+func (auth *authorization) ExpirationTime() *time.Time {
+	return auth.expTime
+}
+
+func generateTokenExpirationTime() *time.Time {
+	time := time.Now().Add(TOKEN_TIMEOUT)
+	return &time
 }

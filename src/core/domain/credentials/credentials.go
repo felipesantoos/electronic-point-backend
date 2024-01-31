@@ -11,7 +11,7 @@ type credentials struct {
 }
 
 func New(username, password string) Credentials {
-	return &credentials{}
+	return &credentials{username, password}
 }
 
 func (c *credentials) Email() string {

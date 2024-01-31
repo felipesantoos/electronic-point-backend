@@ -2,13 +2,15 @@ package middlewares
 
 import (
 	"backend_template/src/apps/api/dicontainer"
-	"backend_template/src/apps/api/handlers/dto/response"
+	"backend_template/src/apps/api/handlers"
 	"backend_template/src/apps/api/middlewares/permissions"
 	"backend_template/src/apps/api/utils"
+	"backend_template/src/core/domain/authorization"
 	"backend_template/src/core/domain/errors"
 	"backend_template/src/core/domain/role"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 
 	casbin "github.com/casbin/casbin/v2"
@@ -36,36 +38,54 @@ var casbinModelTemplate = `
 	m = r.sub == p.sub && regexMatch(r.obj, p.obj) && (r.act == p.act || p.act == "*")
 `
 
+func negativeTokenCookie() *http.Cookie {
+	cookie := new(http.Cookie)
+	cookie.Name = handlers.COOKIE_TOKEN_NAME
+	cookie.Path = "/"
+	cookie.HttpOnly = false
+	cookie.MaxAge = -1
+	return cookie
+}
+
 func GuardMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	enforcer, err := newCasbinEnforcer()
 	if err != nil {
 		log.Fatal().Err(err)
 	}
 	return func(ctx echo.Context) error {
-		authHeader := ctx.Request().Header.Get("Authorization")
+		tokenCookie, err := ctx.Cookie(handlers.COOKIE_TOKEN_NAME)
+		var accRole string = role.ANONYMOUS_ROLE_CODE
+		var claims *authorization.AuthClaims
+		if err == nil {
+			token := tokenCookie.Value
+			if valid, _ := sessionIsValidWith(token); !valid {
+				ctx.SetCookie(negativeTokenCookie())
+			} else {
+				var ok bool
+				if accRole, ok = utils.ExtractAuthorizationAccountRole(token); !ok {
+					return ctx.NoContent(http.StatusUnauthorized)
+				}
+				claims, _ = utils.ExtractTokenClaims(token)
+				ctx.Set("authenticated", true)
+			}
+		}
 		method := ctx.Request().Method
 		path := ctx.Request().URL.Path
-		if accRole, ok := utils.ExtractAuthorizationAccountRole(authHeader); !ok {
-			return response.ErrorBuilder().NewUnauthorizedError()
-		} else if ok, err = enforcer.Enforce(strings.ToLower(accRole), path, method); err != nil {
-			return response.ErrorBuilder().NewInternalServerError()
+		if ok, err := enforcer.Enforce(strings.ToLower(accRole), path, method); err != nil {
+			return ctx.NoContent(http.StatusInternalServerError)
 		} else if accRole == role.ANONYMOUS_ROLE_CODE && !ok {
-			return response.ErrorBuilder().NewUnauthorizedError()
+			return ctx.NoContent(http.StatusUnauthorized)
 		} else if !ok {
-			claims, _ := utils.ExtractTokenClaims(authHeader)
-			logger.Warn().Fields(map[string]interface{}{
-				"path":    path,
-				"method":  method,
-				"role":    accRole,
-				"user_id": claims.AccountID,
-			}).Msg("FORBIDDEN ACCESS")
-			return response.ErrorBuilder().NewForbiddenError()
-		} else if accRole != role.ANONYMOUS_ROLE_CODE {
-			_, authToken := utils.ExtractToken(authHeader)
-			if valid, _ := sessionIsValidWith(authToken); !valid {
-				return response.ErrorBuilder().NewUnauthorizedError()
+			var logData map[string]interface{} = map[string]interface{}{
+				"path":   path,
+				"method": method,
+				"role":   accRole,
 			}
-			ctx.Set("authenticated", true)
+			if claims != nil {
+				logData["user_id"] = claims.AccountID
+			}
+			logger.Warn().Fields(logData).Msg("FORBIDDEN ACCESS")
+			return ctx.NoContent(http.StatusForbidden)
 		}
 		return next(ctx)
 	}

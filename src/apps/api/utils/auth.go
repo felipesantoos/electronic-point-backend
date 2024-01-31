@@ -16,11 +16,10 @@ import (
 
 var logger = core.Logger()
 
-func ExtractAuthorizationAccountRole(authHeader string) (string, bool) {
-	authType, authToken := ExtractToken(authHeader)
-	if authType == "" || authToken == "" {
+func ExtractAuthorizationAccountRole(authToken string) (string, bool) {
+	if authToken == "" {
 		return role.ANONYMOUS_ROLE_CODE, true
-	} else if claims, ok := authorizationIsValid(authType, authToken); !ok {
+	} else if claims, ok := authorizationIsValid(authToken); !ok {
 		return role.ANONYMOUS_ROLE_CODE, false
 	} else {
 		return DecodeRoleData(claims.Role)
@@ -37,7 +36,7 @@ func ExtractToken(authHeader string) (authType string, token string) {
 	return authType, token
 }
 
-func authorizationIsValid(authType, authToken string) (*authorization.AuthClaims, bool) {
+func authorizationIsValid(authToken string) (*authorization.AuthClaims, bool) {
 	secret := os.Getenv("SERVER_SECRET")
 	token, err := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
@@ -52,10 +51,6 @@ func authorizationIsValid(authType, authToken string) (*authorization.AuthClaims
 	}
 	claims, err := ExtractTokenClaims(authToken)
 	if err != nil {
-		return nil, false
-	}
-	if strings.ToLower(claims.Type) != strings.ToLower(authType) {
-		logger.Error().Msg(fmt.Sprintf("the used authorization type \"%s\" is not supported", authType))
 		return nil, false
 	}
 	return claims, true

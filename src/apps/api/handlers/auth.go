@@ -3,6 +3,8 @@ package handlers
 import (
 	"backend_template/src/apps/api/handlers/dto/request"
 	"backend_template/src/apps/api/handlers/dto/response"
+	"backend_template/src/apps/api/utils"
+	"backend_template/src/core/domain/authorization"
 	"backend_template/src/core/interfaces/usecases"
 	"encoding/hex"
 	"net/http"
@@ -39,6 +41,9 @@ func NewAuthHandler(service usecases.AuthUseCase) AuthHandler {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /auth/login [post]
 func (h *authHandler) Login(context RichContext) error {
+	if context.AccountID() != nil {
+		return context.NoContent(http.StatusOK)
+	}
 	var body map[string]interface{}
 	if bindErr := context.Bind(&body); bindErr != nil {
 		return response.ErrorBuilder().NewUnsupportedMediaTypeError()
@@ -51,7 +56,11 @@ func (h *authHandler) Login(context RichContext) error {
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
-	return context.JSON(http.StatusOK, response.NewAuthorizationBuilder().BuildFromDomain(authorization))
+	if authorization.ExpirationTime() != nil {
+		tokenCookie := h.prepareTokenCookie(authorization)
+		context.SetCookie(tokenCookie)
+	}
+	return context.NoContent(http.StatusOK)
 }
 
 // Logout
@@ -159,4 +168,15 @@ func (h *authHandler) getPasswordResetToken(context RichContext) (string, error)
 		}
 	}
 	return token, nil
+}
+
+func (h *authHandler) prepareTokenCookie(auth authorization.Authorization) *http.Cookie {
+	cookie := new(http.Cookie)
+	cookie.Name = COOKIE_TOKEN_NAME
+	cookie.Value = auth.Token()
+	cookie.Path = "/"
+	cookie.HttpOnly = false
+	cookie.Secure = utils.IsAPIInProdMode()
+	cookie.Expires = *auth.ExpirationTime()
+	return cookie
 }

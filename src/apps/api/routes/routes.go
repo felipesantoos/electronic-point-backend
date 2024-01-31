@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"os"
+	"backend_template/src/apps/api/utils"
 
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -19,7 +19,7 @@ func New() Router {
 }
 
 func (r *router) Load(rootEndpoint *echo.Group) {
-	if os.Getenv("API_MODE") == "dev" || os.Getenv("API_MODE") == "stage" {
+	if utils.IsAPIInProdMode() {
 		r.LoadDocs(rootEndpoint)
 	}
 

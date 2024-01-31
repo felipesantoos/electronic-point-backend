@@ -29,13 +29,12 @@ func (s *authService) Login(credentials credentials.Credentials) (authorization.
 	if err != nil {
 		return nil, err
 	}
-	token, err := s.sessionAdapter.GetSessionByAccountID(account.ID())
-	var auth authorization.Authorization
+	auth, err := s.sessionAdapter.GetSessionByAccountID(account.ID())
 	var authErr errors.Error
 	if err != nil {
 		return nil, err
-	} else if token != "" {
-		auth = authorization.NewFromToken(token)
+	} else if auth != nil {
+		return auth, nil
 	} else {
 		auth, authErr = authorization.NewFromAccount(account)
 		if authErr != nil {

@@ -35,11 +35,7 @@ type richContext struct {
 }
 
 func NewRichContext(ctx echo.Context, claims *authorization.AuthClaims) (RichContext, error) {
-	var isAuthenticated = false
-	if v, ok := ctx.Get("authenticated").(bool); ok && v {
-		isAuthenticated = true
-	}
-	if isAuthenticated && claims != nil {
+	if claims != nil {
 		role, _ := utils.DecodeRoleData(claims.Role)
 		accountID, _ := uuid.Parse(claims.AccountID)
 		profileID, _ := uuid.Parse(claims.ProfileID)

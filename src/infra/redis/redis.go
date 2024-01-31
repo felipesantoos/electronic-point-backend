@@ -5,6 +5,7 @@ import (
 	"backend_template/src/infra"
 	"backend_template/src/utils"
 	"fmt"
+	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -45,4 +46,15 @@ func getValueFromKey(conn *redis.Client, key string) (string, errors.Error) {
 		return "", errors.NewUnexpected()
 	}
 	return result, nil
+}
+
+func getKeyDuration(conn *redis.Client, key string) (*time.Duration, errors.Error) {
+	result, err := conn.TTL(key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, nil
+		}
+		return nil, errors.NewUnexpected()
+	}
+	return &result, nil
 }

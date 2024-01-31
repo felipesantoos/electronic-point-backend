@@ -585,6 +585,7 @@
         "response.ErrorMessage": {
             "type": "object",
             "properties": {
+                "error": {},
                 "invalid_fields": {
                     "type": "array",
                     "items": {

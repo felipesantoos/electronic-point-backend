@@ -11,7 +11,7 @@ ENV DATABASE_SSL_MODE=disable
 ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /opt/bin/
 RUN chmod +x /opt/bin/wait-for-it.sh
 RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-RUN go install github.com/swaggo/swag/cmd/swag@v1.8.1
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.2
 
 # Copy application files
 COPY src src
@@ -20,11 +20,11 @@ RUN mkdir tools
 
 # Install dependencies and Build application
 RUN go mod tidy
-RUN bash -c "cd src/ui/api/app && swag init -g ../api.go --output ../docs --dir ../handlers"
-RUN go build -o ./main ./src/ui/api/app/main.go
-RUN chmod +x ./src/ui/api/app/start.sh
+RUN bash -c "cd src/apps/api && swag init -g ../main.go --output ./docs --dir ./handlers"
+RUN go build -o ./main ./src/apps/api/main.go
+RUN chmod +x ./src/apps/api/start.sh
 
 # Copy application database migrations
-COPY tools/database ./tools/database
+COPY config/database ./config/database
 
-CMD /opt/bin/wait-for-it.sh --timeout=20 $DATABASE_HOST:$DATABASE_PORT -- ./src/ui/api/app/start.sh
+CMD /opt/bin/wait-for-it.sh --timeout=20 $DATABASE_HOST:$DATABASE_PORT -- ./src/apps/api/start.sh
