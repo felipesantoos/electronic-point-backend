@@ -56,10 +56,8 @@ func (h *authHandler) Login(context RichContext) error {
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
-	if authorization.ExpirationTime() != nil {
-		tokenCookie := h.prepareTokenCookie(authorization)
-		context.SetCookie(tokenCookie)
-	}
+	tokenCookie := h.prepareTokenCookie(authorization)
+	context.SetCookie(tokenCookie)
 	return context.NoContent(http.StatusOK)
 }
 
