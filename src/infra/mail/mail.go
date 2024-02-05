@@ -24,7 +24,7 @@ func SendNewAccountEmail(email, password string) error {
 		</br>
 		%s
 	`, getFromName(), password, emailBodyFooter)
-	return send(title, body, []string{email})
+	return Send(title, body, []string{email})
 }
 
 func SendPasswordResetEmail(accountName, email, passwordResetLink string) error {
@@ -44,10 +44,10 @@ func SendPasswordResetEmail(accountName, email, passwordResetLink string) error 
 		</br>
 		%s
 	`, accountName, passwordResetLink, passwordResetLink, emailBodyFooter)
-	return send(title, body, []string{email})
+	return Send(title, body, []string{email})
 }
 
-func send(title, body string, emails []string) error {
+func Send(title, body string, emails []string) error {
 	message := mail.NewMessage()
 	message.SetHeader("From", getFromName())
 	message.SetHeader("To", strings.Join(emails, ","))
@@ -90,3 +90,29 @@ func getFromAddress() string {
 func getFromName() string {
 	return os.Getenv("MAIL_FROM_NAME")
 }
+
+const EmailTitle = "Sua Voz Nossa Lei - Email de Confirmação e Agradecimento!"
+const EmailBody = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sua Voz Nossa Lei - Email de Confirmação e Agradecimento!</title>
+    <style>
+        * {
+            font-family: Arial, serif;
+        }
+    </style>
+</head>
+<body>
+<div>
+    Prezado %s,<br><br>
+    Em nome de toda a equipe envolvida no desenvolvimento do Projeto de Lei Eletrônico, queremos expressar nossa sincera gratidão pela sua participação ativa e pelo valioso apoio que nos proporcionou ao submeter o formulário em favor da iniciativa.<br><br>
+    Sua assinatura eletrônica representa um passo significativo em direção à modernização e aprimoramento do processo democrático. É com grande apreço que recebemos o seu engajamento, demonstrando o comprometimento com a construção de uma sociedade mais participativa e eficiente.<br><br>
+    Cada assinatura é uma peça fundamental na construção desse projeto, e estamos entusiasmados por contar com o seu apoio. Seu gesto solidifica o propósito do projeto em proporcionar uma plataforma segura, prática e autêntica para a expressão da vontade popular.<br><br>
+    Manteremos você informado sobre o andamento do projeto e sobre as próximas etapas. Sua confiança é vital para o sucesso desta iniciativa, e estamos dedicados a honrá-la da melhor maneira possível.<br><br>
+    Agradecemos mais uma vez por sua colaboração e pela confiança depositada em nosso trabalho. Juntos, estamos construindo um futuro mais participativo e democrático.
+</div>
+</body>
+</html>
+`

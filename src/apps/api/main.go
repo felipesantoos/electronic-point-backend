@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "backend_template/src/apps/api/docs"
 	"backend_template/src/apps/api/middlewares"
 	"backend_template/src/apps/api/routes"
 	"backend_template/src/utils"
