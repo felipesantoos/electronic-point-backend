@@ -19,7 +19,7 @@ func New() Router {
 }
 
 func (r *router) Load(rootEndpoint *echo.Group) {
-	if !utils.IsAPIInProdMode() {
+	if utils.IsAPIInProdMode() {
 		r.LoadDocs(rootEndpoint)
 	}
 
