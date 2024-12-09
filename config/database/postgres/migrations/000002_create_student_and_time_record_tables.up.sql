@@ -9,6 +9,9 @@ CREATE TABLE student (
     internship_address VARCHAR(200) NOT NULL,
     internship_location VARCHAR(200) NOT NULL,
     total_workload INT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT student_pk PRIMARY KEY (id)
 );
 
@@ -21,6 +24,9 @@ CREATE TABLE time_record (
     is_off_site BOOLEAN NOT NULL,
     justification TEXT NULL,
     student_id UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT time_record_pk PRIMARY KEY (id),
     CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES student (id)
 );
