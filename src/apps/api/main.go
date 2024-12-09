@@ -8,6 +8,8 @@ import (
 	"log"
 	"strconv"
 
+	_ "backend_template/src/apps/api/docs"
+
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

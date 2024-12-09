@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS time_record;
+DROP TABLE IF EXISTS student;
