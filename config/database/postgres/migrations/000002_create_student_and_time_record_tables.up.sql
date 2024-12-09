@@ -2,7 +2,7 @@ CREATE TABLE student (
     id UUID NOT NULL DEFAULT uuid_generate_v4(),
     name VARCHAR(200) NOT NULL,
     registration VARCHAR (10) NOT NULL UNIQUE,
-    profile_picture TEXT,
+    profile_picture TEXT NULL,
     institution VARCHAR(200) NOT NULL,
     course VARCHAR(200) NOT NULL,
     internship_location_name VARCHAR(200) NOT NULL,
