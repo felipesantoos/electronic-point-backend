@@ -20,9 +20,9 @@ func (*timeRecordQueryBuilder) Select() TimeRecordQuerySelectBuilder {
 func (*timeRecordQueryBuilder) Insert() string {
 	return `
 		INSERT INTO time_record (
-			id, date, entry_time, exit_time, location, is_off_site, justification, student_id
+			id, date, entry_time, exit_time, location, is_off_site, justification, student_id, created_at
 		) VALUES (
-			DEFAULT, $2, $3, $4, $5, $6, $7
+			DEFAULT, $1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP
 		) RETURNING id
 	`
 }
@@ -37,7 +37,8 @@ func (*timeRecordQueryBuilder) Update() string {
 			location = $5,
 			is_off_site = $6,
 			justification = $7,
-			student_id = $8
+			student_id = $8,
+			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $1
 		RETURNING id
 	`
@@ -45,7 +46,9 @@ func (*timeRecordQueryBuilder) Update() string {
 
 func (*timeRecordQueryBuilder) Delete() string {
 	return `
-		DELETE FROM time_record
+		UPDATE time_record
+		SET
+			deleted_at = CURRENT_TIMESTAMP
 		WHERE id = $1
 	`
 }
@@ -69,6 +72,7 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) All() string {
 			justification AS time_record_justification,
 			student_id AS time_record_student_id
 		FROM time_record
+		WHERE deleted_at IS NULL
 		ORDER BY date ASC
 	`
 }
@@ -85,6 +89,6 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) ByID() string 
 			justification AS time_record_justification,
 			student_id AS time_record_student_id
 		FROM time_record
-		WHERE id = $1
+		WHERE id = $1 AND deleted_at IS NULL
 	`
 }
