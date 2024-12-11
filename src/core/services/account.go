@@ -5,17 +5,17 @@ import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/person"
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/core/interfaces/usecases"
 
 	"github.com/google/uuid"
 )
 
 type accountService struct {
-	adapter adapters.AccountAdapter
+	adapter secondary.AccountPort
 }
 
-func NewAccountService(repository adapters.AccountAdapter) usecases.AccountUseCase {
+func NewAccountService(repository secondary.AccountPort) usecases.AccountUseCase {
 	return &accountService{repository}
 }
 

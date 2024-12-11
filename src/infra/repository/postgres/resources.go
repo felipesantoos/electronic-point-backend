@@ -3,18 +3,18 @@ package postgres
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/role"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
 )
 
-type resourcesPostgresAdapter struct{}
+type resourcesPostgresPort struct{}
 
-func NewResourcesPostgresAdapter() adapters.ResourcesAdapter {
-	return &resourcesPostgresAdapter{}
+func NewResourcesPostgresPort() secondary.ResourcesPort {
+	return &resourcesPostgresPort{}
 }
 
-func (*resourcesPostgresAdapter) ListAccountRoles() ([]role.Role, errors.Error) {
+func (*resourcesPostgresPort) ListAccountRoles() ([]role.Role, errors.Error) {
 	rows, err := repository.Queryx(query.AccountRole().Select().All())
 	if err != nil {
 		return nil, err

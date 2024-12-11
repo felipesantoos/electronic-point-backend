@@ -3,7 +3,7 @@ package postgres
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/timeRecord"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -14,7 +14,7 @@ import (
 
 type timeRecordRepository struct{}
 
-func NewTimeRecordRepository() adapters.TimeRecordAdapter {
+func NewTimeRecordRepository() secondary.TimeRecordPort {
 	return &timeRecordRepository{}
 }
 

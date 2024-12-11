@@ -3,7 +3,7 @@ package redis
 import (
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/errors"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"fmt"
 	"time"
 
@@ -12,7 +12,7 @@ import (
 
 type redisSessionRepository struct{}
 
-func NewSessionRepository() adapters.SessionAdapter {
+func NewSessionRepository() secondary.SessionPort {
 	return &redisSessionRepository{}
 }
 

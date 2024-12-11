@@ -9,7 +9,7 @@ import (
 	"eletronic_point/src/core/domain/professional"
 	"eletronic_point/src/core/domain/role"
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	mail "eletronic_point/src/infra/mail"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -25,7 +25,7 @@ import (
 type accountRepository struct {
 }
 
-func NewAccountRepository() adapters.AccountAdapter {
+func NewAccountRepository() secondary.AccountPort {
 	return &accountRepository{}
 }
 

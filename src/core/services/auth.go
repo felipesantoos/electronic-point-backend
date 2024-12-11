@@ -4,24 +4,24 @@ import (
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/credentials"
 	"eletronic_point/src/core/domain/errors"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/core/interfaces/usecases"
 
 	"github.com/google/uuid"
 )
 
 type authService struct {
-	adapter              adapters.AuthAdapter
-	sessionAdapter       adapters.SessionAdapter
-	passwordResetAdapter adapters.PasswordResetAdapter
+	adapter           secondary.AuthPort
+	sessionPort       secondary.SessionPort
+	passwordResetPort secondary.PasswordResetPort
 }
 
 func NewAuthService(
-	adapter adapters.AuthAdapter,
-	sessionAdapter adapters.SessionAdapter,
-	passwordResetAdapter adapters.PasswordResetAdapter,
+	adapter secondary.AuthPort,
+	sessionPort secondary.SessionPort,
+	passwordResetPort secondary.PasswordResetPort,
 ) usecases.AuthUseCase {
-	return &authService{adapter, sessionAdapter, passwordResetAdapter}
+	return &authService{adapter, sessionPort, passwordResetPort}
 }
 
 func (s *authService) Login(credentials credentials.Credentials) (authorization.Authorization, errors.Error) {
@@ -29,7 +29,7 @@ func (s *authService) Login(credentials credentials.Credentials) (authorization.
 	if err != nil {
 		return nil, err
 	}
-	auth, err := s.sessionAdapter.GetSessionByAccountID(account.ID())
+	auth, err := s.sessionPort.GetSessionByAccountID(account.ID())
 	var authErr errors.Error
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (s *authService) Login(credentials credentials.Credentials) (authorization.
 		if authErr != nil {
 			return nil, authErr
 		}
-		if err := s.sessionAdapter.Store(account.ID(), auth.Token()); err != nil {
+		if err := s.sessionPort.Store(account.ID(), auth.Token()); err != nil {
 			return nil, err
 		}
 	}
@@ -48,23 +48,23 @@ func (s *authService) Login(credentials credentials.Credentials) (authorization.
 }
 
 func (s *authService) Logout(accountID *uuid.UUID) errors.Error {
-	return s.sessionAdapter.RemoveSession(accountID)
+	return s.sessionPort.RemoveSession(accountID)
 }
 
 func (s *authService) SessionExists(accountID *uuid.UUID, token string) (bool, errors.Error) {
-	return s.sessionAdapter.Exists(accountID, token)
+	return s.sessionPort.Exists(accountID, token)
 }
 
 func (s *authService) AskPasswordResetMail(email string) errors.Error {
-	return s.passwordResetAdapter.AskPasswordResetMail(email)
+	return s.passwordResetPort.AskPasswordResetMail(email)
 }
 
 func (s *authService) FindPasswordResetByToken(token string) errors.Error {
-	return s.passwordResetAdapter.FindPasswordResetByToken(token)
+	return s.passwordResetPort.FindPasswordResetByToken(token)
 }
 
 func (s *authService) UpdatePasswordByPasswordReset(token, newPassword string) errors.Error {
-	accountID, err := s.passwordResetAdapter.GetAccountIDByResetPasswordToken(token)
+	accountID, err := s.passwordResetPort.GetAccountIDByResetPasswordToken(token)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (s *authService) UpdatePasswordByPasswordReset(token, newPassword string) e
 	if err != nil {
 		return err
 	}
-	err = s.passwordResetAdapter.DeleteResetPasswordEntry(token)
+	err = s.passwordResetPort.DeleteResetPasswordEntry(token)
 	if err != nil {
 		return err
 	}

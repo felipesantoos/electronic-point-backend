@@ -20,7 +20,7 @@ func AuthUseCase() usecases.AuthUseCase {
 }
 
 func ResourcesUseCase() usecases.ResourcesUseCase {
-	repo := postgres.NewResourcesPostgresAdapter()
+	repo := postgres.NewResourcesPostgresPort()
 	return services.NewResourcesService(repo)
 }
 

@@ -3,7 +3,7 @@ package redis
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/simplifiedAccount"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/infra/mail"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -18,7 +18,7 @@ import (
 
 type redisPasswordResetRepository struct{}
 
-func NewPasswordResetRepository() adapters.PasswordResetAdapter {
+func NewPasswordResetRepository() secondary.PasswordResetPort {
 	return &redisPasswordResetRepository{}
 }
 

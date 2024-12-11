@@ -1,4 +1,4 @@
-package adapters
+package secondary
 
 import (
 	"eletronic_point/src/core/domain/account"
@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type AccountAdapter interface {
+type AccountPort interface {
 	List() ([]account.Account, errors.Error)
 	FindByID(uID *uuid.UUID) (account.Account, errors.Error)
 	Create(account.Account) (*uuid.UUID, errors.Error)

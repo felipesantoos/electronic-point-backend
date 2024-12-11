@@ -3,7 +3,7 @@ package postgres
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/student"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -14,7 +14,7 @@ import (
 
 type studentRepository struct{}
 
-func NewStudentRepository() adapters.StudentAdapter {
+func NewStudentRepository() secondary.StudentPort {
 	return &studentRepository{}
 }
 

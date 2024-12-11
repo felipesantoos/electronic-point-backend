@@ -3,17 +3,17 @@ package services
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/student"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/core/interfaces/usecases"
 
 	"github.com/google/uuid"
 )
 
 type studentService struct {
-	adapter adapters.StudentAdapter
+	adapter secondary.StudentPort
 }
 
-func NewStudentService(adapter adapters.StudentAdapter) usecases.StudentUseCase {
+func NewStudentService(adapter secondary.StudentPort) usecases.StudentUseCase {
 	return &studentService{adapter}
 }
 

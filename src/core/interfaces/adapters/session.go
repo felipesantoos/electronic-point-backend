@@ -1,4 +1,4 @@
-package adapters
+package secondary
 
 import (
 	"eletronic_point/src/core/domain/authorization"
@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type SessionAdapter interface {
+type SessionPort interface {
 	Store(uID *uuid.UUID, accessToken string) errors.Error
 	Exists(uID *uuid.UUID, token string) (bool, errors.Error)
 	RemoveSession(uID *uuid.UUID) errors.Error

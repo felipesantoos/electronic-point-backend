@@ -1,4 +1,4 @@
-package adapters
+package secondary
 
 import (
 	"eletronic_point/src/core/domain/account"
@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type AuthAdapter interface {
+type AuthPort interface {
 	Login(credentials credentials.Credentials) (account.Account, errors.Error)
 	ResetAccountPassword(accountID *uuid.UUID, newPassword string) errors.Error
 }

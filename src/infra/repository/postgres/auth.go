@@ -6,7 +6,7 @@ import (
 	"eletronic_point/src/core/domain/credentials"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/role"
-	"eletronic_point/src/core/interfaces/adapters"
+	secondary "eletronic_point/src/core/interfaces/adapters"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"encoding/hex"
@@ -18,7 +18,7 @@ import (
 
 type authPostgresRepository struct{}
 
-func NewAuthPostgresRepository() adapters.AuthAdapter {
+func NewAuthPostgresRepository() secondary.AuthPort {
 	return &authPostgresRepository{}
 }
 
