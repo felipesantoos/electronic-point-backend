@@ -483,6 +483,243 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/students": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Recupera todos os estudantes registrados no sistema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estudantes"
+                ],
+                "summary": "Listar todos os estudantes.",
+                "operationId": "Student.List",
+                "responses": {
+                    "200": {
+                        "description": "Lista de estudantes.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.Student"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Cria um novo estudante no sistema com os dados fornecidos.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estudantes"
+                ],
+                "summary": "Criar um novo estudante.",
+                "operationId": "Student.Create",
+                "parameters": [
+                    {
+                        "description": "Dados do estudante",
+                        "name": "student",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateStudent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Estudante criado com sucesso.",
+                        "schema": {
+                            "$ref": "#/definitions/response.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos fornecidos.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Recupera os dados de um estudante específico pelo seu ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estudantes"
+                ],
+                "summary": "Obter um estudante por ID.",
+                "operationId": "Student.Get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do estudante",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estudante encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.Student"
+                        }
+                    },
+                    "404": {
+                        "description": "Estudante não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Atualiza os dados de um estudante existente no sistema.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estudantes"
+                ],
+                "summary": "Atualizar informações de um estudante.",
+                "operationId": "Student.Update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do estudante",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados do estudante",
+                        "name": "student",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateStudent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estudante atualizado com sucesso.",
+                        "schema": {
+                            "$ref": "#/definitions/response.Student"
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos fornecidos.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Estudante não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Remove um estudante do sistema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estudantes"
+                ],
+                "summary": "Deletar um estudante.",
+                "operationId": "Student.Delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do estudante",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Estudante removido com sucesso."
+                    },
+                    "404": {
+                        "description": "Estudante não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -514,6 +751,38 @@ const docTemplate = `{
             "properties": {
                 "email": {
                     "type": "string"
+                }
+            }
+        },
+        "request.CreateStudent": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "internship_address": {
+                    "type": "string"
+                },
+                "internship_location": {
+                    "type": "string"
+                },
+                "internship_location_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "total_workload": {
+                    "type": "integer"
                 }
             }
         },
@@ -674,6 +943,50 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "response.Student": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "type": "string"
+                },
+                "frequency_history": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "internship_address": {
+                    "type": "string"
+                },
+                "internship_location": {
+                    "type": "string"
+                },
+                "internship_location_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pending_workload": {
+                    "type": "integer"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "total_workload": {
+                    "type": "integer"
+                },
+                "workload_completed": {
+                    "type": "integer"
                 }
             }
         }

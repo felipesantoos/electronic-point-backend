@@ -1,14 +1,16 @@
 package query
 
 const (
-	StudentID                 = "student_id"
-	StudentName               = "student_name"
-	StudentRegistration       = "student_registration"
-	StudentProfilePicture     = "student_profile_picture"
-	StudentInstitution        = "student_institution"
-	StudentCourse             = "student_course"
-	StudentInternshipLocation = "student_internship_location"
-	StudentTotalWorkload      = "student_total_workload"
+	StudentID                     = "student_id"
+	StudentName                   = "student_name"
+	StudentRegistration           = "student_registration"
+	StudentProfilePicture         = "student_profile_picture"
+	StudentInstitution            = "student_institution"
+	StudentCourse                 = "student_course"
+	StudentInternshipLocationName = "student_internship_location_name"
+	StudentInternshipAddress      = "student_internship_address"
+	StudentInternshipLocation     = "student_internship_location"
+	StudentTotalWorkload          = "student_total_workload"
 )
 
 type StudentQueryBuilder interface {
@@ -82,7 +84,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			profile_picture AS student_profile_picture,
 			institution AS student_institution,
 			course AS student_course,
-			internship_location_name AS student_internship_location,
+			internship_location_name AS student_internship_location_name,
 			internship_address AS student_internship_address,
 			internship_location AS student_internship_location,
 			total_workload AS student_total_workload
@@ -101,7 +103,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			profile_picture AS student_profile_picture,
 			institution AS student_institution,
 			course AS student_course,
-			internship_location_name AS student_internship_location,
+			internship_location_name AS student_internship_location_name,
 			internship_address AS student_internship_address,
 			internship_location AS student_internship_location,
 			total_workload AS student_total_workload

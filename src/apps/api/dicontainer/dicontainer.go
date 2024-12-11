@@ -23,3 +23,8 @@ func ResourcesUseCase() usecases.ResourcesUseCase {
 	repo := postgres.NewResourcesPostgresAdapter()
 	return services.NewResourcesService(repo)
 }
+
+func StudentUseCase() usecases.StudentUseCase {
+	repo := postgres.NewStudentRepository()
+	return services.NewStudentService(repo)
+}

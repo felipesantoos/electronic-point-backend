@@ -31,9 +31,11 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	}
 	name := fmt.Sprint(data[query.StudentName])
 	registration := fmt.Sprint(data[query.StudentRegistration])
-	profilePicture := utils.GetNullableValue[string](data[query.StudentName])
+	profilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
 	institution := fmt.Sprint(data[query.StudentInstitution])
 	course := fmt.Sprint(data[query.StudentCourse])
+	internshipLocationName := fmt.Sprint(data[query.StudentInternshipLocationName])
+	internshipAddress := fmt.Sprint(data[query.StudentInternshipAddress])
 	internshipLocation := fmt.Sprint(data[query.StudentInternshipLocation])
 	totalWorkload, err := strconv.Atoi(fmt.Sprint(data[query.StudentTotalWorkload]))
 	if err != nil {
@@ -47,6 +49,8 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		WithProfilePicture(profilePicture).
 		WithInstitution(institution).
 		WithCourse(course).
+		WithInternshipLocationName(internshipLocationName).
+		WithInternshipAddress(internshipAddress).
 		WithInternshipLocation(internshipLocation).
 		WithTotalWorkload(totalWorkload).
 		Build()

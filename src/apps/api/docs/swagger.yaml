@@ -20,6 +20,27 @@ definitions:
       email:
         type: string
     type: object
+  request.CreateStudent:
+    properties:
+      course:
+        type: string
+      institution:
+        type: string
+      internship_address:
+        type: string
+      internship_location:
+        type: string
+      internship_location_name:
+        type: string
+      name:
+        type: string
+      profile_picture:
+        type: string
+      registration:
+        type: string
+      total_workload:
+        type: integer
+    type: object
   request.Credentials:
     properties:
       email:
@@ -122,6 +143,35 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  response.Student:
+    properties:
+      course:
+        type: string
+      frequency_history:
+        type: string
+      id:
+        type: string
+      institution:
+        type: string
+      internship_address:
+        type: string
+      internship_location:
+        type: string
+      internship_location_name:
+        type: string
+      name:
+        type: string
+      pending_workload:
+        type: integer
+      profile_picture:
+        type: string
+      registration:
+        type: string
+      total_workload:
+        type: integer
+      workload_completed:
+        type: integer
     type: object
 info:
   contact:
@@ -449,6 +499,158 @@ paths:
       summary: Listar todas as funções de conta existentes do banco de dados.
       tags:
       - Recursos
+  /students:
+    get:
+      description: Recupera todos os estudantes registrados no sistema.
+      operationId: Student.List
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de estudantes.
+          schema:
+            items:
+              $ref: '#/definitions/response.Student'
+            type: array
+        "500":
+          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - bearerAuth: []
+      summary: Listar todos os estudantes.
+      tags:
+      - Estudantes
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo estudante no sistema com os dados fornecidos.
+      operationId: Student.Create
+      parameters:
+      - description: Dados do estudante
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateStudent'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Estudante criado com sucesso.
+          schema:
+            $ref: '#/definitions/response.Student'
+        "400":
+          description: Dados inválidos fornecidos.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - bearerAuth: []
+      summary: Criar um novo estudante.
+      tags:
+      - Estudantes
+  /students/{id}:
+    delete:
+      description: Remove um estudante do sistema.
+      operationId: Student.Delete
+      parameters:
+      - description: ID do estudante
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Estudante removido com sucesso.
+        "404":
+          description: Estudante não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - bearerAuth: []
+      summary: Deletar um estudante.
+      tags:
+      - Estudantes
+    get:
+      description: Recupera os dados de um estudante específico pelo seu ID.
+      operationId: Student.Get
+      parameters:
+      - description: ID do estudante
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Estudante encontrado.
+          schema:
+            $ref: '#/definitions/response.Student'
+        "404":
+          description: Estudante não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - bearerAuth: []
+      summary: Obter um estudante por ID.
+      tags:
+      - Estudantes
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um estudante existente no sistema.
+      operationId: Student.Update
+      parameters:
+      - description: ID do estudante
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dados do estudante
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateStudent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Estudante atualizado com sucesso.
+          schema:
+            $ref: '#/definitions/response.Student'
+        "400":
+          description: Dados inválidos fornecidos.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Estudante não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - bearerAuth: []
+      summary: Atualizar informações de um estudante.
+      tags:
+      - Estudantes
 securityDefinitions:
   BearerAuth:
     in: header

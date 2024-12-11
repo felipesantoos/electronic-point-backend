@@ -26,6 +26,7 @@ func (r *router) Load(rootEndpoint *echo.Group) {
 	NewAuthRouter().Load(rootEndpoint)
 	NewAccountRouter().Load(rootEndpoint)
 	NewResourcesRouter().Load(rootEndpoint)
+	NewStudentRouter().Load(rootEndpoint)
 }
 
 func (r *router) LoadDocs(group *echo.Group) {
