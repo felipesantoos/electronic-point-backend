@@ -10,7 +10,7 @@ import (
 
 type resourcesPostgresPort struct{}
 
-func NewResourcesPostgresPort() secondary.ResourcesPort {
+func NewResourcesRepository() secondary.ResourcesPort {
 	return &resourcesPostgresPort{}
 }
 

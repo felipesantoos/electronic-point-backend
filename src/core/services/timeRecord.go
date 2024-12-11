@@ -9,30 +9,30 @@ import (
 	"github.com/google/uuid"
 )
 
-type timeRecordService struct {
-	adapter secondary.TimeRecordPort
+type timeRecordServices struct {
+	repository secondary.TimeRecordPort
 }
 
-func NewTimeRecordService(adapter secondary.TimeRecordPort) primary.TimeRecordPort {
-	return &timeRecordService{adapter}
+func NewTimeRecordServices(repository secondary.TimeRecordPort) primary.TimeRecordPort {
+	return &timeRecordServices{repository}
 }
 
-func (s *timeRecordService) Create(timeRecord timeRecord.TimeRecord) (*uuid.UUID, errors.Error) {
-	return s.adapter.Create(timeRecord)
+func (this *timeRecordServices) Create(_timeRecord timeRecord.TimeRecord) (*uuid.UUID, errors.Error) {
+	return this.repository.Create(_timeRecord)
 }
 
-func (s *timeRecordService) Update(timeRecord timeRecord.TimeRecord) errors.Error {
-	return s.adapter.Update(timeRecord)
+func (this *timeRecordServices) Update(_timeRecord timeRecord.TimeRecord) errors.Error {
+	return this.repository.Update(_timeRecord)
 }
 
-func (s *timeRecordService) Delete(id uuid.UUID) errors.Error {
-	return s.adapter.Delete(id)
+func (this *timeRecordServices) Delete(id uuid.UUID) errors.Error {
+	return this.repository.Delete(id)
 }
 
-func (s *timeRecordService) List() ([]timeRecord.TimeRecord, errors.Error) {
-	return s.adapter.List()
+func (this *timeRecordServices) List() ([]timeRecord.TimeRecord, errors.Error) {
+	return this.repository.List()
 }
 
-func (s *timeRecordService) Get(id uuid.UUID) (timeRecord.TimeRecord, errors.Error) {
-	return s.adapter.Get(id)
+func (this *timeRecordServices) Get(id uuid.UUID) (timeRecord.TimeRecord, errors.Error) {
+	return this.repository.Get(id)
 }

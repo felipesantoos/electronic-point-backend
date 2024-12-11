@@ -39,6 +39,7 @@ var teacherEntries = []string{
 	`\/api\/auth/update-password[^\r\n]*`,
 	`\/api\/res\/[^\r\n]*`,
 	`\/api\/students\/[^\r\n]*`,
+	`\/api\/time-records\/[^\r\n]*`,
 }
 var allowAll = "*"
 

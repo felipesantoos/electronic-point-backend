@@ -30,20 +30,21 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
+	layout := "2006-01-02 15:04:05 -0700 -0700"
 	dateString := fmt.Sprint(data[query.TimeRecordDate])
-	date, err := time.Parse(time.RFC3339, dateString)
+	date, err := time.Parse(layout, dateString)
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
 	entryTimeString := fmt.Sprint(data[query.TimeRecordEntryTime])
-	entryTime, err := time.Parse(time.RFC3339, entryTimeString)
+	entryTime, err := time.Parse(layout, entryTimeString)
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
 	exitTimeString := fmt.Sprint(data[query.TimeRecordExitTime])
-	exitTime, err := time.Parse(time.RFC3339, exitTimeString)
+	exitTime, err := time.Parse(layout, exitTimeString)
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()

@@ -7,24 +7,29 @@ import (
 	"eletronic_point/src/infra/repository/postgres"
 )
 
-func AccountPort() primary.AccountPort {
-	repo := postgres.NewAccountRepository()
-	return services.NewAccountService(repo)
+func AccountServices() primary.AccountPort {
+	repository := postgres.NewAccountRepository()
+	return services.NewAccountService(repository)
 }
 
-func AuthPort() primary.AuthPort {
-	repo := postgres.NewAuthPostgresRepository()
-	sessionRepo := redis.NewSessionRepository()
-	passwordResetRepo := redis.NewPasswordResetRepository()
-	return services.NewAuthService(repo, sessionRepo, passwordResetRepo)
+func AuthServices() primary.AuthPort {
+	repository := postgres.NewAuthPostgresRepository()
+	sessionRepository := redis.NewSessionRepository()
+	passwordResetRepository := redis.NewPasswordResetRepository()
+	return services.NewAuthService(repository, sessionRepository, passwordResetRepository)
 }
 
-func ResourcesPort() primary.ResourcesPort {
-	repo := postgres.NewResourcesPostgresPort()
-	return services.NewResourcesService(repo)
+func ResourcesServices() primary.ResourcesPort {
+	repository := postgres.NewResourcesRepository()
+	return services.NewResourcesService(repository)
 }
 
-func StudentPort() primary.StudentPort {
-	repo := postgres.NewStudentRepository()
-	return services.NewStudentServices(repo)
+func StudentServices() primary.StudentPort {
+	repository := postgres.NewStudentRepository()
+	return services.NewStudentServices(repository)
+}
+
+func TimeRecordServices() primary.TimeRecordPort {
+	repository := postgres.NewTimeRecordRepository()
+	return services.NewTimeRecordServices(repository)
 }

@@ -13,7 +13,7 @@ type accountRouter struct {
 }
 
 func NewAccountRouter() Router {
-	service := dicontainer.AccountPort()
+	service := dicontainer.AccountServices()
 	handler := handlers.NewAccountHandler(service)
 	return &accountRouter{handler}
 }

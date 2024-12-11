@@ -8,18 +8,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type studentRouter struct {
-	_handlers handlers.StudentHandlers
+type timeRecordRouter struct {
+	_handlers handlers.TimeRecordHandlers
 }
 
-func NewStudentRouter() Router {
-	services := dicontainer.StudentServices()
-	_handlers := handlers.NewStudentHandlers(services)
-	return &studentRouter{_handlers}
+func NewTimeRecordRouter() Router {
+	services := dicontainer.TimeRecordServices()
+	_handlers := handlers.NewTimeRecordHandlers(services)
+	return &timeRecordRouter{_handlers}
 }
 
-func (this *studentRouter) Load(rootEndpoint *echo.Group) {
-	router := rootEndpoint.Group("/students")
+func (this *timeRecordRouter) Load(rootEndpoint *echo.Group) {
+	router := rootEndpoint.Group("/time-records")
 	router.GET("", middlewares.EnhanceContext(this._handlers.List))
 	router.GET("/:id", middlewares.EnhanceContext(this._handlers.Get))
 	router.POST("", middlewares.EnhanceContext(this._handlers.Create))

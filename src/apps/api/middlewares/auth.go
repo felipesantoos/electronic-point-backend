@@ -22,7 +22,7 @@ import (
 )
 
 var logger = Logger()
-var authService = dicontainer.AuthPort()
+var authService = dicontainer.AuthServices()
 var permissionsHelper = permissions.New()
 var casbinModelTemplate = `
 	[request_definition]

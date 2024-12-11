@@ -1,15 +1,16 @@
 package query
 
 const (
-	TimeRecordID            = "id"
-	TimeRecordDate          = "date"
-	TimeRecordEntryTime     = "entry_time"
-	TimeRecordExitTime      = "exit_time"
-	TimeRecordLocation      = "location"
-	TimeRecordIsOffSite     = "is_off_site"
-	TimeRecordJustification = "justification"
-	TimeRecordStudentID     = "student_id"
+	TimeRecordID            = "time_record_id"
+	TimeRecordDate          = "time_record_date"
+	TimeRecordEntryTime     = "time_record_entry_time"
+	TimeRecordExitTime      = "time_record_exit_time"
+	TimeRecordLocation      = "time_record_location"
+	TimeRecordIsOffSite     = "time_record_is_off_site"
+	TimeRecordJustification = "time_record_justification"
+	TimeRecordStudentID     = "time_record_student_id"
 )
+
 type TimeRecordQueryBuilder interface {
 	Select() TimeRecordQuerySelectBuilder
 	Insert() string

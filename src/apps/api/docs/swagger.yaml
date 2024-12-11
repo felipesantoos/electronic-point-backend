@@ -27,6 +27,30 @@ definitions:
       password:
         type: string
     type: object
+  request.TimeRecord:
+    properties:
+      date:
+        example: "2024-12-01T00:00:00Z"
+        type: string
+      entry_time:
+        example: "2024-12-01T08:00:00Z"
+        type: string
+      exit_time:
+        example: "2024-12-01T16:00:00Z"
+        type: string
+      is_off_site:
+        example: false
+        type: boolean
+      justification:
+        example: ""
+        type: string
+      location:
+        example: Localização 1
+        type: string
+      student_id:
+        example: 5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65
+        type: string
+    type: object
   request.UpdateAccountProfile:
     properties:
       birth_date:
@@ -846,6 +870,281 @@ paths:
       summary: Atualizar informações de um estudante.
       tags:
       - Estudantes
+  /time-records:
+    get:
+      description: Recupera uma lista de todos os registros de tempo no sistema.
+      operationId: TimeRecord.List
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Requisição realizada com sucesso.
+          schema:
+            items:
+              $ref: '#/definitions/response.Student'
+            type: array
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      summary: Listar todos os registros de tempo.
+      tags:
+      - Registros de tempo
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo registro de tempo no sistema com os dados fornecidos.
+      operationId: TimeRecord.Create
+      parameters:
+      - description: Dados de registro de tempo
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.TimeRecord'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Requisição realizada com sucesso.
+          schema:
+            $ref: '#/definitions/response.ID'
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      summary: Crie um novo registro de tempo.
+      tags:
+      - Registros de tempo
+  /time-records/{id}:
+    delete:
+      description: Exclui o registro de tempo especificado do sistema.
+      operationId: TimeRecord.Delete
+      parameters:
+      - default: ea11bb4b-9aed-4444-9c00-f80bde564063
+        description: ID do registro de tempo
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Requisição realizada com sucesso.
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      summary: Excluir um registro de tempo por ID.
+      tags:
+      - Registros de tempo
+    get:
+      description: Recupera os detalhes de um registro de tempo específico por ID.
+      operationId: TimeRecord.Get
+      parameters:
+      - default: ea11bb4b-9aed-4444-9c00-f80bde564063
+        description: ID do registro de tempo
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Requisição realizada com sucesso.
+          schema:
+            items:
+              $ref: '#/definitions/response.Student'
+            type: array
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      summary: Obtenha um registro de tempo por ID.
+      tags:
+      - Registros de tempo
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um registro de tempo existente no sistema.
+      operationId: TimeRecord.Update
+      parameters:
+      - default: ea11bb4b-9aed-4444-9c00-f80bde564063
+        description: ID do registro de tempo
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dados de registro de tempo
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.TimeRecord'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Requisição realizada com sucesso.
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      summary: Atualizar um registro de tempo existente.
+      tags:
+      - Registros de tempo
 securityDefinitions:
   BearerAuth:
     in: header
