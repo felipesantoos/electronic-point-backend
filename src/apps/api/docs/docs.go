@@ -1474,10 +1474,6 @@ const docTemplate = `{
                 "location": {
                     "type": "string",
                     "example": "Localização 1"
-                },
-                "student_id": {
-                    "type": "string",
-                    "example": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65"
                 }
             }
         },

@@ -5,7 +5,9 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/params"
+	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/messages"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
 
@@ -47,6 +49,9 @@ func NewTimeRecordHandlers(services primary.TimeRecordPort) TimeRecordHandlers {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records [post]
 func (this *timeRecordHandlers) Create(ctx RichContext) error {
+	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
+		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+	}
 	var timeRecordDTO request.TimeRecord
 	if err := ctx.Bind(&timeRecordDTO); err != nil {
 		logger.Error().Msg(err.Error())
@@ -56,6 +61,15 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
+	}
+	var studentID uuid.UUID
+	if ctx.AccountID() != nil {
+		studentID = *ctx.AccountID()
+	}
+	err := _timeRecord.SetStudentID(studentID)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return unprocessableEntityErrorWithMessage(messages.StudentIDErrorMessage)
 	}
 	id, err := this.services.Create(_timeRecord)
 	if err != nil {

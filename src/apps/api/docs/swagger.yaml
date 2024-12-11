@@ -47,9 +47,6 @@ definitions:
       location:
         example: Localização 1
         type: string
-      student_id:
-        example: 5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65
-        type: string
     type: object
   request.UpdateAccountProfile:
     properties:

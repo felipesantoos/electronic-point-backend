@@ -79,7 +79,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 	return `
 		SELECT
 			student.id AS student_id,
-			student.name AS student_name,
+			person.name AS student_name,
 			student.registration AS student_registration,
 			student.profile_picture AS student_profile_picture,
 			student.institution AS student_institution,
@@ -89,8 +89,9 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			student.internship_location AS student_internship_location,
 			student.total_workload AS student_total_workload
 		FROM student
+			INNER JOIN person ON person.id = student.person_id
 		WHERE student.deleted_at IS NULL
-		ORDER BY student.name ASC
+		ORDER BY person.name ASC
 	`
 }
 
@@ -98,7 +99,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 	return `
 		SELECT
 			student.id AS student_id,
-			student.name AS student_name,
+			person.name AS student_name,
 			student.registration AS student_registration,
 			student.profile_picture AS student_profile_picture,
 			student.institution AS student_institution,
@@ -108,6 +109,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			student.internship_location AS student_internship_location,
 			student.total_workload AS student_total_workload
 		FROM student
+			INNER JOIN person ON person.id = student.person_id
 		WHERE student.id = $1 AND student.deleted_at IS NULL
 	`
 }

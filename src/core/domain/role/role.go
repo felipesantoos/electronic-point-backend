@@ -13,9 +13,15 @@ const (
 	ADMIN_ROLE_CODE        = "admin"
 	PROFESSIONAL_ROLE_CODE = "professional"
 	TEACHER_ROLE_CODE      = "teacher"
+	STUDENT_ROLE_CODE      = "student"
 )
 
-var possibleRoleCodes = []string{PROFESSIONAL_ROLE_CODE, ADMIN_ROLE_CODE, TEACHER_ROLE_CODE}
+var possibleRoleCodes = []string{
+	PROFESSIONAL_ROLE_CODE,
+	ADMIN_ROLE_CODE,
+	TEACHER_ROLE_CODE,
+	STUDENT_ROLE_CODE,
+}
 
 type Role interface {
 	domain.Model
@@ -26,6 +32,7 @@ type Role interface {
 	IsProfessional() bool
 	IsAdmin() bool
 	IsTeacher() bool
+	IsStudent() bool
 }
 
 type role struct {
@@ -74,6 +81,10 @@ func (r *role) IsProfessional() bool {
 
 func (r *role) IsTeacher() bool {
 	return strings.ToLower(r.code) == TEACHER_ROLE_CODE
+}
+
+func (r *role) IsStudent() bool {
+	return strings.ToLower(r.code) == STUDENT_ROLE_CODE
 }
 
 func PossibleRoleCodes() []string {
