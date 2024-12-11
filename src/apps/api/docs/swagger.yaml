@@ -895,6 +895,11 @@ paths:
     get:
       description: Recupera uma lista de todos os registros de tempo no sistema.
       operationId: TimeRecord.List
+      parameters:
+      - description: ID do estudante
+        in: query
+        name: studentID
+        type: string
       produces:
       - application/json
       responses:

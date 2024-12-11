@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"eletronic_point/src/apps/api/handlers/checkers"
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/params"
@@ -142,6 +143,7 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Description Recupera uma lista de todos os registros de tempo no sistema.
 // @Tags Registros de tempo
 // @Produce json
+// @Param studentID query string false "ID do estudante"
 // @Success 200 {array} response.Student "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -153,7 +155,16 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records [get]
 func (this *timeRecordHandlers) List(ctx RichContext) error {
-	filters := filters.TimeRecordFilters{}
+	var studentID *uuid.UUID
+	if !checkers.IsEmpty(ctx.QueryParam(params.StudentID)) {
+		value, conversionError := getUUIDQueryParamValue(ctx, params.StudentID)
+		if conversionError != nil {
+			logger.Error().Msg(conversionError.String())
+			return responseFromError(conversionError)
+		}
+		studentID = value
+	}
+	filters := filters.TimeRecordFilters{StudentID: studentID}
 	timeRecords, err := this.services.List(filters)
 	if err != nil {
 		return responseFromError(err)

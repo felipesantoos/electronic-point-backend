@@ -1012,6 +1012,14 @@ const docTemplate = `{
                 ],
                 "summary": "Listar todos os registros de tempo.",
                 "operationId": "TimeRecord.List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do estudante",
+                        "name": "studentID",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Requisição realizada com sucesso.",
