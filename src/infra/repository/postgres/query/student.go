@@ -78,36 +78,36 @@ type studentQuerySelectBuilder struct{}
 func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 	return `
 		SELECT
-			id AS student_id,
-			name AS student_name,
-			registration AS student_registration,
-			profile_picture AS student_profile_picture,
-			institution AS student_institution,
-			course AS student_course,
-			internship_location_name AS student_internship_location_name,
-			internship_address AS student_internship_address,
-			internship_location AS student_internship_location,
-			total_workload AS student_total_workload
+			student.id AS student_id,
+			student.name AS student_name,
+			student.registration AS student_registration,
+			student.profile_picture AS student_profile_picture,
+			student.institution AS student_institution,
+			student.course AS student_course,
+			student.internship_location_name AS student_internship_location_name,
+			student.internship_address AS student_internship_address,
+			student.internship_location AS student_internship_location,
+			student.total_workload AS student_total_workload
 		FROM student
-		WHERE deleted_at IS NULL
-		ORDER BY name ASC
+		WHERE student.deleted_at IS NULL
+		ORDER BY student.name ASC
 	`
 }
 
 func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 	return `
 		SELECT
-			id AS student_id,
-			name AS student_name,
-			registration AS student_registration,
-			profile_picture AS student_profile_picture,
-			institution AS student_institution,
-			course AS student_course,
-			internship_location_name AS student_internship_location_name,
-			internship_address AS student_internship_address,
-			internship_location AS student_internship_location,
-			total_workload AS student_total_workload
+			student.id AS student_id,
+			student.name AS student_name,
+			student.registration AS student_registration,
+			student.profile_picture AS student_profile_picture,
+			student.institution AS student_institution,
+			student.course AS student_course,
+			student.internship_location_name AS student_internship_location_name,
+			student.internship_address AS student_internship_address,
+			student.internship_location AS student_internship_location,
+			student.total_workload AS student_total_workload
 		FROM student
-		WHERE id = $1 AND deleted_at IS NULL
+		WHERE student.id = $1 AND student.deleted_at IS NULL
 	`
 }

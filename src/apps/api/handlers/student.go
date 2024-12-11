@@ -243,22 +243,28 @@ func (this *studentHandlers) Delete(ctx RichContext) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-// List Students
+// List
 // @ID Student.List
 // @Summary Listar todos os estudantes.
 // @Description Recupera todos os estudantes registrados no sistema.
-// @Security	bearerAuth
 // @Tags Estudantes
 // @Produce json
-// @Success 200 {array} response.Student "Lista de estudantes."
-// @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
+// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
+// @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
+// @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students [get]
-func (h *studentHandlers) List(context RichContext) error {
-	result, err := h.services.List()
+func (this *studentHandlers) List(ctx RichContext) error {
+	result, err := this.services.List()
 	if err != nil {
-		return response.ErrorBuilder().NewFromDomain(err)
+		return responseFromError(err)
 	}
-	return context.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomainList(result))
+	return ctx.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomainList(result))
 }
 
 // Get Student by ID

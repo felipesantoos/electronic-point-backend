@@ -72,12 +72,12 @@ func (this studentRepository) List() ([]student.Student, errors.Error) {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
-	s, err := queryObject.Student().FromRows(rows)
+	students, err := queryObject.Student().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
-	return s, nil
+	return students, nil
 }
 
 func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) {
