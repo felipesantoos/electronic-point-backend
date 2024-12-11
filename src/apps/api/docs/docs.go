@@ -700,11 +700,6 @@ const docTemplate = `{
         },
         "/students/{id}": {
             "get": {
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
                 "description": "Recupera os dados de um estudante específico pelo seu ID.",
                 "produces": [
                     "application/json"
@@ -717,6 +712,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65",
                         "description": "ID do estudante",
                         "name": "id",
                         "in": "path",
@@ -725,19 +721,58 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Estudante encontrado.",
+                        "description": "Requisição realizada com sucesso.",
                         "schema": {
-                            "$ref": "#/definitions/response.Student"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.Student"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
                         }
                     },
                     "404": {
-                        "description": "Estudante não encontrado.",
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
                     },
                     "500": {
-                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
@@ -760,6 +795,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65",
                         "description": "ID do estudante",
                         "name": "id",
                         "in": "path",
@@ -903,6 +939,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65",
                         "description": "ID do estudante",
                         "name": "id",
                         "in": "path",

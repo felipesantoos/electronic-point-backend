@@ -123,7 +123,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Tags Estudantes
 // @Accept multipart/form-data
 // @Produce json
-// @Param id path string true "ID do estudante"
+// @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
 // @Param name formData string true "Nome do estudante" default(Nome 1)
 // @Param registration formData string true "Matrícula do estudante" default(0000000001)
 // @Param profile_picture formData file false "Foto de perfil do estudante (arquivo de imagem)"
@@ -219,7 +219,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 // @Description Remove um estudante do sistema.
 // @Tags Estudantes
 // @Produce json
-// @Param id path string true "ID do estudante"
+// @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -267,28 +267,32 @@ func (this *studentHandlers) List(ctx RichContext) error {
 	return ctx.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomainList(result))
 }
 
-// Get Student by ID
+// Get
 // @ID Student.Get
 // @Summary Obter um estudante por ID.
 // @Description Recupera os dados de um estudante específico pelo seu ID.
-// @Security	bearerAuth
 // @Tags Estudantes
 // @Produce json
-// @Param id path string true "ID do estudante"
-// @Success 200 {object} response.Student "Estudante encontrado."
-// @Failure 404 {object} response.ErrorMessage "Estudante não encontrado."
-// @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
+// @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
+// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
+// @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
+// @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students/{id} [get]
-func (h *studentHandlers) Get(context RichContext) error {
-	id := context.Param("id")
-	studentID, conversionError := uuid.Parse(id)
+func (this *studentHandlers) Get(context RichContext) error {
+	id, conversionError := uuid.Parse(context.Param(params.ID))
 	if conversionError != nil {
-		return response.ErrorBuilder().NewBadRequestFromCoreError()
+		logger.Error().Msg(conversionError.Error())
+		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	result, err := h.services.Get(studentID)
+	result, err := this.services.Get(id)
 	if err != nil {
-		return response.ErrorBuilder().NewFromDomain(err)
+		return responseFromError(err)
 	}
-
 	return context.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomain(result))
 }

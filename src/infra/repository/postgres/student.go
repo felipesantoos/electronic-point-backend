@@ -96,10 +96,10 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 		logger.Error().Msg(nativeError.Error())
 		return nil, errors.NewUnexpected()
 	}
-	student, err := queryObject.Student().FromMap(serializedStudent)
+	_student, err := queryObject.Student().FromMap(serializedStudent)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
-	return student, nil
+	return _student, nil
 }

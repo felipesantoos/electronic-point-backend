@@ -636,7 +636,8 @@ paths:
       description: Remove um estudante do sistema.
       operationId: Student.Delete
       parameters:
-      - description: ID do estudante
+      - default: 5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65
+        description: ID do estudante
         in: path
         name: id
         required: true
@@ -687,7 +688,8 @@ paths:
       description: Recupera os dados de um estudante específico pelo seu ID.
       operationId: Student.Get
       parameters:
-      - description: ID do estudante
+      - default: 5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65
+        description: ID do estudante
         in: path
         name: id
         required: true
@@ -696,19 +698,45 @@ paths:
       - application/json
       responses:
         "200":
-          description: Estudante encontrado.
+          description: Requisição realizada com sucesso.
           schema:
-            $ref: '#/definitions/response.Student'
+            items:
+              $ref: '#/definitions/response.Student'
+            type: array
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
         "404":
-          description: Estudante não encontrado.
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
         "500":
-          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
-      security:
-      - bearerAuth: []
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
       summary: Obter um estudante por ID.
       tags:
       - Estudantes
@@ -718,7 +746,8 @@ paths:
       description: Atualiza os dados de um estudante existente no sistema.
       operationId: Student.Update
       parameters:
-      - description: ID do estudante
+      - default: 5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65
+        description: ID do estudante
         in: path
         name: id
         required: true
