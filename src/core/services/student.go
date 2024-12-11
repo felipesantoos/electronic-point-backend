@@ -3,8 +3,8 @@ package services
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/student"
-	secondary "eletronic_point/src/core/interfaces/adapters"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/interfaces/secondary"
 
 	"github.com/google/uuid"
 )
@@ -13,7 +13,7 @@ type studentService struct {
 	adapter secondary.StudentPort
 }
 
-func NewStudentService(adapter secondary.StudentPort) usecases.StudentUseCase {
+func NewStudentService(adapter secondary.StudentPort) primary.StudentPort {
 	return &studentService{adapter}
 }
 

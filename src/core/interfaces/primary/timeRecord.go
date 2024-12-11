@@ -1,4 +1,4 @@
-package usecases
+package primary
 
 import (
 	"eletronic_point/src/core/domain/errors"
@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type TimeRecordUseCase interface {
+type TimeRecordPort interface {
 	Create(timeRecord timeRecord.TimeRecord) (*uuid.UUID, errors.Error)
 	Update(timeRecord timeRecord.TimeRecord) errors.Error
 	Delete(id uuid.UUID) errors.Error

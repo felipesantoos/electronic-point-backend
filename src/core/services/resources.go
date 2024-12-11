@@ -3,15 +3,15 @@ package services
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/role"
-	secondary "eletronic_point/src/core/interfaces/adapters"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/interfaces/secondary"
 )
 
 type resourcesService struct {
 	adapter secondary.ResourcesPort
 }
 
-func NewResourcesService(adapter secondary.ResourcesPort) usecases.ResourcesUseCase {
+func NewResourcesService(adapter secondary.ResourcesPort) primary.ResourcesPort {
 	return &resourcesService{adapter}
 }
 

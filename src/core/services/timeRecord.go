@@ -3,8 +3,8 @@ package services
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/timeRecord"
-	secondary "eletronic_point/src/core/interfaces/adapters"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/interfaces/secondary"
 
 	"github.com/google/uuid"
 )
@@ -13,7 +13,7 @@ type timeRecordService struct {
 	adapter secondary.TimeRecordPort
 }
 
-func NewTimeRecordService(adapter secondary.TimeRecordPort) usecases.TimeRecordUseCase {
+func NewTimeRecordService(adapter secondary.TimeRecordPort) primary.TimeRecordPort {
 	return &timeRecordService{adapter}
 }
 

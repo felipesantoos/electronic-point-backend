@@ -3,7 +3,7 @@ package handlers
 import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
 	"net/http"
 
 	"github.com/wallrony/go-validator/validator"
@@ -18,10 +18,10 @@ type AccountHandler interface {
 }
 
 type accountHandler struct {
-	service usecases.AccountUseCase
+	service primary.AccountPort
 }
 
-func NewAccountHandler(service usecases.AccountUseCase) AccountHandler {
+func NewAccountHandler(service primary.AccountPort) AccountHandler {
 	return &accountHandler{service}
 }
 

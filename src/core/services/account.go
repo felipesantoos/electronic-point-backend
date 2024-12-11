@@ -5,8 +5,8 @@ import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/person"
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
-	secondary "eletronic_point/src/core/interfaces/adapters"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/interfaces/secondary"
 
 	"github.com/google/uuid"
 )
@@ -15,7 +15,7 @@ type accountService struct {
 	adapter secondary.AccountPort
 }
 
-func NewAccountService(repository secondary.AccountPort) usecases.AccountUseCase {
+func NewAccountService(repository secondary.AccountPort) primary.AccountPort {
 	return &accountService{repository}
 }
 

@@ -3,7 +3,7 @@ package redis
 import (
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/errors"
-	secondary "eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/core/interfaces/secondary"
 	"fmt"
 	"time"
 

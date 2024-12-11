@@ -3,7 +3,7 @@ package handlers
 import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -18,10 +18,10 @@ type StudentHandler interface {
 }
 
 type studentHandler struct {
-	usecase usecases.StudentUseCase
+	usecase primary.StudentPort
 }
 
-func NewStudentHandler(usecase usecases.StudentUseCase) StudentHandler {
+func NewStudentHandler(usecase primary.StudentPort) StudentHandler {
 	return &studentHandler{usecase}
 }
 

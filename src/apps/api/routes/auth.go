@@ -13,7 +13,7 @@ type authRouter struct {
 }
 
 func NewAuthRouter() Router {
-	usecase := dicontainer.AuthUseCase()
+	usecase := dicontainer.AuthPort()
 	handler := handlers.NewAuthHandler(usecase)
 	return &authRouter{handler}
 }

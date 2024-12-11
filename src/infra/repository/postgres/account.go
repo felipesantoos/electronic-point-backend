@@ -9,7 +9,7 @@ import (
 	"eletronic_point/src/core/domain/professional"
 	"eletronic_point/src/core/domain/role"
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
-	secondary "eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/core/interfaces/secondary"
 	mail "eletronic_point/src/infra/mail"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"

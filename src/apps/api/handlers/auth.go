@@ -5,7 +5,7 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/utils"
 	"eletronic_point/src/core/domain/authorization"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
 	"encoding/hex"
 	"net/http"
 
@@ -22,10 +22,10 @@ type AuthHandler interface {
 }
 
 type authHandler struct {
-	service usecases.AuthUseCase
+	service primary.AuthPort
 }
 
-func NewAuthHandler(service usecases.AuthUseCase) AuthHandler {
+func NewAuthHandler(service primary.AuthPort) AuthHandler {
 	return &authHandler{service}
 }
 

@@ -13,7 +13,7 @@ type resourcesRouter struct {
 }
 
 func NewResourcesRouter() Router {
-	usecase := dicontainer.ResourcesUseCase()
+	usecase := dicontainer.ResourcesPort()
 	handler := handlers.NewResourcesHandler(usecase)
 	return &resourcesRouter{handler}
 }

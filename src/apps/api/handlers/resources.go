@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"eletronic_point/src/apps/api/handlers/dto/response"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
 	"net/http"
 )
 
@@ -11,10 +11,10 @@ type ResourcesHandler interface {
 }
 
 type resourcesHandler struct {
-	usecase usecases.ResourcesUseCase
+	usecase primary.ResourcesPort
 }
 
-func NewResourcesHandler(usecase usecases.ResourcesUseCase) ResourcesHandler {
+func NewResourcesHandler(usecase primary.ResourcesPort) ResourcesHandler {
 	return &resourcesHandler{usecase}
 }
 

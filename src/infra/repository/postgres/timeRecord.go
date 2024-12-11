@@ -3,7 +3,7 @@ package postgres
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/timeRecord"
-	secondary "eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"

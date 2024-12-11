@@ -1,4 +1,4 @@
-package usecases
+package primary
 
 import (
 	"eletronic_point/src/core/domain/authorization"
@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type AuthUseCase interface {
+type AuthPort interface {
 	Login(credentials.Credentials) (authorization.Authorization, errors.Error)
 	Logout(accountID *uuid.UUID) errors.Error
 	SessionExists(accountId *uuid.UUID, token string) (bool, errors.Error)

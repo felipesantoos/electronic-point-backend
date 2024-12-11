@@ -13,7 +13,7 @@ type studentRouter struct {
 }
 
 func NewStudentRouter() Router {
-	usecase := dicontainer.StudentUseCase()
+	usecase := dicontainer.StudentPort()
 	handler := handlers.NewStudentHandler(usecase)
 	return &studentRouter{handler}
 }

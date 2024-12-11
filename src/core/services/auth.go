@@ -4,8 +4,8 @@ import (
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/credentials"
 	"eletronic_point/src/core/domain/errors"
-	secondary "eletronic_point/src/core/interfaces/adapters"
-	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/interfaces/secondary"
 
 	"github.com/google/uuid"
 )
@@ -20,7 +20,7 @@ func NewAuthService(
 	adapter secondary.AuthPort,
 	sessionPort secondary.SessionPort,
 	passwordResetPort secondary.PasswordResetPort,
-) usecases.AuthUseCase {
+) primary.AuthPort {
 	return &authService{adapter, sessionPort, passwordResetPort}
 }
 

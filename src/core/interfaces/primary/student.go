@@ -1,4 +1,4 @@
-package usecases
+package primary
 
 import (
 	"eletronic_point/src/core/domain/errors"
@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type StudentUseCase interface {
+type StudentPort interface {
 	Create(student student.Student) (*uuid.UUID, errors.Error)
 	Update(student student.Student) errors.Error
 	Delete(id uuid.UUID) errors.Error
