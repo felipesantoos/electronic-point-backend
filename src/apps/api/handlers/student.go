@@ -146,6 +146,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 func (this *studentHandlers) Update(ctx RichContext) error {
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
+		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
 	if formDataError := ctx.Request().ParseMultipartForm(10 << 20); formDataError != nil {
@@ -212,30 +213,34 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-// Delete Student
+// Delete
 // @ID Student.Delete
 // @Summary Deletar um estudante.
 // @Description Remove um estudante do sistema.
-// @Security	bearerAuth
 // @Tags Estudantes
 // @Produce json
 // @Param id path string true "ID do estudante"
-// @Success 204 {object} nil "Estudante removido com sucesso."
-// @Failure 404 {object} response.ErrorMessage "Estudante não encontrado."
-// @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
+// @Success 204 {object} nil "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
+// @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
+// @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students/{id} [delete]
-func (h *studentHandlers) Delete(context RichContext) error {
-	id := context.Param("id")
-	studentID, conversionError := uuid.Parse(id)
+func (this *studentHandlers) Delete(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
-		return response.ErrorBuilder().NewBadRequestFromCoreError()
+		logger.Error().Msg(conversionError.Error())
+		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	err := h.services.Delete(studentID)
+	err := this.services.Delete(id)
 	if err != nil {
-		return response.ErrorBuilder().NewFromDomain(err)
+		return responseFromError(err)
 	}
-
-	return context.NoContent(http.StatusNoContent)
+	return ctx.NoContent(http.StatusNoContent)
 }
 
 // List Students
