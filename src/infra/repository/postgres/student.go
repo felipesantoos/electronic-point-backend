@@ -43,21 +43,15 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 	return &id, nil
 }
 
-func (this studentRepository) Update(s student.Student) errors.Error {
-	_, err := repository.ExecQuery(query.Student().Update(),
-		s.ID,
-		s.Name,
-		s.Registration,
-		s.ProfilePicture,
-		s.Institution,
-		s.Course,
-		s.InternshipLocationName,
-		s.InternshipAddress,
-		s.InternshipLocation,
-		s.TotalWorkload,
-	)
+func (this studentRepository) Update(_student student.Student) errors.Error {
+	_, err := repository.ExecQuery(query.Student().Update(), _student.ID(), _student.Name(), _student.Registration(),
+		_student.ProfilePicture(), _student.Institution(), _student.Course(), _student.InternshipLocationName(),
+		_student.InternshipAddress(), _student.InternshipLocation(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())
+		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
+			return errors.NewConflictFromString(messages.StudentRegistrationIsAlreadyInUseErrorMessage)
+		}
 		return errors.NewUnexpected()
 	}
 	return nil

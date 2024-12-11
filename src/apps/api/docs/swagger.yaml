@@ -27,27 +27,6 @@ definitions:
       password:
         type: string
     type: object
-  request.Student:
-    properties:
-      course:
-        type: string
-      institution:
-        type: string
-      internship_address:
-        type: string
-      internship_location:
-        type: string
-      internship_location_name:
-        type: string
-      name:
-        type: string
-      profile_picture:
-        type: string
-      registration:
-        type: string
-      total_workload:
-        type: integer
-    type: object
   request.UpdateAccountProfile:
     properties:
       birth_date:
@@ -528,12 +507,14 @@ paths:
         `profile_picture` deve ser enviado como um arquivo em um formulário.
       operationId: Student.Create
       parameters:
-      - description: Nome do estudante
+      - default: Nome 1
+        description: Nome do estudante
         in: formData
         name: name
         required: true
         type: string
-      - description: Matrícula do estudante
+      - default: "0000000001"
+        description: Matrícula do estudante
         in: formData
         name: registration
         required: true
@@ -541,34 +522,39 @@ paths:
       - description: Foto de perfil do estudante (arquivo de imagem)
         in: formData
         name: profile_picture
-        required: true
         type: file
-      - description: Instituição do estudante
+      - default: IFAL 1
+        description: Instituição do estudante
         in: formData
         name: institution
         required: true
         type: string
-      - description: Curso do estudante
+      - default: Curso 1
+        description: Curso do estudante
         in: formData
         name: course
         required: true
         type: string
-      - description: Nome do local de estágio
+      - default: Nome do local 1
+        description: Nome do local de estágio
         in: formData
         name: internship_location_name
         required: true
         type: string
-      - description: Endereço do local de estágio
+      - default: Endereço 1
+        description: Endereço do local de estágio
         in: formData
         name: internship_address
         required: true
         type: string
-      - description: Localização do estágio
+      - default: Localização 1
+        description: Localização do estágio
         in: formData
         name: internship_location
         required: true
         type: string
-      - description: Carga horária total do estágio
+      - default: 100
+        description: Carga horária total do estágio
         in: formData
         name: total_workload
         required: true
@@ -676,7 +662,7 @@ paths:
       - Estudantes
     put:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Atualiza os dados de um estudante existente no sistema.
       operationId: Student.Update
       parameters:
@@ -685,33 +671,97 @@ paths:
         name: id
         required: true
         type: string
-      - description: Dados do estudante
-        in: body
-        name: student
+      - default: Nome 1
+        description: Nome do estudante
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/request.Student'
+        type: string
+      - default: "0000000001"
+        description: Matrícula do estudante
+        in: formData
+        name: registration
+        required: true
+        type: string
+      - description: Foto de perfil do estudante (arquivo de imagem)
+        in: formData
+        name: profile_picture
+        type: file
+      - default: IFAL 1
+        description: Instituição do estudante
+        in: formData
+        name: institution
+        required: true
+        type: string
+      - default: Curso 1
+        description: Curso do estudante
+        in: formData
+        name: course
+        required: true
+        type: string
+      - default: Nome do local 1
+        description: Nome do local de estágio
+        in: formData
+        name: internship_location_name
+        required: true
+        type: string
+      - default: Endereço 1
+        description: Endereço do local de estágio
+        in: formData
+        name: internship_address
+        required: true
+        type: string
+      - default: Localização 1
+        description: Localização do estágio
+        in: formData
+        name: internship_location
+        required: true
+        type: string
+      - default: 100
+        description: Carga horária total do estágio
+        in: formData
+        name: total_workload
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
-        "200":
-          description: Estudante atualizado com sucesso.
-          schema:
-            $ref: '#/definitions/response.Student'
+        "204":
+          description: Requisição realizada com sucesso.
         "400":
-          description: Dados inválidos fornecidos.
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
         "404":
-          description: Estudante não encontrado.
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
         "500":
-          description: Erro inesperado. Por favor, entre em contato com o suporte.
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
-      security:
-      - bearerAuth: []
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
       summary: Atualizar informações de um estudante.
       tags:
       - Estudantes

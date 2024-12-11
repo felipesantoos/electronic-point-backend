@@ -534,6 +534,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "default": "Nome 1",
                         "description": "Nome do estudante",
                         "name": "name",
                         "in": "formData",
@@ -541,6 +542,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "0000000001",
                         "description": "Matrícula do estudante",
                         "name": "registration",
                         "in": "formData",
@@ -550,11 +552,11 @@ const docTemplate = `{
                         "type": "file",
                         "description": "Foto de perfil do estudante (arquivo de imagem)",
                         "name": "profile_picture",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "string",
+                        "default": "IFAL 1",
                         "description": "Instituição do estudante",
                         "name": "institution",
                         "in": "formData",
@@ -562,6 +564,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Curso 1",
                         "description": "Curso do estudante",
                         "name": "course",
                         "in": "formData",
@@ -569,6 +572,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Nome do local 1",
                         "description": "Nome do local de estágio",
                         "name": "internship_location_name",
                         "in": "formData",
@@ -576,6 +580,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Endereço 1",
                         "description": "Endereço do local de estágio",
                         "name": "internship_address",
                         "in": "formData",
@@ -583,6 +588,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "Localização 1",
                         "description": "Localização do estágio",
                         "name": "internship_location",
                         "in": "formData",
@@ -590,6 +596,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "default": 100,
                         "description": "Carga horária total do estágio",
                         "name": "total_workload",
                         "in": "formData",
@@ -701,14 +708,9 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
                 "description": "Atualiza os dados de um estudante existente no sistema.",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -727,36 +729,124 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Dados do estudante",
-                        "name": "student",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.Student"
-                        }
+                        "type": "string",
+                        "default": "Nome 1",
+                        "description": "Nome do estudante",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "0000000001",
+                        "description": "Matrícula do estudante",
+                        "name": "registration",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Foto de perfil do estudante (arquivo de imagem)",
+                        "name": "profile_picture",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "default": "IFAL 1",
+                        "description": "Instituição do estudante",
+                        "name": "institution",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "Curso 1",
+                        "description": "Curso do estudante",
+                        "name": "course",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "Nome do local 1",
+                        "description": "Nome do local de estágio",
+                        "name": "internship_location_name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "Endereço 1",
+                        "description": "Endereço do local de estágio",
+                        "name": "internship_address",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "Localização 1",
+                        "description": "Localização do estágio",
+                        "name": "internship_location",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 100,
+                        "description": "Carga horária total do estágio",
+                        "name": "total_workload",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Estudante atualizado com sucesso.",
-                        "schema": {
-                            "$ref": "#/definitions/response.Student"
-                        }
+                    "204": {
+                        "description": "Requisição realizada com sucesso."
                     },
                     "400": {
-                        "description": "Dados inválidos fornecidos.",
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
                     },
                     "404": {
-                        "description": "Estudante não encontrado.",
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
                     },
                     "500": {
-                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
@@ -847,38 +937,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
-                }
-            }
-        },
-        "request.Student": {
-            "type": "object",
-            "properties": {
-                "course": {
-                    "type": "string"
-                },
-                "institution": {
-                    "type": "string"
-                },
-                "internship_address": {
-                    "type": "string"
-                },
-                "internship_location": {
-                    "type": "string"
-                },
-                "internship_location_name": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "profile_picture": {
-                    "type": "string"
-                },
-                "registration": {
-                    "type": "string"
-                },
-                "total_workload": {
-                    "type": "integer"
                 }
             }
         },
