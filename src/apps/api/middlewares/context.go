@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"backend_template/src/apps/api/handlers"
-	"backend_template/src/apps/api/utils"
-	"backend_template/src/core/domain/authorization"
+	"eletronic_point/src/apps/api/handlers"
+	"eletronic_point/src/apps/api/utils"
+	"eletronic_point/src/core/domain/authorization"
 
 	"github.com/labstack/echo/v4"
 )

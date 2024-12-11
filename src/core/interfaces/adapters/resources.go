@@ -1,8 +1,8 @@
 package adapters
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/role"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/role"
 )
 
 type ResourcesAdapter interface {

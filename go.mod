@@ -1,4 +1,4 @@
-module backend_template
+module eletronic_point
 
 go 1.18
 

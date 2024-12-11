@@ -1,6 +1,6 @@
 package request
 
-import updatepassword "backend_template/src/core/domain/updatePassword"
+import updatepassword "eletronic_point/src/core/domain/updatePassword"
 
 type UpdatePassword struct {
 	CurrentPassword string `json:"current_password"`

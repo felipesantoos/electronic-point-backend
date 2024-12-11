@@ -1,7 +1,7 @@
 package request
 
 import (
-	"backend_template/src/core/domain/credentials"
+	"eletronic_point/src/core/domain/credentials"
 )
 
 type Credentials struct {

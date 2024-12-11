@@ -1,13 +1,13 @@
 package postgres
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/student"
-	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/core/messages"
-	"backend_template/src/infra/repository"
-	"backend_template/src/infra/repository/postgres/query"
-	"backend_template/src/infra/repository/postgres/queryObject"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/student"
+	"eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/core/messages"
+	"eletronic_point/src/infra/repository"
+	"eletronic_point/src/infra/repository/postgres/query"
+	"eletronic_point/src/infra/repository/postgres/queryObject"
 
 	"github.com/google/uuid"
 )

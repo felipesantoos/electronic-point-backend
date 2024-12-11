@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/infra"
-	"backend_template/src/infra/repository"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/infra"
+	"eletronic_point/src/infra/repository"
 	"strings"
 )
 

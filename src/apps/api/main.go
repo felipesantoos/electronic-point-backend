@@ -1,14 +1,14 @@
 package main
 
 import (
-	"backend_template/src/apps/api/middlewares"
-	"backend_template/src/apps/api/routes"
-	"backend_template/src/utils"
+	"eletronic_point/src/apps/api/middlewares"
+	"eletronic_point/src/apps/api/routes"
+	"eletronic_point/src/utils"
 	"fmt"
 	"log"
 	"strconv"
 
-	_ "backend_template/src/apps/api/docs"
+	_ "eletronic_point/src/apps/api/docs"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"

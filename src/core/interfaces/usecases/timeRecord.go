@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/timeRecord"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/timeRecord"
 
 	"github.com/google/uuid"
 )

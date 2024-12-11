@@ -1,8 +1,8 @@
 package authorization
 
 import (
-	"backend_template/src/core/domain/account"
-	"backend_template/src/core/domain/role"
+	"eletronic_point/src/core/domain/account"
+	"eletronic_point/src/core/domain/role"
 	"encoding/base64"
 	"encoding/json"
 

@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"backend_template/src/core"
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/domain/role"
+	"eletronic_point/src/core"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/domain/role"
 	"encoding/base64"
 	"encoding/json"
 	"errors"

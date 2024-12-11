@@ -1,9 +1,9 @@
 package usecases
 
 import (
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/domain/credentials"
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/domain/credentials"
+	"eletronic_point/src/core/domain/errors"
 
 	"github.com/google/uuid"
 )

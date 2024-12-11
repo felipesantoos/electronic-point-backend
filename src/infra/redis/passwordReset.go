@@ -1,12 +1,12 @@
 package redis
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/simplifiedAccount"
-	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/infra/mail"
-	"backend_template/src/infra/repository"
-	"backend_template/src/infra/repository/postgres/query"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/simplifiedAccount"
+	"eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/infra/mail"
+	"eletronic_point/src/infra/repository"
+	"eletronic_point/src/infra/repository/postgres/query"
 	"fmt"
 	"os"
 	"time"

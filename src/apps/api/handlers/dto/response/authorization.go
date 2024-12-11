@@ -1,6 +1,6 @@
 package response
 
-import "backend_template/src/core/domain/authorization"
+import "eletronic_point/src/core/domain/authorization"
 
 type Authorization struct {
 	Token string `json:"access_token"`

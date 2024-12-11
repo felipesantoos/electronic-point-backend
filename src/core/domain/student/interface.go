@@ -1,7 +1,7 @@
 package student
 
 import (
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core/domain/errors"
 
 	"github.com/google/uuid"
 )

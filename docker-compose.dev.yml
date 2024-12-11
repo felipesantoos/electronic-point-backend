@@ -1,7 +1,7 @@
 version: "3"
 services:
   api:
-    container_name: backend_template_api
+    container_name: eletronic_point_api
     build:
       context: .
       dockerfile: .docker/development/Dockerfile.api
@@ -11,18 +11,18 @@ services:
     ports:
       - "8000:8000"
   database:
-    container_name: backend_template_database
+    container_name: eletronic_point_database
     build:
       context: .
       dockerfile: .docker/development/Dockerfile.postgres
     environment:
-      - POSTGRES_USER=backend_template
+      - POSTGRES_USER=eletronic_point
       - POSTGRES_PASSWORD=12345678
     ports:
       - "5432:5432"
   redis:
     image: redis
-    container_name: backend_template_redis
+    container_name: eletronic_point_redis
     command:
       - /bin/sh
       - -c

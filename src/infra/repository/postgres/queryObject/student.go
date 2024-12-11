@@ -1,10 +1,10 @@
 package queryObject
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/student"
-	"backend_template/src/infra/repository/postgres/query"
-	"backend_template/src/utils"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/student"
+	"eletronic_point/src/infra/repository/postgres/query"
+	"eletronic_point/src/utils"
 	"fmt"
 	"strconv"
 

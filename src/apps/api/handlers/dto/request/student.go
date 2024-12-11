@@ -1,8 +1,8 @@
 package request
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/student"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/student"
 )
 
 type CreateStudent struct {

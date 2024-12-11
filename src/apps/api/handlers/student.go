@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"backend_template/src/apps/api/handlers/dto/request"
-	"backend_template/src/apps/api/handlers/dto/response"
-	"backend_template/src/core/interfaces/usecases"
+	"eletronic_point/src/apps/api/handlers/dto/request"
+	"eletronic_point/src/apps/api/handlers/dto/response"
+	"eletronic_point/src/core/interfaces/usecases"
 	"net/http"
 
 	"github.com/google/uuid"

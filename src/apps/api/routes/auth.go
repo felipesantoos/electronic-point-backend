@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"backend_template/src/apps/api/dicontainer"
-	"backend_template/src/apps/api/handlers"
-	"backend_template/src/apps/api/middlewares"
+	"eletronic_point/src/apps/api/dicontainer"
+	"eletronic_point/src/apps/api/handlers"
+	"eletronic_point/src/apps/api/middlewares"
 
 	"github.com/labstack/echo/v4"
 )

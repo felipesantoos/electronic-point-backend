@@ -1,9 +1,9 @@
 package authorization
 
 import (
-	"backend_template/src/core"
-	"backend_template/src/core/domain/account"
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core"
+	"eletronic_point/src/core/domain/account"
+	"eletronic_point/src/core/domain/errors"
 	"os"
 	"time"
 

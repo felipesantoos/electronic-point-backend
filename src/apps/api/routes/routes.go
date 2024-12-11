@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"backend_template/src/apps/api/utils"
+	"eletronic_point/src/apps/api/utils"
 
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"

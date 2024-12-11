@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"backend_template/src/apps/api/handlers/dto/request"
-	"backend_template/src/apps/api/handlers/dto/response"
-	"backend_template/src/apps/api/utils"
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/interfaces/usecases"
+	"eletronic_point/src/apps/api/handlers/dto/request"
+	"eletronic_point/src/apps/api/handlers/dto/response"
+	"eletronic_point/src/apps/api/utils"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/interfaces/usecases"
 	"encoding/hex"
 	"net/http"
 

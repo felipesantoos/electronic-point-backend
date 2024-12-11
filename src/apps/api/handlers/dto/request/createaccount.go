@@ -1,10 +1,10 @@
 package request
 
 import (
-	"backend_template/src/core/domain/account"
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/person"
-	"backend_template/src/core/domain/role"
+	"eletronic_point/src/core/domain/account"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/person"
+	"eletronic_point/src/core/domain/role"
 )
 
 const birthDatePattern = `^[0-9]{4}-?[0-9]{2}-?[0-9]{2}$`

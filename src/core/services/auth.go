@@ -1,11 +1,11 @@
 package services
 
 import (
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/domain/credentials"
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/core/interfaces/usecases"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/domain/credentials"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/core/interfaces/usecases"
 
 	"github.com/google/uuid"
 )

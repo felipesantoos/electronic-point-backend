@@ -1,8 +1,8 @@
 package person
 
 import (
-	"backend_template/src/core/domain"
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core/domain"
+	"eletronic_point/src/core/domain/errors"
 	"net/mail"
 	"regexp"
 	"strings"

@@ -1,7 +1,7 @@
 package response
 
 import (
-	"backend_template/src/core/domain/account"
+	"eletronic_point/src/core/domain/account"
 
 	"github.com/google/uuid"
 )

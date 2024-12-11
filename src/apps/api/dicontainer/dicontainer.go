@@ -1,10 +1,10 @@
 package dicontainer
 
 import (
-	"backend_template/src/core/interfaces/usecases"
-	"backend_template/src/core/services"
-	"backend_template/src/infra/redis"
-	"backend_template/src/infra/repository/postgres"
+	"eletronic_point/src/core/interfaces/usecases"
+	"eletronic_point/src/core/services"
+	"eletronic_point/src/infra/redis"
+	"eletronic_point/src/infra/repository/postgres"
 )
 
 func AccountUseCase() usecases.AccountUseCase {

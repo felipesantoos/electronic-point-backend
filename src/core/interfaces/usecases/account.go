@@ -1,10 +1,10 @@
 package usecases
 
 import (
-	"backend_template/src/core/domain/account"
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/person"
-	updatepassword "backend_template/src/core/domain/updatePassword"
+	"eletronic_point/src/core/domain/account"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/person"
+	updatepassword "eletronic_point/src/core/domain/updatePassword"
 
 	"github.com/google/uuid"
 )

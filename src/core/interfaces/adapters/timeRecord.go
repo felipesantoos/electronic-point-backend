@@ -1,8 +1,8 @@
 package adapters
 
 import (
-	"backend_template/src/core/domain/errors"
-	timeRecord "backend_template/src/core/domain/timeRecord"
+	"eletronic_point/src/core/domain/errors"
+	timeRecord "eletronic_point/src/core/domain/timeRecord"
 
 	"github.com/google/uuid"
 )

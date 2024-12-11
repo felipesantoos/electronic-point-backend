@@ -1,9 +1,9 @@
 package adapters
 
 import (
-	"backend_template/src/core/domain/account"
-	"backend_template/src/core/domain/credentials"
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core/domain/account"
+	"eletronic_point/src/core/domain/credentials"
+	"eletronic_point/src/core/domain/errors"
 
 	"github.com/google/uuid"
 )

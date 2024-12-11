@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"backend_template/src/utils/validator"
+	"eletronic_point/src/utils/validator"
 	"regexp"
 	"strings"
 )

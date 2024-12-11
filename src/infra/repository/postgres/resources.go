@@ -1,11 +1,11 @@
 package postgres
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/role"
-	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/infra/repository"
-	"backend_template/src/infra/repository/postgres/query"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/role"
+	"eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/infra/repository"
+	"eletronic_point/src/infra/repository/postgres/query"
 )
 
 type resourcesPostgresAdapter struct{}

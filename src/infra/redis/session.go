@@ -1,9 +1,9 @@
 package redis
 
 import (
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/interfaces/adapters"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/interfaces/adapters"
 	"fmt"
 	"time"
 

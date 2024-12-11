@@ -1,7 +1,7 @@
 package response
 
 import (
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core/domain/errors"
 	"net/http"
 	"regexp"
 

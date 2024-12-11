@@ -1,10 +1,10 @@
 package services
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/student"
-	"backend_template/src/core/interfaces/adapters"
-	"backend_template/src/core/interfaces/usecases"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/student"
+	"eletronic_point/src/core/interfaces/adapters"
+	"eletronic_point/src/core/interfaces/usecases"
 
 	"github.com/google/uuid"
 )

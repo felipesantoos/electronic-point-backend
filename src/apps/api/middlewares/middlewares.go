@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"backend_template/src/utils"
+	"eletronic_point/src/utils"
 
 	"github.com/rs/zerolog"
 )

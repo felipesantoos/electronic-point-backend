@@ -1,10 +1,10 @@
 package repository
 
 import (
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/infra"
-	"backend_template/src/utils"
 	"database/sql"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/infra"
+	"eletronic_point/src/utils"
 	"fmt"
 	"os"
 	"regexp"

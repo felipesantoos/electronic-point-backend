@@ -1,13 +1,13 @@
 package middlewares
 
 import (
-	"backend_template/src/apps/api/dicontainer"
-	"backend_template/src/apps/api/handlers"
-	"backend_template/src/apps/api/middlewares/permissions"
-	"backend_template/src/apps/api/utils"
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/role"
+	"eletronic_point/src/apps/api/dicontainer"
+	"eletronic_point/src/apps/api/handlers"
+	"eletronic_point/src/apps/api/middlewares/permissions"
+	"eletronic_point/src/apps/api/utils"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/role"
 	"encoding/json"
 	"fmt"
 	"net/http"

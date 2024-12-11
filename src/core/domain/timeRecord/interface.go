@@ -1,7 +1,7 @@
 package timeRecord
 
 import (
-	"backend_template/src/core/domain/errors"
+	"eletronic_point/src/core/domain/errors"
 	"time"
 
 	"github.com/google/uuid"

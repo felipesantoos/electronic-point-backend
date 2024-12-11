@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"backend_template/src/apps/api/utils"
-	"backend_template/src/core/domain/authorization"
-	"backend_template/src/core/domain/errors"
-	"backend_template/src/core/domain/role"
+	"eletronic_point/src/apps/api/utils"
+	"eletronic_point/src/core/domain/authorization"
+	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/role"
 	"fmt"
 	"strconv"
 	"strings"
