@@ -3,8 +3,12 @@ package handlers
 import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
+	"eletronic_point/src/apps/api/handlers/formData"
 	"eletronic_point/src/core/interfaces/primary"
+	"io"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -28,31 +32,81 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // Create
 // @ID Student.Create
 // @Summary Criar um novo estudante.
-// @Description Cria um novo estudante no sistema com os dados fornecidos.
+// @Description Cria um novo estudante no sistema com os dados fornecidos. O campo `profile_picture` deve ser enviado como um arquivo em um formulário.
 // @Tags Estudantes
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
-// @Param student body request.Student true "Dados do estudante"
+// @Param name formData string true "Nome do estudante"
+// @Param registration formData string true "Matrícula do estudante"
+// @Param profile_picture formData file true "Foto de perfil do estudante (arquivo de imagem)"
+// @Param institution formData string true "Instituição do estudante"
+// @Param course formData string true "Curso do estudante"
+// @Param internship_location_name formData string true "Nome do local de estágio"
+// @Param internship_address formData string true "Endereço do local de estágio"
+// @Param internship_location formData string true "Localização do estágio"
+// @Param total_workload formData int true "Carga horária total do estágio"
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."
 // @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
 // @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
-// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Vefique os valores, tipos e formatos de dados enviados."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students [post]
 func (this *studentHandlers) Create(ctx RichContext) error {
-	var studentDTO request.Student
-	if err := ctx.Bind(&studentDTO); err != nil {
-		logger.Error().Msg(err.Error())
-		return badRequestErrorWithMessage(err.Error())
+	if formDataError := ctx.Request().ParseMultipartForm(10 << 20); formDataError != nil {
+		logger.Error().Msg(formDataError.Error())
+		return badRequestErrorWithMessage(formDataError.Error())
 	}
-	student, err := studentDTO.ToDomain()
-	if err != nil {
-		logger.Error().Msg(err.String())
-		return unprocessableEntityErrorWithMessage(err.String())
+	name := ctx.FormValue(formData.StudentName)
+	registration := ctx.FormValue(formData.StudentRegistration)
+	institution := ctx.FormValue(formData.StudentInstitution)
+	course := ctx.FormValue(formData.StudentCourse)
+	internshipLocationName := ctx.FormValue(formData.StudentInternshipLocationName)
+	internshipAddress := ctx.FormValue(formData.StudentInternshipAddress)
+	internshipLocation := ctx.FormValue(formData.StudentInternshipLocation)
+	totalWorkload, conversionError := strconv.Atoi(ctx.FormValue(formData.StudentTotalWorkload))
+	if conversionError != nil {
+		logger.Error().Msg(conversionError.Error())
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	var filePath *string
+	file, header, formFileError := ctx.Request().FormFile(formData.StudentTotalWorkload)
+	if formFileError == nil {
+		defer file.Close()
+		path := "uploads/" + header.Filename
+		out, err := os.Create(path)
+		if err != nil {
+			logger.Error().Msg(err.Error())
+			return unprocessableEntityErrorWithMessage(err.Error())
+		}
+		defer out.Close()
+		if _, err := io.Copy(out, file); err != nil {
+			logger.Error().Msg(err.Error())
+			return unprocessableEntityErrorWithMessage(err.Error())
+		}
+		filePath = &path
+	} else if formFileError != http.ErrMissingFile {
+		logger.Error().Msg(formFileError.Error())
+		return badRequestErrorWithMessage(formFileError.Error())
+	}
+	studentDTO := request.Student{
+		Name:                   name,
+		Registration:           registration,
+		ProfilePicture:         filePath,
+		Institution:            institution,
+		Course:                 course,
+		InternshipLocationName: internshipLocationName,
+		InternshipAddress:      internshipAddress,
+		InternshipLocation:     internshipLocation,
+		TotalWorkload:          totalWorkload,
+	}
+	student, validationError := studentDTO.ToDomain()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
 	id, err := this.services.Create(student)
 	if err != nil {

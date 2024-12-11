@@ -6,15 +6,15 @@ import (
 )
 
 type Student struct {
-	Name                   string  `json:"name"`
-	Registration           string  `json:"registration"`
-	ProfilePicture         *string `json:"profile_picture"`
-	Institution            string  `json:"institution"`
-	Course                 string  `json:"course"`
-	InternshipLocationName string  `json:"internship_location_name"`
-	InternshipAddress      string  `json:"internship_address"`
-	InternshipLocation     string  `json:"internship_location"`
-	TotalWorkload          int     `json:"total_workload"`
+	Name                   string  `form:"name"`
+	Registration           string  `form:"registration"`
+	ProfilePicture         *string `form:"profile_picture"`
+	Institution            string  `form:"institution"`
+	Course                 string  `form:"course"`
+	InternshipLocationName string  `form:"internship_location_name"`
+	InternshipAddress      string  `form:"internship_address"`
+	InternshipLocation     string  `form:"internship_location"`
+	TotalWorkload          int     `form:"total_workload"`
 }
 
 func (this *Student) ToDomain() (student.Student, errors.Error) {

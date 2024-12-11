@@ -523,16 +523,56 @@ paths:
       - Estudantes
     post:
       consumes:
-      - application/json
-      description: Cria um novo estudante no sistema com os dados fornecidos.
+      - multipart/form-data
+      description: Cria um novo estudante no sistema com os dados fornecidos. O campo
+        `profile_picture` deve ser enviado como um arquivo em um formulário.
       operationId: Student.Create
       parameters:
-      - description: Dados do estudante
-        in: body
-        name: student
+      - description: Nome do estudante
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/request.Student'
+        type: string
+      - description: Matrícula do estudante
+        in: formData
+        name: registration
+        required: true
+        type: string
+      - description: Foto de perfil do estudante (arquivo de imagem)
+        in: formData
+        name: profile_picture
+        required: true
+        type: file
+      - description: Instituição do estudante
+        in: formData
+        name: institution
+        required: true
+        type: string
+      - description: Curso do estudante
+        in: formData
+        name: course
+        required: true
+        type: string
+      - description: Nome do local de estágio
+        in: formData
+        name: internship_location_name
+        required: true
+        type: string
+      - description: Endereço do local de estágio
+        in: formData
+        name: internship_address
+        required: true
+        type: string
+      - description: Localização do estágio
+        in: formData
+        name: internship_location
+        required: true
+        type: string
+      - description: Carga horária total do estágio
+        in: formData
+        name: total_workload
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -562,7 +602,7 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorMessage'
         "422":
-          description: Ocorreu um erro de validação de dados. Vefique os valores,
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
             tipos e formatos de dados enviados.
           schema:
             $ref: '#/definitions/response.ErrorMessage'

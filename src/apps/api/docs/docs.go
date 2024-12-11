@@ -519,9 +519,9 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Cria um novo estudante no sistema com os dados fornecidos.",
+                "description": "Cria um novo estudante no sistema com os dados fornecidos. O campo ` + "`" + `profile_picture` + "`" + ` deve ser enviado como um arquivo em um formulário.",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -533,13 +533,67 @@ const docTemplate = `{
                 "operationId": "Student.Create",
                 "parameters": [
                     {
-                        "description": "Dados do estudante",
-                        "name": "student",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.Student"
-                        }
+                        "type": "string",
+                        "description": "Nome do estudante",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Matrícula do estudante",
+                        "name": "registration",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Foto de perfil do estudante (arquivo de imagem)",
+                        "name": "profile_picture",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Instituição do estudante",
+                        "name": "institution",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Curso do estudante",
+                        "name": "course",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Nome do local de estágio",
+                        "name": "internship_location_name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Endereço do local de estágio",
+                        "name": "internship_address",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Localização do estágio",
+                        "name": "internship_location",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Carga horária total do estágio",
+                        "name": "total_workload",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -580,7 +634,7 @@ const docTemplate = `{
                         }
                     },
                     "422": {
-                        "description": "Ocorreu um erro de validação de dados. Vefique os valores, tipos e formatos de dados enviados.",
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
