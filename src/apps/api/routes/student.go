@@ -9,12 +9,12 @@ import (
 )
 
 type studentRouter struct {
-	handler handlers.StudentHandler
+	handler handlers.StudentHandlers
 }
 
 func NewStudentRouter() Router {
 	usecase := dicontainer.StudentPort()
-	handler := handlers.NewStudentHandler(usecase)
+	handler := handlers.NewStudentHandlers(usecase)
 	return &studentRouter{handler}
 }
 

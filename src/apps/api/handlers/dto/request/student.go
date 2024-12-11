@@ -5,7 +5,7 @@ import (
 	"eletronic_point/src/core/domain/student"
 )
 
-type CreateStudent struct {
+type Student struct {
 	Name                   string  `json:"name"`
 	Registration           string  `json:"registration"`
 	ProfilePicture         *string `json:"profile_picture"`
@@ -17,16 +17,16 @@ type CreateStudent struct {
 	TotalWorkload          int     `json:"total_workload"`
 }
 
-func (c *CreateStudent) ToDomain() (student.Student, errors.Error) {
+func (this *Student) ToDomain() (student.Student, errors.Error) {
 	builder := student.NewBuilder().
-		WithName(c.Name).
-		WithRegistration(c.Registration).
-		WithProfilePicture(c.ProfilePicture).
-		WithInstitution(c.Institution).
-		WithCourse(c.Course).
-		WithInternshipLocationName(c.InternshipLocationName).
-		WithInternshipAddress(c.InternshipAddress).
-		WithInternshipLocation(c.InternshipLocation).
-		WithTotalWorkload(c.TotalWorkload)
+		WithName(this.Name).
+		WithRegistration(this.Registration).
+		WithProfilePicture(this.ProfilePicture).
+		WithInstitution(this.Institution).
+		WithCourse(this.Course).
+		WithInternshipLocationName(this.InternshipLocationName).
+		WithInternshipAddress(this.InternshipAddress).
+		WithInternshipLocation(this.InternshipLocation).
+		WithTotalWorkload(this.TotalWorkload)
 	return builder.Build()
 }

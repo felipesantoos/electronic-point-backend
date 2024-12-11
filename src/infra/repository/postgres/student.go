@@ -6,8 +6,10 @@ import (
 	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/infra/repository"
+	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/infra/repository/postgres/queryObject"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -18,32 +20,30 @@ func NewStudentRepository() secondary.StudentPort {
 	return &studentRepository{}
 }
 
-func (r studentRepository) Create(s student.Student) (*uuid.UUID, errors.Error) {
-	var studentID uuid.UUID
-	rows, err := repository.Queryx(query.Student().Insert(),
-		s.Name,
-		s.Registration,
-		s.ProfilePicture,
-		s.Institution,
-		s.Course,
-		s.InternshipLocationName,
-		s.InternshipAddress,
-		s.InternshipLocation,
-		s.TotalWorkload,
-	)
+func (this studentRepository) Create(_student student.Student) (*uuid.UUID, errors.Error) {
+	var id uuid.UUID
+	rows, err := repository.Queryx(query.Student().Insert(), _student.Name(), _student.Registration(),
+		_student.ProfilePicture(), _student.Institution(), _student.Course(), _student.InternshipLocationName(),
+		_student.InternshipAddress(), _student.InternshipLocation(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())
+		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
+			return nil, errors.NewConflictFromString(messages.StudentRegistrationIsAlreadyInUseErrorMessage)
+		}
 		return nil, errors.NewUnexpected()
 	}
-	rows.Scan(&studentID)
-	if err != nil {
-		logger.Error().Msg(err.String())
+	if !rows.Next() {
 		return nil, errors.NewUnexpected()
 	}
-	return &studentID, nil
+	scanError := rows.Scan(&id)
+	if scanError != nil {
+		logger.Error().Msg(scanError.Error())
+		return nil, errors.NewUnexpected()
+	}
+	return &id, nil
 }
 
-func (r studentRepository) Update(s student.Student) errors.Error {
+func (this studentRepository) Update(s student.Student) errors.Error {
 	_, err := repository.ExecQuery(query.Student().Update(),
 		s.ID,
 		s.Name,
@@ -63,7 +63,7 @@ func (r studentRepository) Update(s student.Student) errors.Error {
 	return nil
 }
 
-func (r studentRepository) Delete(id uuid.UUID) errors.Error {
+func (this studentRepository) Delete(id uuid.UUID) errors.Error {
 	_, err := repository.ExecQuery(query.Student().Delete(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -72,7 +72,7 @@ func (r studentRepository) Delete(id uuid.UUID) errors.Error {
 	return nil
 }
 
-func (r studentRepository) List() ([]student.Student, errors.Error) {
+func (this studentRepository) List() ([]student.Student, errors.Error) {
 	rows, err := repository.Queryx(query.Student().Select().All())
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -86,7 +86,7 @@ func (r studentRepository) List() ([]student.Student, errors.Error) {
 	return s, nil
 }
 
-func (r studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) {
+func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) {
 	rows, err := repository.Queryx(query.Student().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())

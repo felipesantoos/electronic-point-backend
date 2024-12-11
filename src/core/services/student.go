@@ -9,30 +9,30 @@ import (
 	"github.com/google/uuid"
 )
 
-type studentService struct {
-	adapter secondary.StudentPort
+type studentServices struct {
+	repository secondary.StudentPort
 }
 
-func NewStudentService(adapter secondary.StudentPort) primary.StudentPort {
-	return &studentService{adapter}
+func NewStudentServices(repository secondary.StudentPort) primary.StudentPort {
+	return &studentServices{repository}
 }
 
-func (s *studentService) Create(student student.Student) (*uuid.UUID, errors.Error) {
-	return s.adapter.Create(student)
+func (this *studentServices) Create(_student student.Student) (*uuid.UUID, errors.Error) {
+	return this.repository.Create(_student)
 }
 
-func (s *studentService) Update(student student.Student) errors.Error {
-	return s.adapter.Update(student)
+func (this *studentServices) Update(student student.Student) errors.Error {
+	return this.repository.Update(student)
 }
 
-func (s *studentService) Delete(id uuid.UUID) errors.Error {
-	return s.adapter.Delete(id)
+func (this *studentServices) Delete(id uuid.UUID) errors.Error {
+	return this.repository.Delete(id)
 }
 
-func (s *studentService) List() ([]student.Student, errors.Error) {
-	return s.adapter.List()
+func (this *studentServices) List() ([]student.Student, errors.Error) {
+	return this.repository.List()
 }
 
-func (s *studentService) Get(id uuid.UUID) (student.Student, errors.Error) {
-	return s.adapter.Get(id)
+func (this *studentServices) Get(id uuid.UUID) (student.Student, errors.Error) {
+	return this.repository.Get(id)
 }

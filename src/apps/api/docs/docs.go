@@ -519,11 +519,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
                 "description": "Cria um novo estudante no sistema com os dados fornecidos.",
                 "consumes": [
                     "application/json"
@@ -543,25 +538,61 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.CreateStudent"
+                            "$ref": "#/definitions/request.Student"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Estudante criado com sucesso.",
+                        "description": "Requisição realizada com sucesso.",
                         "schema": {
-                            "$ref": "#/definitions/response.Student"
+                            "$ref": "#/definitions/response.ID"
                         }
                     },
                     "400": {
-                        "description": "Dados inválidos fornecidos.",
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Vefique os valores, tipos e formatos de dados enviados.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
                     },
                     "500": {
-                        "description": "Erro inesperado. Por favor, entre em contato com o suporte.",
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorMessage"
                         }
@@ -647,7 +678,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.CreateStudent"
+                            "$ref": "#/definitions/request.Student"
                         }
                     }
                 ],
@@ -754,7 +785,18 @@ const docTemplate = `{
                 }
             }
         },
-        "request.CreateStudent": {
+        "request.Credentials": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.Student": {
             "type": "object",
             "properties": {
                 "course": {
@@ -783,17 +825,6 @@ const docTemplate = `{
                 },
                 "total_workload": {
                     "type": "integer"
-                }
-            }
-        },
-        "request.Credentials": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
                 }
             }
         },

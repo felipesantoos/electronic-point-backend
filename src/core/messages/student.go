@@ -29,5 +29,6 @@ const (
 	StudentPendingWorkloadErrorMessage        = "student pending workload is invalid"
 	StudentFrequencyHistoryErrorMessage       = "student frequency history is invalid"
 
-	StudentNotFoundErrorMessage = "student not found"
+	StudentNotFoundErrorMessage                   = "student not found"
+	StudentRegistrationIsAlreadyInUseErrorMessage = "student registration is already in use"
 )

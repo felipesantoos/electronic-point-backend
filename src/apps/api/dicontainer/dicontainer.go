@@ -26,5 +26,5 @@ func ResourcesPort() primary.ResourcesPort {
 
 func StudentPort() primary.StudentPort {
 	repo := postgres.NewStudentRepository()
-	return services.NewStudentService(repo)
+	return services.NewStudentServices(repo)
 }

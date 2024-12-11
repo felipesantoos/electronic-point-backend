@@ -12,7 +12,8 @@ CREATE TABLE student (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
-    CONSTRAINT student_pk PRIMARY KEY (id)
+    CONSTRAINT student_pk PRIMARY KEY (id),
+    CONSTRAINT student_registration_uk UNIQUE (registration)
 );
 
 CREATE TABLE time_record (

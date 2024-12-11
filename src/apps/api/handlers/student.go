@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type StudentHandler interface {
+type StudentHandlers interface {
 	Create(RichContext) error
 	Update(RichContext) error
 	Delete(RichContext) error
@@ -17,41 +17,48 @@ type StudentHandler interface {
 	Get(RichContext) error
 }
 
-type studentHandler struct {
-	usecase primary.StudentPort
+type studentHandlers struct {
+	services primary.StudentPort
 }
 
-func NewStudentHandler(usecase primary.StudentPort) StudentHandler {
-	return &studentHandler{usecase}
+func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
+	return &studentHandlers{services}
 }
 
-// Create Student
+// Create
 // @ID Student.Create
 // @Summary Criar um novo estudante.
 // @Description Cria um novo estudante no sistema com os dados fornecidos.
-// @Security	bearerAuth
 // @Tags Estudantes
 // @Accept json
 // @Produce json
-// @Param student body request.CreateStudent true "Dados do estudante"
-// @Success 201 {object} response.Student "Estudante criado com sucesso."
-// @Failure 400 {object} response.ErrorMessage "Dados inválidos fornecidos."
-// @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
+// @Param student body request.Student true "Dados do estudante"
+// @Success 201 {object} response.ID "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Vefique os valores, tipos e formatos de dados enviados."
+// @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
+// @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students [post]
-func (h *studentHandler) Create(context RichContext) error {
-	var studentRequest request.CreateStudent
-	if err := context.Bind(&studentRequest); err != nil {
-		return response.ErrorBuilder().NewBadRequestFromCoreError()
+func (this *studentHandlers) Create(ctx RichContext) error {
+	var studentDTO request.Student
+	if err := ctx.Bind(&studentDTO); err != nil {
+		logger.Error().Msg(err.Error())
+		return badRequestErrorWithMessage(err.Error())
 	}
-	student, err := studentRequest.ToDomain()
+	student, err := studentDTO.ToDomain()
 	if err != nil {
-		return response.ErrorBuilder().NewFromDomain(err)
+		logger.Error().Msg(err.String())
+		return unprocessableEntityErrorWithMessage(err.String())
 	}
-	id, err := h.usecase.Create(student)
+	id, err := this.services.Create(student)
 	if err != nil {
-		return response.ErrorBuilder().NewFromDomain(err)
+		return responseFromError(err)
 	}
-	return context.JSON(http.StatusCreated, response.IDBuilder().FromUUID(*id))
+	return ctx.JSON(http.StatusCreated, response.IDBuilder().FromUUID(*id))
 }
 
 // Update Student
@@ -63,19 +70,19 @@ func (h *studentHandler) Create(context RichContext) error {
 // @Accept json
 // @Produce json
 // @Param id path string true "ID do estudante"
-// @Param student body request.CreateStudent true "Dados do estudante"
+// @Param student body request.Student true "Dados do estudante"
 // @Success 200 {object} response.Student "Estudante atualizado com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Dados inválidos fornecidos."
 // @Failure 404 {object} response.ErrorMessage "Estudante não encontrado."
 // @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
 // @Router /students/{id} [put]
-func (h *studentHandler) Update(context RichContext) error {
+func (h *studentHandlers) Update(context RichContext) error {
 	id := context.Param("id")
 	studentID, conversionError := uuid.Parse(id)
 	if conversionError != nil {
 		return response.ErrorBuilder().NewBadRequestFromCoreError()
 	}
-	var studentRequest request.CreateStudent
+	var studentRequest request.Student
 	if err := context.Bind(&studentRequest); err != nil {
 		return response.ErrorBuilder().NewBadRequestFromCoreError()
 	}
@@ -87,7 +94,7 @@ func (h *studentHandler) Update(context RichContext) error {
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
-	err = h.usecase.Update(student)
+	err = h.services.Update(student)
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
@@ -106,13 +113,13 @@ func (h *studentHandler) Update(context RichContext) error {
 // @Failure 404 {object} response.ErrorMessage "Estudante não encontrado."
 // @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
 // @Router /students/{id} [delete]
-func (h *studentHandler) Delete(context RichContext) error {
+func (h *studentHandlers) Delete(context RichContext) error {
 	id := context.Param("id")
 	studentID, conversionError := uuid.Parse(id)
 	if conversionError != nil {
 		return response.ErrorBuilder().NewBadRequestFromCoreError()
 	}
-	err := h.usecase.Delete(studentID)
+	err := h.services.Delete(studentID)
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
@@ -130,8 +137,8 @@ func (h *studentHandler) Delete(context RichContext) error {
 // @Success 200 {array} response.Student "Lista de estudantes."
 // @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
 // @Router /students [get]
-func (h *studentHandler) List(context RichContext) error {
-	result, err := h.usecase.List()
+func (h *studentHandlers) List(context RichContext) error {
+	result, err := h.services.List()
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
@@ -150,13 +157,13 @@ func (h *studentHandler) List(context RichContext) error {
 // @Failure 404 {object} response.ErrorMessage "Estudante não encontrado."
 // @Failure 500 {object} response.ErrorMessage "Erro inesperado. Por favor, entre em contato com o suporte."
 // @Router /students/{id} [get]
-func (h *studentHandler) Get(context RichContext) error {
+func (h *studentHandlers) Get(context RichContext) error {
 	id := context.Param("id")
 	studentID, conversionError := uuid.Parse(id)
 	if conversionError != nil {
 		return response.ErrorBuilder().NewBadRequestFromCoreError()
 	}
-	result, err := h.usecase.Get(studentID)
+	result, err := h.services.Get(studentID)
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}

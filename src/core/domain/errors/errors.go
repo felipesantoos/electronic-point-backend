@@ -12,16 +12,10 @@ const (
 	GENERIC                = iota
 	INTERNAL
 	VALIDATION
+	CLIENT
+	FORBIDDEN
+	CONFLICT
 )
-
-type Error interface {
-	String() string
-	Messages() []string
-	CausedInternally() bool
-	CausedByValidation() bool
-	Metadata() map[string]interface{}
-	ValidationMessagesByMetadataFields(field []string) []string
-}
 
 type errorImpl struct {
 	err      []string
@@ -53,12 +47,28 @@ func NewValidation(messages []string) Error {
 	return new(messages, VALIDATION, nil)
 }
 
+func NewClient(messages ...string) Error {
+	return new(messages, CLIENT, nil)
+}
+
+func NewForbidden(messages ...string) Error {
+	return new(messages, FORBIDDEN, nil)
+}
+
+func NewConflict(messages ...string) Error {
+	return new(messages, CONFLICT, nil)
+}
+
 func NewValidationWithMetadata(messages []string, metadata map[string]interface{}) Error {
 	return new(messages, VALIDATION, metadata)
 }
 
 func NewValidationFromString(message string) Error {
 	return new([]string{message}, VALIDATION, nil)
+}
+
+func NewConflictFromString(message string) Error {
+	return new([]string{message}, CONFLICT, nil)
 }
 
 func NewUnexpected() Error {
@@ -79,6 +89,18 @@ func (e *errorImpl) CausedInternally() bool {
 
 func (e *errorImpl) CausedByValidation() bool {
 	return e.origin == VALIDATION
+}
+
+func (e *errorImpl) CausedByClient() bool {
+	return e.origin == CLIENT
+}
+
+func (e *errorImpl) CausedByForbiddenAccess() bool {
+	return e.origin == FORBIDDEN
+}
+
+func (e *errorImpl) CausedByConflict() bool {
+	return e.origin == CONFLICT
 }
 
 func (e *errorImpl) Metadata() map[string]interface{} {
