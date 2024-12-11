@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/messages"
+	"eletronic_point/src/core/services/filters"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -69,8 +70,8 @@ func (this timeRecordRepository) Delete(id uuid.UUID) errors.Error {
 	return nil
 }
 
-func (this timeRecordRepository) List() ([]timeRecord.TimeRecord, errors.Error) {
-	rows, err := repository.Queryx(query.TimeRecord().Select().All())
+func (this timeRecordRepository) List(_filters filters.TimeRecordFilters) ([]timeRecord.TimeRecord, errors.Error) {
+	rows, err := repository.Queryx(query.TimeRecord().Select().All(), _filters.StudentID.String())
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

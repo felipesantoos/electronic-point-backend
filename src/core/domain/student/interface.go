@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/timeRecord"
 
 	"github.com/google/uuid"
 )
@@ -19,7 +20,7 @@ type Student interface {
 	TotalWorkload() int
 	WorkloadCompleted() int
 	PendingWorkload() int
-	FrequencyHistory() string // TODO: create domain
+	FrequencyHistory() []timeRecord.TimeRecord
 
 	SetID(uuid.UUID) errors.Error
 	SetName(string) errors.Error
@@ -33,5 +34,5 @@ type Student interface {
 	SetTotalWorkload(int) errors.Error
 	SetWorkloadCompleted(int) errors.Error
 	SetPendingWorkload(int) errors.Error
-	SetFrequencyHistory(string) errors.Error // TODO: create domain
+	SetFrequencyHistory([]timeRecord.TimeRecord) errors.Error
 }

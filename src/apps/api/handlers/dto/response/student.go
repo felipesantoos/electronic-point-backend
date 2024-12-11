@@ -7,19 +7,19 @@ import (
 )
 
 type Student struct {
-	ID                     uuid.UUID `json:"id"`
-	Name                   string    `json:"name"`
-	Registration           string    `json:"registration"`
-	ProfilePicture         *string   `json:"profile_picture"`
-	Institution            string    `json:"institution"`
-	Course                 string    `json:"course"`
-	InternshipLocationName string    `json:"internship_location_name"`
-	InternshipAddress      string    `json:"internship_address"`
-	InternshipLocation     string    `json:"internship_location"`
-	TotalWorkload          int       `json:"total_workload"`
-	WorkloadCompleted      int       `json:"workload_completed"`
-	PendingWorkload        int       `json:"pending_workload"`
-	FrequencyHistory       string    `json:"frequency_history"`
+	ID                     uuid.UUID    `json:"id"`
+	Name                   string       `json:"name"`
+	Registration           string       `json:"registration"`
+	ProfilePicture         *string      `json:"profile_picture"`
+	Institution            string       `json:"institution"`
+	Course                 string       `json:"course"`
+	InternshipLocationName string       `json:"internship_location_name"`
+	InternshipAddress      string       `json:"internship_address"`
+	InternshipLocation     string       `json:"internship_location"`
+	TotalWorkload          int          `json:"total_workload"`
+	WorkloadCompleted      int          `json:"workload_completed"`
+	PendingWorkload        int          `json:"pending_workload"`
+	FrequencyHistory       []TimeRecord `json:"frequency_history,omitempty"`
 }
 
 type studentBuilder struct{}
@@ -42,7 +42,7 @@ func (*studentBuilder) BuildFromDomain(data student.Student) Student {
 		TotalWorkload:          data.TotalWorkload(),
 		WorkloadCompleted:      data.WorkloadCompleted(),
 		PendingWorkload:        data.PendingWorkload(),
-		FrequencyHistory:       data.FrequencyHistory(),
+		FrequencyHistory:       TimeRecordBuilder().BuildFromDomainList(data.FrequencyHistory()),
 	}
 }
 

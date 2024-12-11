@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/core/domain/student"
 	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/messages"
+	"eletronic_point/src/core/services/filters"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -100,6 +101,19 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
+	}
+	timeRecordRepository := NewTimeRecordRepository()
+	studentID := _student.ID()
+	_filters := filters.TimeRecordFilters{StudentID: &studentID}
+	timeRecords, err := timeRecordRepository.List(_filters)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, err
+	}
+	err = _student.SetFrequencyHistory(timeRecords)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, err
 	}
 	return _student, nil
 }

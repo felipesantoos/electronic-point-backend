@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/utils/validator"
 	"strings"
@@ -156,14 +157,7 @@ func (builder *builder) WithPendingWorkload(pendingWorkload int) *builder {
 	return builder
 }
 
-func (builder *builder) WithFrequencyHistory(frequencyHistory string) *builder {
-	frequencyHistory = strings.TrimSpace(frequencyHistory)
-	if len(frequencyHistory) == 0 {
-		builder.fields = append(builder.fields, messages.StudentFrequencyHistory)
-		builder.errorMessages = append(builder.errorMessages, messages.StudentFrequencyHistoryErrorMessage)
-		return builder
-	}
-
+func (builder *builder) WithFrequencyHistory(frequencyHistory []timeRecord.TimeRecord) *builder {
 	builder.student.frequencyHistory = frequencyHistory
 	return builder
 }

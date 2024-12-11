@@ -74,31 +74,32 @@ type timeRecordQuerySelectBuilder struct{}
 func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) All() string {
 	return `
 		SELECT
-			id AS time_record_id,
-			date AS time_record_date,
-			entry_time AS time_record_entry_time,
-			exit_time AS time_record_exit_time,
-			location AS time_record_location,
-			is_off_site AS time_record_is_off_site,
-			justification AS time_record_justification,
-			student_id AS time_record_student_id
+			time_record.id AS time_record_id,
+			time_record.date AS time_record_date,
+			time_record.entry_time AS time_record_entry_time,
+			time_record.exit_time AS time_record_exit_time,
+			time_record.location AS time_record_location,
+			time_record.is_off_site AS time_record_is_off_site,
+			time_record.justification AS time_record_justification,
+			time_record.student_id AS time_record_student_id
 		FROM time_record
-		WHERE deleted_at IS NULL
-		ORDER BY date ASC
+		WHERE time_record.deleted_at IS NULL
+			AND time_record.student_id = COALESCE($1, time_record.student_id)
+		ORDER BY time_record.date ASC
 	`
 }
 
 func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) ByID() string {
 	return `
 		SELECT
-			id AS time_record_id,
-			date AS time_record_date,
-			entry_time AS time_record_entry_time,
-			exit_time AS time_record_exit_time,
-			location AS time_record_location,
-			is_off_site AS time_record_is_off_site,
-			justification AS time_record_justification,
-			student_id AS time_record_student_id
+			time_record.id AS time_record_id,
+			time_record.date AS time_record_date,
+			time_record.entry_time AS time_record_entry_time,
+			time_record.exit_time AS time_record_exit_time,
+			time_record.location AS time_record_location,
+			time_record.is_off_site AS time_record_is_off_site,
+			time_record.justification AS time_record_justification,
+			time_record.student_id AS time_record_student_id
 		FROM time_record
 		WHERE id = $1 AND deleted_at IS NULL
 	`

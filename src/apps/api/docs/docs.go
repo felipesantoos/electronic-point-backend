@@ -1629,7 +1629,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "frequency_history": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.TimeRecord"
+                    }
                 },
                 "id": {
                     "type": "string"
@@ -1663,6 +1666,35 @@ const docTemplate = `{
                 },
                 "workload_completed": {
                     "type": "integer"
+                }
+            }
+        },
+        "response.TimeRecord": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "entry_time": {
+                    "type": "string"
+                },
+                "exit_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_off_site": {
+                    "type": "boolean"
+                },
+                "justification": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
                 }
             }
         }

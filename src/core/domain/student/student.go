@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
 
 	"github.com/google/uuid"
@@ -22,7 +23,7 @@ type student struct {
 	totalWorkload          int
 	workloadCompleted      int
 	pendingWorkload        int
-	frequencyHistory       string
+	frequencyHistory       []timeRecord.TimeRecord
 }
 
 func (s *student) ID() uuid.UUID {
@@ -73,7 +74,7 @@ func (s *student) PendingWorkload() int {
 	return s.pendingWorkload
 }
 
-func (s *student) FrequencyHistory() string {
+func (s *student) FrequencyHistory() []timeRecord.TimeRecord {
 	return s.frequencyHistory
 }
 
@@ -170,11 +171,7 @@ func (s *student) SetPendingWorkload(pendingWorkload int) errors.Error {
 	return nil
 }
 
-// TODO: add domain
-func (s *student) SetFrequencyHistory(frequencyHistory string) errors.Error {
-	if frequencyHistory == "" {
-		return errors.NewFromString(messages.StudentFrequencyHistoryErrorMessage)
-	}
+func (s *student) SetFrequencyHistory(frequencyHistory []timeRecord.TimeRecord) errors.Error {
 	s.frequencyHistory = frequencyHistory
 	return nil
 }

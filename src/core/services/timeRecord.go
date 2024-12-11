@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/interfaces/secondary"
+	"eletronic_point/src/core/services/filters"
 
 	"github.com/google/uuid"
 )
@@ -29,8 +30,8 @@ func (this *timeRecordServices) Delete(id uuid.UUID) errors.Error {
 	return this.repository.Delete(id)
 }
 
-func (this *timeRecordServices) List() ([]timeRecord.TimeRecord, errors.Error) {
-	return this.repository.List()
+func (this *timeRecordServices) List(_filters filters.TimeRecordFilters) ([]timeRecord.TimeRecord, errors.Error) {
+	return this.repository.List(_filters)
 }
 
 func (this *timeRecordServices) Get(id uuid.UUID) (timeRecord.TimeRecord, errors.Error) {

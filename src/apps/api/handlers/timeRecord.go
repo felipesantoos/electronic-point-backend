@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/params"
 	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/services/filters"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -152,7 +153,8 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records [get]
 func (this *timeRecordHandlers) List(ctx RichContext) error {
-	timeRecords, err := this.services.List()
+	filters := filters.TimeRecordFilters{}
+	timeRecords, err := this.services.List(filters)
 	if err != nil {
 		return responseFromError(err)
 	}
