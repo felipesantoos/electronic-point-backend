@@ -3,6 +3,7 @@ package postgres
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/student"
+	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/core/services/filters"
@@ -78,6 +79,24 @@ func (this studentRepository) List() ([]student.Student, errors.Error) {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
+	for i := range students {
+		timeRecordRepository := NewTimeRecordRepository()
+		studentID := students[i].ID()
+		_filters := filters.TimeRecordFilters{StudentID: &studentID}
+		timeRecords, err := timeRecordRepository.List(_filters)
+		if err != nil {
+			logger.Error().Msg(err.String())
+			return nil, err
+		}
+		err = students[i].SetFrequencyHistory(timeRecords)
+		if err != nil {
+			logger.Error().Msg(err.String())
+			return nil, err
+		}
+		workloadCompleted := calculateWorkloadCompleted(timeRecords)
+		students[i].SetWorkloadCompleted(workloadCompleted)
+		students[i].SetPendingWorkload(calculatePendingWorkload(students[i].TotalWorkload(), workloadCompleted))
+	}
 	return students, nil
 }
 
@@ -115,5 +134,23 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 		logger.Error().Msg(err.String())
 		return nil, err
 	}
+	workloadCompleted := calculateWorkloadCompleted(timeRecords)
+	_student.SetWorkloadCompleted(workloadCompleted)
+	_student.SetPendingWorkload(calculatePendingWorkload(_student.TotalWorkload(), workloadCompleted))
 	return _student, nil
+}
+
+func calculateWorkloadCompleted(timeRecords []timeRecord.TimeRecord) int {
+	sum := 0
+	for _, _timeRecord := range timeRecords {
+		duration := _timeRecord.ExitTime().Sub(_timeRecord.EntryTime())
+		hours := duration.Hours()
+		fullHours := int(hours)
+		sum += fullHours
+	}
+	return sum
+}
+
+func calculatePendingWorkload(totalWorkload, workloadCompleted int) int {
+	return totalWorkload - workloadCompleted
 }
