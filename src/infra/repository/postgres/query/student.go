@@ -1,8 +1,6 @@
 package query
 
 const (
-	StudentID                     = "student_id"
-	StudentName                   = "student_name"
 	StudentRegistration           = "student_registration"
 	StudentProfilePicture         = "student_profile_picture"
 	StudentInstitution            = "student_institution"
@@ -78,8 +76,12 @@ type studentQuerySelectBuilder struct{}
 func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 	return `
 		SELECT
-			student.id AS student_id,
-			person.name AS student_name,
+			person.id AS person_id,
+			person.name AS person_name,
+			person.birth_date AS person_birth_date,
+			person.email AS person_email,
+			person.cpf AS person_cpf,
+			person.phone AS person_phone,
 			student.registration AS student_registration,
 			student.profile_picture AS student_profile_picture,
 			student.institution AS student_institution,
@@ -98,8 +100,12 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 	return `
 		SELECT
-			student.id AS student_id,
-			person.name AS student_name,
+			person.id AS person_id,
+			person.name AS person_name,
+			person.birth_date AS person_birth_date,
+			person.email AS person_email,
+			person.cpf AS person_cpf,
+			person.phone AS person_phone,
 			student.registration AS student_registration,
 			student.profile_picture AS student_profile_picture,
 			student.institution AS student_institution,

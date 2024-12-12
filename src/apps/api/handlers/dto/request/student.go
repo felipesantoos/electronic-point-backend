@@ -19,7 +19,6 @@ type Student struct {
 
 func (this *Student) ToDomain() (student.Student, errors.Error) {
 	builder := student.NewBuilder().
-		WithName(this.Name).
 		WithRegistration(this.Registration).
 		WithProfilePicture(this.ProfilePicture).
 		WithInstitution(this.Institution).

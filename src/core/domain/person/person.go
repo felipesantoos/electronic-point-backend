@@ -1,7 +1,6 @@
 package person
 
 import (
-	"eletronic_point/src/core/domain"
 	"eletronic_point/src/core/domain/errors"
 	"net/mail"
 	"regexp"
@@ -11,29 +10,15 @@ import (
 	"github.com/paemuri/brdoc"
 )
 
+var _ Person = &person{}
+
 const birthDatePattern = `^[0-9]{4}-?[0-9]{2}-?[0-9]{2}$`
-
-type Person interface {
-	domain.Model
-
-	ID() *uuid.UUID
-	Name() string
-	Email() string
-	BirthDate() string
-	CPF() string
-	Phone() string
-	CreatedAt() string
-	UpdatedAt() string
-
-	SetID(*uuid.UUID)
-	SetStringID(string) error
-}
 
 type person struct {
 	id        *uuid.UUID
 	name      string
-	birthDate string
 	email     string
+	birthDate string
 	cpf       string
 	phone     string
 	createdAt string
@@ -82,11 +67,51 @@ func (p *person) SetID(id *uuid.UUID) {
 }
 
 func (p *person) SetStringID(id string) error {
-	if id, err := uuid.Parse(id); err != nil {
+	parsedID, err := uuid.Parse(id)
+	if err != nil {
 		return err
-	} else {
-		p.id = &id
 	}
+	p.id = &parsedID
+	return nil
+}
+
+func (p *person) SetName(name string) errors.Error {
+	if len(strings.Split(name, " ")) < 2 {
+		return errors.NewFromString("Name must contain at least two words.")
+	}
+	p.name = name
+	return nil
+}
+
+func (p *person) SetEmail(email string) errors.Error {
+	if _, err := mail.ParseAddress(email); err != nil {
+		return errors.NewFromString("Invalid email address.")
+	}
+	p.email = email
+	return nil
+}
+
+func (p *person) SetBirthDate(birthDate string) errors.Error {
+	if ok, _ := regexp.MatchString(birthDatePattern, birthDate); !ok {
+		return errors.NewFromString("Birth date must follow the format yyyy-MM-dd.")
+	}
+	p.birthDate = birthDate
+	return nil
+}
+
+func (p *person) SetCPF(cpf string) errors.Error {
+	if len(cpf) != 11 || !brdoc.IsCPF(cpf) {
+		return errors.NewFromString("Invalid CPF number.")
+	}
+	p.cpf = cpf
+	return nil
+}
+
+func (p *person) SetPhone(phone string) errors.Error {
+	if len(phone) < 10 {
+		return errors.NewFromString("Phone number must contain at least 10 digits.")
+	}
+	p.phone = phone
 	return nil
 }
 

@@ -81,7 +81,7 @@ func (this studentRepository) List() ([]student.Student, errors.Error) {
 	}
 	for i := range students {
 		timeRecordRepository := NewTimeRecordRepository()
-		studentID := students[i].ID()
+		studentID := students[i].StudentID()
 		_filters := filters.TimeRecordFilters{StudentID: &studentID}
 		timeRecords, err := timeRecordRepository.List(_filters)
 		if err != nil {
@@ -122,7 +122,7 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 		return nil, errors.NewUnexpected()
 	}
 	timeRecordRepository := NewTimeRecordRepository()
-	studentID := _student.ID()
+	studentID := _student.StudentID()
 	_filters := filters.TimeRecordFilters{StudentID: &studentID}
 	timeRecords, err := timeRecordRepository.List(_filters)
 	if err != nil {

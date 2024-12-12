@@ -1,5 +1,14 @@
 package query
 
+const (
+	PersonID        = "person_id"
+	PersonName      = "person_name"
+	PersonBirthDate = "person_birth_date"
+	PersonEmail     = "person_email"
+	PersonCPF       = "person_cpf"
+	PersonPhone     = "person_phone"
+)
+
 type PersonQueryBuilder interface {
 	Insert() string
 }

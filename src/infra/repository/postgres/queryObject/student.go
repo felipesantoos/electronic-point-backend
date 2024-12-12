@@ -2,6 +2,7 @@ package queryObject
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/student"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/utils"
@@ -24,12 +25,16 @@ func Student() StudentObjectBuilder {
 }
 
 func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (student.Student, errors.Error) {
-	id, err := uuid.Parse(string(data[query.StudentID].([]uint8)))
+	id, err := uuid.Parse(string(data[query.PersonID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
-	name := fmt.Sprint(data[query.StudentName])
+	name := fmt.Sprint(data[query.PersonName])
+	birthDate := fmt.Sprint(data[query.PersonBirthDate])[:10]
+	email := fmt.Sprint(data[query.PersonEmail])
+	cpf := fmt.Sprint(data[query.PersonCPF])
+	phone := fmt.Sprint(data[query.PersonPhone])
 	registration := fmt.Sprint(data[query.StudentRegistration])
 	profilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
 	institution := fmt.Sprint(data[query.StudentInstitution])
@@ -42,9 +47,14 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
+	_person, validationError := person.NewBuilder().WithID(id).WithName(name).
+		WithBirthDate(birthDate).WithEmail(email).WithCPF(cpf).WithPhone(phone).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
 	_student, validationError := student.NewBuilder().
-		WithID(id).
-		WithName(name).
+		WithPerson(_person).
 		WithRegistration(registration).
 		WithProfilePicture(profilePicture).
 		WithInstitution(institution).

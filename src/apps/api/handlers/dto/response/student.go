@@ -2,13 +2,10 @@ package response
 
 import (
 	"eletronic_point/src/core/domain/student"
-
-	"github.com/google/uuid"
 )
 
 type Student struct {
-	ID                     uuid.UUID    `json:"id"`
-	Name                   string       `json:"name"`
+	Person
 	Registration           string       `json:"registration"`
 	ProfilePicture         *string      `json:"profile_picture"`
 	Institution            string       `json:"institution"`
@@ -29,9 +26,16 @@ func StudentBuilder() *studentBuilder {
 }
 
 func (*studentBuilder) BuildFromDomain(data student.Student) Student {
+	_person := Person{
+		ID:        data.ID(),
+		Name:      data.Name(),
+		BirthDate: data.BirthDate(),
+		Email:     data.Email(),
+		CPF:       data.CPF(),
+		Phone:     data.CPF(),
+	}
 	return Student{
-		ID:                     data.ID(),
-		Name:                   data.Name(),
+		Person:                 _person,
 		Registration:           data.Registration(),
 		ProfilePicture:         data.ProfilePicture(),
 		Institution:            data.Institution(),

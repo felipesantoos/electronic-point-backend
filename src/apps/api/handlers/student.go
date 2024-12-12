@@ -201,7 +201,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-	validationError = _student.SetID(id)
+	validationError = _student.SetStudentID(id)
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())

@@ -1995,7 +1995,19 @@ const docTemplate = `{
         "response.Student": {
             "type": "object",
             "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
                 "course": {
+                    "type": "string"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "frequency_history": {
@@ -2025,6 +2037,9 @@ const docTemplate = `{
                 "pending_workload": {
                     "type": "integer"
                 },
+                "phone": {
+                    "type": "string"
+                },
                 "profile_picture": {
                     "type": "string"
                 },
@@ -2033,6 +2048,9 @@ const docTemplate = `{
                 },
                 "total_workload": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 },
                 "workload_completed": {
                     "type": "integer"

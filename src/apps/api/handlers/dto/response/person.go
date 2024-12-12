@@ -13,8 +13,8 @@ type Person struct {
 	Email     string     `json:"email"`
 	CPF       string     `json:"cpf"`
 	Phone     string     `json:"phone"`
-	CreatedAt string     `json:"created_at"`
-	UpdatedAt string     `json:"updated_at"`
+	CreatedAt string     `json:"created_at,omitempty"`
+	UpdatedAt string     `json:"updated_at,omitempty"`
 }
 
 type personBuilder struct{}

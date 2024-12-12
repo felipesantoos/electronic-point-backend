@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
 
@@ -11,7 +12,8 @@ import (
 var _ Student = &student{}
 
 type student struct {
-	id                     uuid.UUID
+	person.Person
+	studentID              uuid.UUID
 	name                   string
 	registration           string
 	profilePicture         *string
@@ -26,12 +28,8 @@ type student struct {
 	frequencyHistory       []timeRecord.TimeRecord
 }
 
-func (s *student) ID() uuid.UUID {
-	return s.id
-}
-
-func (s *student) Name() string {
-	return s.name
+func (s *student) StudentID() uuid.UUID {
+	return s.studentID
 }
 
 func (s *student) Registration() string {
@@ -78,11 +76,11 @@ func (s *student) FrequencyHistory() []timeRecord.TimeRecord {
 	return s.frequencyHistory
 }
 
-func (s *student) SetID(id uuid.UUID) errors.Error {
-	if id == uuid.Nil {
+func (s *student) SetStudentID(studentID uuid.UUID) errors.Error {
+	if studentID == uuid.Nil {
 		return errors.NewFromString(messages.StudentIDErrorMessage)
 	}
-	s.id = id
+	s.studentID = studentID
 	return nil
 }
 

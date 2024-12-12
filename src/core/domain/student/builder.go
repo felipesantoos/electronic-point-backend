@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/utils/validator"
@@ -24,26 +25,24 @@ func NewBuilder() *builder {
 	}
 }
 
-func (builder *builder) WithID(id uuid.UUID) *builder {
-	if !validator.IsUUIDValid(id) {
+func (builder *builder) WithPerson(_person person.Person) *builder {
+	err := _person.IsValid()
+	if err != nil {
+		builder.fields = append(builder.fields, messages.Person)
+		builder.errorMessages = append(builder.errorMessages, messages.PersonErrorMessage)
+		return builder
+	}
+	builder.student.Person = _person
+	return builder
+}
+
+func (builder *builder) WithStudentID(studentID uuid.UUID) *builder {
+	if !validator.IsUUIDValid(studentID) {
 		builder.fields = append(builder.fields, messages.StudentID)
 		builder.errorMessages = append(builder.errorMessages, messages.StudentIDErrorMessage)
 		return builder
 	}
-
-	builder.student.id = id
-	return builder
-}
-
-func (builder *builder) WithName(name string) *builder {
-	name = strings.TrimSpace(name)
-	if len(name) == 0 {
-		builder.fields = append(builder.fields, messages.StudentName)
-		builder.errorMessages = append(builder.errorMessages, messages.StudentNameErrorMessage)
-		return builder
-	}
-
-	builder.student.name = name
+	builder.student.studentID = studentID
 	return builder
 }
 
@@ -54,7 +53,6 @@ func (builder *builder) WithRegistration(registration string) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentRegistrationErrorMessage)
 		return builder
 	}
-
 	builder.student.registration = registration
 	return builder
 }
@@ -71,7 +69,6 @@ func (builder *builder) WithInstitution(institution string) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentInstitutionErrorMessage)
 		return builder
 	}
-
 	builder.student.institution = institution
 	return builder
 }
@@ -83,7 +80,6 @@ func (builder *builder) WithCourse(course string) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentCourseErrorMessage)
 		return builder
 	}
-
 	builder.student.course = course
 	return builder
 }
@@ -95,7 +91,6 @@ func (builder *builder) WithInternshipLocationName(locationName string) *builder
 		builder.errorMessages = append(builder.errorMessages, messages.StudentInternshipLocationNameErrorMessage)
 		return builder
 	}
-
 	builder.student.internshipLocationName = locationName
 	return builder
 }
@@ -107,7 +102,6 @@ func (builder *builder) WithInternshipAddress(address string) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentInternshipAddressErrorMessage)
 		return builder
 	}
-
 	builder.student.internshipAddress = address
 	return builder
 }
@@ -119,7 +113,6 @@ func (builder *builder) WithInternshipLocation(location string) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentInternshipLocationErrorMessage)
 		return builder
 	}
-
 	builder.student.internshipLocation = location
 	return builder
 }
@@ -130,7 +123,6 @@ func (builder *builder) WithTotalWorkload(totalWorkload int) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentTotalWorkloadErrorMessage)
 		return builder
 	}
-
 	builder.student.totalWorkload = totalWorkload
 	return builder
 }
@@ -141,7 +133,6 @@ func (builder *builder) WithWorkloadCompleted(workloadCompleted int) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentWorkloadCompletedErrorMessage)
 		return builder
 	}
-
 	builder.student.workloadCompleted = workloadCompleted
 	return builder
 }
@@ -152,7 +143,6 @@ func (builder *builder) WithPendingWorkload(pendingWorkload int) *builder {
 		builder.errorMessages = append(builder.errorMessages, messages.StudentPendingWorkloadErrorMessage)
 		return builder
 	}
-
 	builder.student.pendingWorkload = pendingWorkload
 	return builder
 }
