@@ -65,16 +65,31 @@ func (r *accountRepository) FindByID(uID *uuid.UUID) (account.Account, errors.Er
 }
 
 func (r *accountRepository) Create(account account.Account) (*uuid.UUID, errors.Error) {
+	transaction, err := repository.BeginTransaction()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, err
+	}
+	defer transaction.CloseConn()
+	id, _, err := r.createPassingTrasaction(transaction, account)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
+	err = transaction.Commit()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
+	return id, nil
+}
+
+func (r *accountRepository) createPassingTrasaction(tx *repository.SQLTransaction, account account.Account) (*uuid.UUID, *uuid.UUID, errors.Error) {
 	account.SetPassword(randstr.Hex(8))
 	encryptedPassword, err := encryptPassword(account.Password())
 	if err != nil {
-		return nil, errors.NewUnexpected()
+		return nil, nil, errors.NewUnexpected()
 	}
-	tx, txErr := repository.BeginTransaction()
-	if txErr != nil {
-		return nil, txErr
-	}
-	defer tx.CloseConn()
 	personID, createPersonErr := txQueryRowReturningID(
 		tx,
 		query.Person().Insert(),
@@ -85,12 +100,12 @@ func (r *accountRepository) Create(account account.Account) (*uuid.UUID, errors.
 		account.Person().Phone(),
 	)
 	if createPersonErr != nil {
-		return nil, createPersonErr
+		return nil, nil, createPersonErr
 	} else if parseErr := account.Person().SetStringID(personID); parseErr != nil {
-		return nil, errors.NewInternal(parseErr)
+		return nil, nil, errors.NewInternal(parseErr)
 	}
 	if insertRoleDataErr := insertAccountRoleData(tx, account); insertRoleDataErr != nil {
-		return nil, insertRoleDataErr
+		return nil, nil, insertRoleDataErr
 	}
 	accountID, createAccErr := txQueryRowReturningID(
 		tx,
@@ -101,18 +116,18 @@ func (r *accountRepository) Create(account account.Account) (*uuid.UUID, errors.
 		account.Role().Code(),
 	)
 	if createAccErr != nil {
-		return nil, createAccErr
+		return nil, nil, createAccErr
 	}
-	commitErr := tx.Commit()
-	if commitErr != nil {
-		return nil, errors.NewUnexpected()
-	}
-	id, convErr := uuid.Parse(accountID)
+	accountUUID, convErr := uuid.Parse(accountID)
 	if convErr != nil {
-		return nil, errors.NewUnexpected()
+		return nil, nil, errors.NewUnexpected()
+	}
+	personUUID, convErr := uuid.Parse(personID)
+	if convErr != nil {
+		return nil, nil, errors.NewUnexpected()
 	}
 	go mail.SendNewAccountEmail(account.Person().Email(), account.Password())
-	return &id, nil
+	return &accountUUID, &personUUID, nil
 }
 
 func (r *accountRepository) UpdateAccountProfile(person person.Person) errors.Error {
@@ -153,7 +168,7 @@ func (r *accountRepository) UpdateAccountPassword(accountID *uuid.UUID, data upd
 }
 
 func insertAccountRoleData(tx *repository.SQLTransaction, account account.Account) errors.Error {
-	if account.Role().IsAdmin() {
+	if account.Role().IsAdmin() || account.Role().IsStudent() {
 		return nil
 	}
 	var result sql.Result
@@ -216,7 +231,7 @@ func newPersonFromMapRows(data map[string]interface{}) (person.Person, errors.Er
 	} else {
 		id = parsedID
 	}
-	return person.New(&id, name, birthDate, email, cpf, phone, createdAt, updatedAt)
+	return person.New(&id, name, email, birthDate, cpf, phone, createdAt, updatedAt)
 }
 
 func fillAccountWithProfessionalRoleEntry(r account.Account, data map[string]interface{}) errors.Error {

@@ -25,8 +25,8 @@ type person struct {
 	updatedAt string
 }
 
-func New(id *uuid.UUID, name, birthDate, email, cpf, phone, createdAt, updatedAt string) (Person, errors.Error) {
-	data := &person{id, name, birthDate, email, cpf, phone, createdAt, updatedAt}
+func New(id *uuid.UUID, name, email, birthDate, cpf, phone, createdAt, updatedAt string) (Person, errors.Error) {
+	data := &person{id, name, email, birthDate, cpf, phone, createdAt, updatedAt}
 	return data, data.IsValid()
 }
 

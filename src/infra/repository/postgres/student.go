@@ -1,7 +1,10 @@
 package postgres
 
 import (
+	"eletronic_point/src/core/domain/account"
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/person"
+	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/domain/student"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/interfaces/secondary"
@@ -23,8 +26,41 @@ func NewStudentRepository() secondary.StudentPort {
 }
 
 func (this studentRepository) Create(_student student.Student) (*uuid.UUID, errors.Error) {
-	var id uuid.UUID
-	rows, err := repository.Queryx(query.Student().Insert(), _student.Name(), _student.Registration(),
+	transaction, transactionError := repository.BeginTransaction()
+	if transactionError != nil {
+		logger.Error().Msg(transactionError.String())
+		return nil, transactionError
+	}
+	defer transaction.CloseConn()
+	_person, validationError := person.NewBuilder().
+		WithName(_student.Name()).
+		WithBirthDate(_student.BirthDate()).
+		WithEmail(_student.Email()).
+		WithCPF(_student.CPF()).
+		WithPhone(_student.Phone()).
+		Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
+	_role, validationError := role.NewBuilder().WithCode(role.STUDENT_ROLE_CODE).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
+	_account, err := account.NewBuilder().
+		WithEmail(_student.Email()).WithPerson(_person).WithRole(_role).Build()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, err
+	}
+	accountRepository := accountRepository{}
+	_, personID, err := accountRepository.createPassingTrasaction(transaction, _account)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, err
+	}
+	rows, err := transaction.Query(query.Student().Insert(), personID, _student.Registration(),
 		_student.ProfilePicture(), _student.Institution(), _student.Course(), _student.InternshipLocationName(),
 		_student.InternshipAddress(), _student.InternshipLocation(), _student.TotalWorkload())
 	if err != nil {
@@ -37,12 +73,12 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 	if !rows.Next() {
 		return nil, errors.NewUnexpected()
 	}
-	scanError := rows.Scan(&id)
-	if scanError != nil {
-		logger.Error().Msg(scanError.Error())
+	commitError := transaction.Commit()
+	if commitError != nil {
+		logger.Error().Msg(commitError.String())
 		return nil, errors.NewUnexpected()
 	}
-	return &id, nil
+	return personID, nil
 }
 
 func (this studentRepository) Update(_student student.Student) errors.Error {

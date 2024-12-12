@@ -1,7 +1,6 @@
 package role
 
 import (
-	"eletronic_point/src/core/domain"
 	"eletronic_point/src/core/domain/errors"
 	"strings"
 
@@ -21,18 +20,6 @@ var possibleRoleCodes = []string{
 	ADMIN_ROLE_CODE,
 	TEACHER_ROLE_CODE,
 	STUDENT_ROLE_CODE,
-}
-
-type Role interface {
-	domain.Model
-
-	ID() *uuid.UUID
-	Name() string
-	Code() string
-	IsProfessional() bool
-	IsAdmin() bool
-	IsTeacher() bool
-	IsStudent() bool
 }
 
 type role struct {

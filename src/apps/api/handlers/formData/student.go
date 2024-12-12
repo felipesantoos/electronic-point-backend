@@ -2,6 +2,10 @@ package formData
 
 const (
 	StudentName                   = "name"
+	StudentBirthDate              = "birth_date"
+	StudentCPF                    = "cpf"
+	StudentEmail                  = "email"
+	StudentPhone                  = "phone"
 	StudentRegistration           = "registration"
 	StudentInstitution            = "institution"
 	StudentCourse                 = "course"

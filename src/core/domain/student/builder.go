@@ -26,12 +26,6 @@ func NewBuilder() *builder {
 }
 
 func (builder *builder) WithPerson(_person person.Person) *builder {
-	err := _person.IsValid()
-	if err != nil {
-		builder.fields = append(builder.fields, messages.Person)
-		builder.errorMessages = append(builder.errorMessages, messages.PersonErrorMessage)
-		return builder
-	}
 	builder.student.Person = _person
 	return builder
 }

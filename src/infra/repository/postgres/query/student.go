@@ -31,7 +31,7 @@ func (*studentQueryBuilder) Select() StudentQuerySelectBuilder {
 func (*studentQueryBuilder) Insert() string {
 	return `
 		INSERT INTO student (
-			name, registration, profile_picture, institution, course, internship_location_name, 
+			person_id, registration, profile_picture, institution, course, internship_location_name, 
 			internship_address, internship_location, total_workload
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9
@@ -116,6 +116,6 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			student.total_workload AS student_total_workload
 		FROM student
 			INNER JOIN person ON person.id = student.person_id
-		WHERE student.id = $1 AND student.deleted_at IS NULL
+		WHERE person.id = $1 AND student.deleted_at IS NULL
 	`
 }
