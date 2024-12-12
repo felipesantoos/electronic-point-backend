@@ -31,9 +31,9 @@ func (*timeRecordQueryBuilder) Select() TimeRecordQuerySelectBuilder {
 func (*timeRecordQueryBuilder) Insert() string {
 	return `
 		INSERT INTO time_record (
-			id, date, entry_time, exit_time, location, is_off_site, justification, student_id, created_at
+			date, entry_time, exit_time, location, is_off_site, justification, student_id
 		) VALUES (
-			DEFAULT, $1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP
+			$1, $2, $3, $4, $5, $6, (SELECT * FROM student WHERE person_id = $7)
 		) RETURNING id
 	`
 }
@@ -51,7 +51,6 @@ func (*timeRecordQueryBuilder) Update() string {
 			student_id = $8,
 			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $1
-		RETURNING id
 	`
 }
 

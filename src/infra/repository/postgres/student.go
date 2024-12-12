@@ -155,8 +155,8 @@ func (this studentRepository) List() ([]student.Student, errors.Error) {
 	}
 	for i := range students {
 		timeRecordRepository := NewTimeRecordRepository()
-		studentID := students[i].StudentID()
-		_filters := filters.TimeRecordFilters{StudentID: &studentID}
+		studentID := students[i].ID()
+		_filters := filters.TimeRecordFilters{StudentID: studentID}
 		timeRecords, err := timeRecordRepository.List(_filters)
 		if err != nil {
 			logger.Error().Msg(err.String())
@@ -170,6 +170,7 @@ func (this studentRepository) List() ([]student.Student, errors.Error) {
 		workloadCompleted := calculateWorkloadCompleted(timeRecords)
 		students[i].SetWorkloadCompleted(workloadCompleted)
 		students[i].SetPendingWorkload(calculatePendingWorkload(students[i].TotalWorkload(), workloadCompleted))
+		students[i].SetFrequencyHistory(nil)
 	}
 	return students, nil
 }
@@ -196,8 +197,8 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 		return nil, errors.NewUnexpected()
 	}
 	timeRecordRepository := NewTimeRecordRepository()
-	studentID := _student.StudentID()
-	_filters := filters.TimeRecordFilters{StudentID: &studentID}
+	studentID := _student.ID()
+	_filters := filters.TimeRecordFilters{StudentID: studentID}
 	timeRecords, err := timeRecordRepository.List(_filters)
 	if err != nil {
 		logger.Error().Msg(err.String())

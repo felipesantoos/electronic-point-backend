@@ -5,15 +5,12 @@ import (
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
-
-	"github.com/google/uuid"
 )
 
 var _ Student = &student{}
 
 type student struct {
 	person.Person
-	studentID              uuid.UUID
 	name                   string
 	registration           string
 	profilePicture         *string
@@ -26,10 +23,6 @@ type student struct {
 	workloadCompleted      int
 	pendingWorkload        int
 	frequencyHistory       []timeRecord.TimeRecord
-}
-
-func (s *student) StudentID() uuid.UUID {
-	return s.studentID
 }
 
 func (s *student) Registration() string {
@@ -74,14 +67,6 @@ func (s *student) PendingWorkload() int {
 
 func (s *student) FrequencyHistory() []timeRecord.TimeRecord {
 	return s.frequencyHistory
-}
-
-func (s *student) SetStudentID(studentID uuid.UUID) errors.Error {
-	if studentID == uuid.Nil {
-		return errors.NewFromString(messages.StudentIDErrorMessage)
-	}
-	s.studentID = studentID
-	return nil
 }
 
 func (s *student) SetName(name string) errors.Error {

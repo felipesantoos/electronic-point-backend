@@ -1,6 +1,5 @@
 CREATE TABLE student (
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
-    person_id UUID NOT NULL,
+    id UUID NOT NULL,
     registration VARCHAR (10) NOT NULL UNIQUE,
     profile_picture TEXT NULL,
     institution VARCHAR(200) NOT NULL,
@@ -13,7 +12,7 @@ CREATE TABLE student (
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT student_pk PRIMARY KEY (id),
-    CONSTRAINT student_person_fk FOREIGN KEY (person_id) REFERENCES person (id),
+    CONSTRAINT student_person_fk FOREIGN KEY (id) REFERENCES person (id),
     CONSTRAINT student_registration_uk UNIQUE (registration)
 );
 
@@ -33,7 +32,7 @@ CREATE TABLE time_record (
     CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES student (id)
 );
 
-COPY student (id, person_id, registration, profile_picture, institution, course, internship_location_name, internship_address, internship_location, total_workload)
+COPY student (id, registration, profile_picture, institution, course, internship_location_name, internship_address, internship_location, total_workload)
     FROM '/fixtures/000002/student.csv'
     DELIMITER ';' CSV HEADER;
 

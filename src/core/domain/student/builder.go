@@ -5,10 +5,7 @@ import (
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
-	"eletronic_point/src/utils/validator"
 	"strings"
-
-	"github.com/google/uuid"
 )
 
 type builder struct {
@@ -27,16 +24,6 @@ func NewBuilder() *builder {
 
 func (builder *builder) WithPerson(_person person.Person) *builder {
 	builder.student.Person = _person
-	return builder
-}
-
-func (builder *builder) WithStudentID(studentID uuid.UUID) *builder {
-	if !validator.IsUUIDValid(studentID) {
-		builder.fields = append(builder.fields, messages.StudentID)
-		builder.errorMessages = append(builder.errorMessages, messages.StudentIDErrorMessage)
-		return builder
-	}
-	builder.student.studentID = studentID
 	return builder
 }
 

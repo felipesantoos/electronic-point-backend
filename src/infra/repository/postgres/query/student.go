@@ -31,7 +31,7 @@ func (*studentQueryBuilder) Select() StudentQuerySelectBuilder {
 func (*studentQueryBuilder) Insert() string {
 	return `
 		INSERT INTO student (
-			person_id, registration, profile_picture, institution, course, internship_location_name, 
+			id, registration, profile_picture, institution, course, internship_location_name, 
 			internship_address, internship_location, total_workload
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9
@@ -52,7 +52,7 @@ func (*studentQueryBuilder) Update() string {
 			internship_location = $8,
 			total_workload = $9,
 			updated_at = CURRENT_TIMESTAMP
-		WHERE person_id = $1
+		WHERE id = $1
 	`
 }
 
@@ -61,7 +61,7 @@ func (*studentQueryBuilder) Delete() string {
 		UPDATE student
 		SET
 			deleted_at = CURRENT_TIMESTAMP
-		WHERE person_id = $1
+		WHERE id = $1
 	`
 }
 
@@ -90,7 +90,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			student.internship_location AS student_internship_location,
 			student.total_workload AS student_total_workload
 		FROM student
-			INNER JOIN person ON person.id = student.person_id
+			INNER JOIN person ON person.id = student.id
 		WHERE student.deleted_at IS NULL
 		ORDER BY person.name ASC
 	`
@@ -114,7 +114,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			student.internship_location AS student_internship_location,
 			student.total_workload AS student_total_workload
 		FROM student
-			INNER JOIN person ON person.id = student.person_id
+			INNER JOIN person ON person.id = student.id
 		WHERE person.id = $1 AND student.deleted_at IS NULL
 	`
 }

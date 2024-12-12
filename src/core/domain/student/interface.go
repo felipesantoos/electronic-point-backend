@@ -4,13 +4,10 @@ import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
-
-	"github.com/google/uuid"
 )
 
 type Student interface {
 	person.Person
-	StudentID() uuid.UUID
 	Registration() string
 	ProfilePicture() *string
 	Institution() string
@@ -23,7 +20,6 @@ type Student interface {
 	PendingWorkload() int
 	FrequencyHistory() []timeRecord.TimeRecord
 
-	SetStudentID(uuid.UUID) errors.Error
 	SetRegistration(string) errors.Error
 	SetProfilePicture(*string) errors.Error
 	SetInstitution(string) errors.Error
