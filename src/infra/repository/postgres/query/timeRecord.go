@@ -33,7 +33,7 @@ func (*timeRecordQueryBuilder) Insert() string {
 		INSERT INTO time_record (
 			date, entry_time, exit_time, location, is_off_site, justification, student_id
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, (SELECT * FROM student WHERE person_id = $7)
+			$1, $2, $3, $4, $5, $6, $7
 		) RETURNING id
 	`
 }

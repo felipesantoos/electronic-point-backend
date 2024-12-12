@@ -63,8 +63,8 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
 	var studentID uuid.UUID
-	if ctx.AccountID() != nil {
-		studentID = *ctx.AccountID()
+	if ctx.ProfileID() != nil {
+		studentID = *ctx.ProfileID()
 	}
 	err := _timeRecord.SetStudentID(studentID)
 	if err != nil {
@@ -98,6 +98,9 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records/{id} [put]
 func (this *timeRecordHandlers) Update(ctx RichContext) error {
+	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
+		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
@@ -114,7 +117,16 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
 	_timeRecord.SetID(id)
-	err := this.services.Update(_timeRecord)
+	var studentID uuid.UUID
+	if ctx.ProfileID() != nil {
+		studentID = *ctx.ProfileID()
+	}
+	err := _timeRecord.SetStudentID(studentID)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return unprocessableEntityErrorWithMessage(messages.StudentIDErrorMessage)
+	}
+	err = this.services.Update(_timeRecord)
 	if err != nil {
 		return responseFromError(err)
 	}
