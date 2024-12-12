@@ -1,6 +1,7 @@
 package main
 
 import (
+	"eletronic_point/src/apps/api/config"
 	"eletronic_point/src/apps/api/middlewares"
 	"eletronic_point/src/apps/api/routes"
 	"eletronic_point/src/utils"
@@ -19,8 +20,9 @@ import (
 
 func main() {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
-
 	godotenv.Load(".env")
+	cfg := config.Load()
+	setUpAuth(cfg.Authorization)
 	api := NewAPI(getServerHostAndPort())
 	api.Serve()
 }
@@ -53,7 +55,6 @@ type api struct {
 // @contact.name DIT - IFAL
 // @contact.email wmrn1@aluno.ifal.edu.br
 // @BasePath /api
-// @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
 func NewAPI(host string, port int) API {
@@ -71,7 +72,12 @@ func (a *api) setupMiddlewares() {
 	a.server.Use(middleware.Recover())
 	a.server.Use(middlewares.LoggerMiddleware())
 	a.server.Use(middlewares.CORSMiddleware())
-	a.server.Use(middlewares.GuardMiddleware)
+	a.server.Use(middlewares.Authorize)
+}
+
+func setUpAuth(cfg *config.AuthorizationConfig) {
+	middlewares.AuthModelPath = cfg.AuthPaths.AuthModelPath
+	middlewares.AuthPolicyPath = cfg.AuthPaths.AuthPolicyPath
 }
 
 func (a *api) rootEndpoint() *echo.Group {

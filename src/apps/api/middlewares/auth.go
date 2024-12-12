@@ -1,42 +1,38 @@
 package middlewares
 
 import (
+	"net/http"
+	"strings"
+
+	"github.com/ahmetb/go-linq"
+	"github.com/google/uuid"
+
+	"eletronic_point/src/apps/api/apimsg"
 	"eletronic_point/src/apps/api/dicontainer"
 	"eletronic_point/src/apps/api/handlers"
-	"eletronic_point/src/apps/api/middlewares/permissions"
+	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/utils"
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/role"
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"strings"
+	"eletronic_point/src/utils/tokenextractor"
 
-	casbin "github.com/casbin/casbin/v2"
-	"github.com/casbin/casbin/v2/model"
-	jsonadapter "github.com/casbin/json-adapter/v2"
-	"github.com/google/uuid"
+	"github.com/casbin/casbin/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )
 
+var (
+	AuthModelPath  string
+	AuthPolicyPath string
+
+	method string
+	path   string
+	roles  []string
+)
+
 var logger = Logger()
 var authService = dicontainer.AuthServices()
-var permissionsHelper = permissions.New()
-var casbinModelTemplate = `
-	[request_definition]
-	r = sub, obj, act
-
-	[policy_definition]
-	p = sub, obj, act
-
-	[policy_effect]
-	e = some(where (p.eft == allow))
-
-	[matchers]
-	m = r.sub == p.sub && regexMatch(r.obj, p.obj) && (r.act == p.act || p.act == "*")
-`
 
 func negativeTokenCookie() *http.Cookie {
 	cookie := new(http.Cookie)
@@ -47,8 +43,8 @@ func negativeTokenCookie() *http.Cookie {
 	return cookie
 }
 
-func GuardMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	enforcer, err := newCasbinEnforcer()
+func Authorize(next echo.HandlerFunc) echo.HandlerFunc {
+	enforcer, err := casbin.NewEnforcer(AuthModelPath, AuthPolicyPath)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
@@ -91,47 +87,6 @@ func GuardMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func newCasbinEnforcer() (*casbin.Enforcer, error) {
-	authModel, err := model.NewModelFromString(casbinModelTemplate)
-	if err != nil {
-		return nil, err
-	}
-	authAdapter, err := newCasbinJSONAdapter()
-	if err != nil {
-		return nil, err
-	}
-	enforcer, err := casbin.NewEnforcer(authModel, authAdapter)
-	if err != nil {
-		fmt.Println("Error when building enforcer:", err)
-		return nil, err
-	}
-	return enforcer, nil
-}
-
-func authCasbinPolicies() []map[string]string {
-	authPolicies := permissionsHelper.AuthPolicies()
-	policies := []map[string]string{}
-	for _, policy := range authPolicies {
-		policies = append(policies, map[string]string{
-			"PType": "p",
-			"V0":    policy.Subject(),
-			"V1":    policy.Object(),
-			"V2":    policy.Action(),
-		})
-	}
-	return policies
-}
-
-func newCasbinJSONAdapter() (*jsonadapter.Adapter, error) {
-	authPolicy := authCasbinPolicies()
-	authPolicyBytes, err := json.Marshal(&authPolicy)
-	if err != nil {
-		return nil, err
-	}
-	authAdapter := jsonadapter.NewAdapter(&authPolicyBytes)
-	return authAdapter, nil
-}
-
 func sessionIsValidWith(authToken string) (bool, errors.Error) {
 	if claims, err := utils.ExtractTokenClaims(authToken); err != nil {
 		return false, nil
@@ -143,4 +98,53 @@ func sessionIsValidWith(authToken string) (bool, errors.Error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+var allowList = []string{
+	"/api/auth/refresh",
+}
+
+func isPathInAllowList(path string) bool {
+	for _, p := range allowList {
+		if path == p {
+			return true
+		}
+	}
+	return false
+}
+
+func isAnAnonymousRequest() bool {
+	return linq.From(roles).Contains(tokenextractor.AnonymousRole)
+}
+
+func isAccessGranted(enforcer *casbin.Enforcer) bool {
+	for _, role := range roles {
+		if granted, err := enforcer.Enforce(role, path, method); granted && err == nil {
+			return true
+		} else if err != nil {
+			log.Fatal().Err(err)
+		}
+	}
+	return false
+}
+
+func sendUnavailableServiceResponse(c echo.Context) error {
+	return c.JSON(http.StatusServiceUnavailable, response.ErrorMessage{
+		Code:    http.StatusServiceUnavailable,
+		Message: apimsg.AuthServerUnavailable,
+	})
+}
+
+func sendUnauthorizedResponse(c echo.Context) error {
+	return c.JSON(http.StatusUnauthorized, response.ErrorMessage{
+		Code:    http.StatusUnauthorized,
+		Message: apimsg.UnauthorizedErrMsg,
+	})
+}
+
+func sendForbiddenResponse(c echo.Context) error {
+	return c.JSON(http.StatusForbidden, response.ErrorMessage{
+		Code:    http.StatusForbidden,
+		Message: apimsg.ForbiddenErrMsg,
+	})
 }

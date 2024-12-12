@@ -30,10 +30,15 @@ func NewAccountHandler(service primary.AccountPort) AccountHandler {
 // @Summary Listar todas as contas existentes do banco de dados.
 // @Description Esta rota retorna todas as informações de todas as contas cadastradas no banco de dados.
 // @Description Dados como "professional" irão somente aparecer caso a role da conta for própria para contenção desses.
-// @Security	bearerAuth
 // @Tags Administrador
 // @Produce json
 // @Success 200 {array} response.Account "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [get]
@@ -54,10 +59,15 @@ func (h *accountHandler) List(context RichContext) error {
 // @Summary Pesquisar dados do perfil de uma conta.
 // @Description Esta rota retorna todas as informações de todas as contas cadastradas no banco de dados.
 // @Description Dados como "professional" irão somente aparecer caso a role da conta for própria para contenção desses.
-// @Security	bearerAuth
 // @Tags Geral
 // @Produce json
 // @Success 200 {object} response.Account "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/profile [get]
@@ -74,12 +84,17 @@ func (h *accountHandler) FindProfile(context RichContext) error {
 // @Summary Cadastrar uma nova conta de usuário
 // @Description Ao enviar dados para cadastro de uma nova conta, os dados relacionados à "Profissional"
 // @Description são facultativos, tendo somente que enviar os dados que são relacionados à role definida.
-// @Security	bearerAuth
 // @Accept json
 // @Param json body request.CreateAccount true "JSON com todos os dados necessários para o cadastro de uma conta de usuário."
 // @Tags Administrador
 // @Produce json
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [post]
@@ -104,11 +119,16 @@ func (h *accountHandler) Create(context RichContext) error {
 // UpdateProfile
 // @ID Account.UpdateProfile
 // @Summary Atualizar dados do perfil de uma conta.
-// @Security	bearerAuth
 // @Accept json
 // @Tags Geral
 // @Param json  body request.UpdateAccountProfile true "JSON com todos os dados necessários para o processo de atualização de dados do perfil."
 // @Success 200
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/profile [put]
@@ -135,11 +155,16 @@ func (h *accountHandler) UpdateProfile(context RichContext) error {
 // UpdateAccountPassword
 // @ID Account.UpdateAccountPassword
 // @Summary Realizar a atualização de senha de uma conta.
-// @Security	bearerAuth
 // @Accept json
 // @Tags Geral
 // @Param json  body request.UpdatePassword true "JSON com todos os dados necessários para a atualização da senha da conta."
 // @Success 200
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /accounts/update-password [put]
