@@ -1209,6 +1209,38 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "default": "2000-01-01",
+                        "description": "Data de nascimento",
+                        "name": "birth_date",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "73595867041",
+                        "description": "CPF do estudante",
+                        "name": "cpf",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "email@example.com",
+                        "description": "Email do estudante",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "82999999999",
+                        "description": "Telefone do estudante",
+                        "name": "phone",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "0000000001",
                         "description": "Matrícula do estudante",
                         "name": "registration",

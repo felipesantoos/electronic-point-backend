@@ -26,6 +26,8 @@ type AccountQuerySelectBuilder interface {
 type accountQuerySelectBuilder struct{}
 
 type AccountQueryUpdateBuilder interface {
+	Email() string
+	EmailByPersonID() string
 	Password() string
 	Profile() string
 }
@@ -126,6 +128,22 @@ func (*accountQuerySelectBuilder) defaultSimplifiedStatement(whereClause string)
 			ON p.id = a.person_id
 		%s
 	`, whereClause)
+}
+
+func (*accountQueryUpdateBuilder) Email() string {
+	return `
+		UPDATE account SET email = $1 WHERE id= $2
+	`
+}
+
+func (*accountQueryUpdateBuilder) EmailByPersonID() string {
+	return `
+		UPDATE account
+		SET email = $1
+		FROM person
+		WHERE person.id = $2
+			AND person.id = account.person_id
+	`
 }
 
 func (*accountQueryUpdateBuilder) Password() string {

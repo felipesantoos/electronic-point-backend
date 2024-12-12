@@ -43,17 +43,16 @@ func (*studentQueryBuilder) Update() string {
 	return `
 		UPDATE student
 		SET
-			name = $2,
-			registration = $3,
-			profile_picture = $4,
-			institution = $5,
-			course = $6,
-			internship_location_name = $7,
-			internship_address = $8,
-			internship_location = $9,
-			total_workload = $10,
+			registration = $2,
+			profile_picture = $3,
+			institution = $4,
+			course = $5,
+			internship_location_name = $6,
+			internship_address = $7,
+			internship_location = $8,
+			total_workload = $9,
 			updated_at = CURRENT_TIMESTAMP
-		WHERE id = $1
+		WHERE person_id = $1
 	`
 }
 

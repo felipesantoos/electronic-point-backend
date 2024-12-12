@@ -60,7 +60,7 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 		logger.Error().Msg(err.String())
 		return nil, err
 	}
-	rows, err := transaction.Query(query.Student().Insert(), personID, _student.Registration(),
+	err = defaultTxExecQuery(transaction, query.Student().Insert(), personID, _student.Registration(),
 		_student.ProfilePicture(), _student.Institution(), _student.Course(), _student.InternshipLocationName(),
 		_student.InternshipAddress(), _student.InternshipLocation(), _student.TotalWorkload())
 	if err != nil {
@@ -68,9 +68,6 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
 			return nil, errors.NewConflictFromString(messages.StudentRegistrationIsAlreadyInUseErrorMessage)
 		}
-		return nil, errors.NewUnexpected()
-	}
-	if !rows.Next() {
 		return nil, errors.NewUnexpected()
 	}
 	commitError := transaction.Commit()
@@ -82,14 +79,55 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 }
 
 func (this studentRepository) Update(_student student.Student) errors.Error {
-	_, err := repository.ExecQuery(query.Student().Update(), _student.ID(), _student.Name(), _student.Registration(),
-		_student.ProfilePicture(), _student.Institution(), _student.Course(), _student.InternshipLocationName(),
-		_student.InternshipAddress(), _student.InternshipLocation(), _student.TotalWorkload())
+	transaction, transactionError := repository.BeginTransaction()
+	if transactionError != nil {
+		logger.Error().Msg(transactionError.String())
+		return transactionError
+	}
+	defer transaction.CloseConn()
+	_person, validationError := person.NewBuilder().
+		WithID(*_student.ID()).
+		WithName(_student.Name()).
+		WithBirthDate(_student.BirthDate()).
+		WithEmail(_student.Email()).
+		WithCPF(_student.CPF()).
+		WithPhone(_student.Phone()).
+		Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return validationError
+	}
+	_role, validationError := role.NewBuilder().WithCode(role.STUDENT_ROLE_CODE).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return validationError
+	}
+	_account, err := account.NewBuilder().
+		WithEmail(_student.Email()).WithPerson(_person).WithRole(_role).Build()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	accountRepository := accountRepository{}
+	err = accountRepository.updatePassingTrasaction(transaction, _account)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	err = defaultTxExecQuery(transaction, query.Student().Update(), _student.ID(),
+		_student.Registration(), _student.ProfilePicture(), _student.Institution(),
+		_student.Course(), _student.InternshipLocationName(), _student.InternshipAddress(),
+		_student.InternshipLocation(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())
 		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
 			return errors.NewConflictFromString(messages.StudentRegistrationIsAlreadyInUseErrorMessage)
 		}
+		return errors.NewUnexpected()
+	}
+	commitError := transaction.Commit()
+	if commitError != nil {
+		logger.Error().Msg(commitError.String())
 		return errors.NewUnexpected()
 	}
 	return nil

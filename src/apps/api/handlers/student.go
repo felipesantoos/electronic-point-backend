@@ -104,6 +104,10 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 
 	studentDTO := request.Student{
 		Name:                   name,
+		BirthDate:              birthDate,
+		CPF:                    cpf,
+		Email:                  email,
+		Phone:                  phone,
 		Registration:           registration,
 		ProfilePicture:         filePath,
 		Institution:            institution,
@@ -112,10 +116,6 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		InternshipAddress:      internshipAddress,
 		InternshipLocation:     internshipLocation,
 		TotalWorkload:          totalWorkload,
-		BirthDate:              birthDate,
-		CPF:                    cpf,
-		Email:                  email,
-		Phone:                  phone,
 	}
 
 	_student, validationError := studentDTO.ToDomain()
@@ -141,6 +141,10 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Produce json
 // @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
 // @Param name formData string true "Nome do estudante" default(Nome 1)
+// @Param birth_date formData string true "Data de nascimento" default(2000-01-01)
+// @Param cpf formData string true "CPF do estudante" default(73595867041)
+// @Param email formData string true "Email do estudante" default(email@example.com)
+// @Param phone formData string true "Telefone do estudante" default(82999999999)
 // @Param registration formData string true "Matrícula do estudante" default(0000000001)
 // @Param profile_picture formData file false "Foto de perfil do estudante (arquivo de imagem)"
 // @Param institution formData string true "Instituição do estudante" default(IFAL 1)
@@ -170,6 +174,10 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 		return badRequestErrorWithMessage(formDataError.Error())
 	}
 	name := ctx.FormValue(formData.StudentName)
+	birthDate := ctx.FormValue(formData.StudentBirthDate)
+	cpf := ctx.FormValue(formData.StudentCPF)
+	email := ctx.FormValue(formData.StudentEmail)
+	phone := ctx.FormValue(formData.StudentPhone)
 	registration := ctx.FormValue(formData.StudentRegistration)
 	institution := ctx.FormValue(formData.StudentInstitution)
 	course := ctx.FormValue(formData.StudentCourse)
@@ -203,6 +211,10 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 	}
 	studentDTO := request.Student{
 		Name:                   name,
+		BirthDate:              birthDate,
+		CPF:                    cpf,
+		Email:                  email,
+		Phone:                  phone,
 		Registration:           registration,
 		ProfilePicture:         filePath,
 		Institution:            institution,
@@ -217,11 +229,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-	validationError = _student.SetStudentID(id)
-	if validationError != nil {
-		logger.Error().Msg(validationError.String())
-		return unprocessableEntityErrorWithMessage(validationError.String())
-	}
+	_student.SetID(&id)
 	err := this.services.Update(_student)
 	if err != nil {
 		return responseFromError(err)

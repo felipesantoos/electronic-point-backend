@@ -32,7 +32,7 @@ func (*studentBuilder) BuildFromDomain(data student.Student) Student {
 		BirthDate: data.BirthDate(),
 		Email:     data.Email(),
 		CPF:       data.CPF(),
-		Phone:     data.CPF(),
+		Phone:     data.Phone(),
 	}
 	return Student{
 		Person:                 _person,

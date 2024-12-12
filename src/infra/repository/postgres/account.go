@@ -130,6 +130,34 @@ func (r *accountRepository) createPassingTrasaction(tx *repository.SQLTransactio
 	return &accountUUID, &personUUID, nil
 }
 
+func (r *accountRepository) updatePassingTrasaction(tx *repository.SQLTransaction, account account.Account) errors.Error {
+	err := defaultTxExecQuery(
+		tx,
+		query.Person().Update(),
+		account.Person().ID(),
+		account.Person().Name(),
+		account.Person().BirthDate(),
+		account.Person().Email(),
+		account.Person().CPF(),
+		account.Person().Phone(),
+	)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	err = defaultTxExecQuery(
+		tx,
+		query.Account().Update().EmailByPersonID(),
+		account.Email(),
+		account.Person().ID(),
+	)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	return nil
+}
+
 func (r *accountRepository) UpdateAccountProfile(person person.Person) errors.Error {
 	return defaultExecQuery(
 		query.Account().Update().Profile(),

@@ -1110,6 +1110,30 @@ paths:
         name: name
         required: true
         type: string
+      - default: "2000-01-01"
+        description: Data de nascimento
+        in: formData
+        name: birth_date
+        required: true
+        type: string
+      - default: "73595867041"
+        description: CPF do estudante
+        in: formData
+        name: cpf
+        required: true
+        type: string
+      - default: email@example.com
+        description: Email do estudante
+        in: formData
+        name: email
+        required: true
+        type: string
+      - default: "82999999999"
+        description: Telefone do estudante
+        in: formData
+        name: phone
+        required: true
+        type: string
       - default: "0000000001"
         description: Matrícula do estudante
         in: formData
