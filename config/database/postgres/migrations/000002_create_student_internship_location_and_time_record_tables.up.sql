@@ -1,18 +1,30 @@
+CREATE TABLE internship_location (
+    id UUID NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    lat NUMERIC NULL,
+    long NUMERIC NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
+    CONSTRAINT internship_location_pk PRIMARY KEY (id)
+);
+
 CREATE TABLE student (
     id UUID NOT NULL,
     registration VARCHAR (10) NOT NULL UNIQUE,
     profile_picture TEXT NULL,
     institution VARCHAR(200) NOT NULL,
     course VARCHAR(200) NOT NULL,
-    internship_location_name VARCHAR(200) NOT NULL,
-    internship_address VARCHAR(200) NOT NULL,
-    internship_location VARCHAR(200) NOT NULL,
     total_workload INT,
+    internship_location_id UUID NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT student_pk PRIMARY KEY (id),
     CONSTRAINT student_person_fk FOREIGN KEY (id) REFERENCES person (id),
+    CONSTRAINT student_internship_location_fk FOREIGN KEY (internship_location_id) REFERENCES internship_location (id),
     CONSTRAINT student_registration_uk UNIQUE (registration)
 );
 
@@ -32,7 +44,11 @@ CREATE TABLE time_record (
     CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES student (id)
 );
 
-COPY student (id, registration, profile_picture, institution, course, internship_location_name, internship_address, internship_location, total_workload)
+COPY internship_location (id, name, address, city, lat, long)
+    FROM '/fixtures/000002/internship_location.csv'
+    DELIMITER ';' CSV HEADER;
+
+COPY student (id, registration, profile_picture, institution, course, total_workload, internship_location_id)
     FROM '/fixtures/000002/student.csv'
     DELIMITER ';' CSV HEADER;
 
