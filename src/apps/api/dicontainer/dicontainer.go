@@ -38,3 +38,8 @@ func InternshipLocationServices() primary.InternshipLocationPort {
 	repository := postgres.NewInternshipLocationRepository()
 	return services.NewInternshipLocationServices(repository)
 }
+
+func InternshipServices() primary.InternshipPort {
+	repository := postgres.NewInternshipRepository()
+	return services.NewInternshipServices(repository)
+}

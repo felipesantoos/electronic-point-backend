@@ -13,9 +13,11 @@ type Internship interface {
 	StartedIn() time.Time
 	EndedIn() *time.Time
 	Location() internshipLocation.InternshipLocation
+	StudentID() uuid.UUID
 
 	SetID(uuid.UUID) errors.Error
 	SetStartedIn(time.Time) errors.Error
 	SetEndedIn(*time.Time) errors.Error
 	SetLocation(internshipLocation.InternshipLocation) errors.Error
+	SetStudentID(uuid.UUID) errors.Error
 }

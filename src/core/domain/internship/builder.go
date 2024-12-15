@@ -59,6 +59,16 @@ func (b *Builder) WithLocation(location internshipLocation.InternshipLocation) *
 	return b
 }
 
+func (b *Builder) WithStudentID(studentID uuid.UUID) *Builder {
+	if !validator.IsUUIDValid(studentID) {
+		b.fields = append(b.fields, messages.StudentID)
+		b.errorMessages = append(b.errorMessages, messages.StudentIDErrorMessage)
+		return b
+	}
+	b.internship.studentID = studentID
+	return b
+}
+
 func (b *Builder) Build() (Internship, errors.Error) {
 	if len(b.errorMessages) > 0 {
 		return nil, errors.NewValidationWithMetadata(b.errorMessages, map[string]interface{}{

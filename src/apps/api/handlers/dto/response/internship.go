@@ -12,6 +12,7 @@ type Internship struct {
 	StartedIn time.Time          `json:"started_in"`
 	EndedIn   *time.Time         `json:"ended_in"`
 	Location  InternshipLocation `json:"location"`
+	StudentID uuid.UUID          `json:"student_id"`
 }
 
 type internshipBuilder struct{}
@@ -30,6 +31,7 @@ func (*internshipBuilder) BuildFromDomain(data internship.Internship) Internship
 		StartedIn: data.StartedIn(),
 		EndedIn:   data.EndedIn(),
 		Location:  location,
+		StudentID: data.StudentID(),
 	}
 }
 

@@ -11,6 +11,7 @@ p, teacher, /api/auth/logout, POST
 p, teacher, /api/students/*, *
 p, teacher, /api/time-records/*, GET
 p, teacher, /api/internship-locations/*, *
+p, teacher, /api/internships/*, *
 p, student, /api/docs/*, GET
 p, student, /api/accounts/profile, GET
 p, student, /api/accounts/profile, PUT

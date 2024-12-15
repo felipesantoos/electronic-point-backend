@@ -1,6 +1,7 @@
 package query
 
 const (
+	StudentID             = "student_id"
 	StudentRegistration   = "student_registration"
 	StudentProfilePicture = "student_profile_picture"
 	StudentInstitution    = "student_institution"

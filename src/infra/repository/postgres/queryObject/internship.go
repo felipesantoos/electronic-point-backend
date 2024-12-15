@@ -75,6 +75,11 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 		}
 		locationLong = &aux
 	}
+	studentID, err := uuid.Parse(string(data[query.StudentID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
 	location, validationError := internshipLocation.NewBuilder().
 		WithID(locationID).
 		WithName(locationName).
@@ -92,6 +97,7 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 		WithStartedIn(internshipStartedIn).
 		WithEndedIn(internshipEndedIn).
 		WithLocation(location).
+		WithStudentID(studentID).
 		Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())

@@ -1179,6 +1179,406 @@ const docTemplate = `{
                 }
             }
         },
+        "/internships": {
+            "get": {
+                "description": "Recupera uma lista de todos os estágios no sistema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estágios"
+                ],
+                "summary": "Listar todos os estágios.",
+                "operationId": "Internship.List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do estudante",
+                        "name": "studentID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.Internship"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Cria um novo estágio no sistema com os dados fornecidos.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estágios"
+                ],
+                "summary": "Crie um novo estágio.",
+                "operationId": "Internship.Create",
+                "parameters": [
+                    {
+                        "description": "Dados de estágio",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Internship"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ID"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/internships/{id}": {
+            "get": {
+                "description": "Recupera um estágio específico pelo ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estágios"
+                ],
+                "summary": "Recuperar um estágio.",
+                "operationId": "Internship.Get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "9ec95529-06d5-47e2-b617-1606088ac9e6",
+                        "description": "ID do estágio",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "$ref": "#/definitions/response.Internship"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualiza os dados de um estágio existente no sistema.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estágios"
+                ],
+                "summary": "Atualizar um estágio existente.",
+                "operationId": "Internship.Update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "9ec95529-06d5-47e2-b617-1606088ac9e6",
+                        "description": "ID do estágio",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados de estágio",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Internship"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Requisição realizada com sucesso."
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Exclui o estágio especificado do sistema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Estágios"
+                ],
+                "summary": "Excluir um estágio por ID.",
+                "operationId": "Internship.Delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "9ec95529-06d5-47e2-b617-1606088ac9e6",
+                        "description": "ID do estágio",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Requisição realizada com sucesso."
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/res/account-roles": {
             "get": {
                 "description": "Pode ser utilizada para visualizar as funções de conta cadastradas no banco de dados e adquirir o\nidentificador da função desejada para a criação de uma nova conta.",
@@ -2233,6 +2633,27 @@ const docTemplate = `{
                 }
             }
         },
+        "request.Internship": {
+            "type": "object",
+            "properties": {
+                "ended_in": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "location_id": {
+                    "type": "string",
+                    "example": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75"
+                },
+                "started_in": {
+                    "type": "string",
+                    "example": "2024-06-01T00:00:00Z"
+                },
+                "student_id": {
+                    "type": "string",
+                    "example": "02e62826-bf41-4944-adb2-051b6a30a131"
+                }
+            }
+        },
         "request.InternshipLocation": {
             "type": "object",
             "properties": {
@@ -2387,6 +2808,9 @@ const docTemplate = `{
                     "$ref": "#/definitions/response.InternshipLocation"
                 },
                 "started_in": {
+                    "type": "string"
+                },
+                "student_id": {
                     "type": "string"
                 }
             }

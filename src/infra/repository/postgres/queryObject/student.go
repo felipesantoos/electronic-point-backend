@@ -133,6 +133,7 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	currentInternshipBuilder := internship.NewBuilder()
 	if internshipID != nil {
 		currentInternshipBuilder.WithID(*internshipID)
+		currentInternshipBuilder.WithStudentID(*_person.ID())
 	}
 	if internshipStartedIn != nil {
 		currentInternshipBuilder.WithStartedIn(*internshipStartedIn)

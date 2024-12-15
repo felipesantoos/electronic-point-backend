@@ -12,4 +12,6 @@ const (
 	InternshipStartedInErrorMessage = "internship started in is invalid"
 	InternshipEndedInErrorMessage   = "internship ended in is invalid"
 	InternshipLocationErrorMessage  = "internship location is invalid"
+
+	InternshipNotFoundErrorMessage = "internship not found"
 )

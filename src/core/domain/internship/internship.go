@@ -17,6 +17,7 @@ type internship struct {
 	startedIn time.Time
 	endedIn   *time.Time
 	location  internshipLocation.InternshipLocation
+	studentID uuid.UUID
 }
 
 func (i *internship) ID() uuid.UUID {
@@ -33,6 +34,10 @@ func (i *internship) EndedIn() *time.Time {
 
 func (i *internship) Location() internshipLocation.InternshipLocation {
 	return i.location
+}
+
+func (i *internship) StudentID() uuid.UUID {
+	return i.studentID
 }
 
 func (i *internship) SetID(id uuid.UUID) errors.Error {
@@ -61,5 +66,13 @@ func (i *internship) SetLocation(location internshipLocation.InternshipLocation)
 		return errors.NewValidationFromString(messages.InternshipLocationErrorMessage)
 	}
 	i.location = location
+	return nil
+}
+
+func (i *internship) SetStudentID(studentID uuid.UUID) errors.Error {
+	if !validator.IsUUIDValid(studentID) {
+		return errors.NewValidationFromString(messages.StudentIDErrorMessage)
+	}
+	i.studentID = studentID
 	return nil
 }
