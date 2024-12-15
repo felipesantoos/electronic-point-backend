@@ -106,6 +106,11 @@ func (builder *builder) WithCurrentInternship(currentInternship internship.Inter
 	return builder
 }
 
+func (builder *builder) WithInternshipHistory(internshipHistory []internship.Internship) *builder {
+	builder.student.internshipHistory = internshipHistory
+	return builder
+}
+
 func (builder *builder) WithFrequencyHistory(frequencyHistory []timeRecord.TimeRecord) *builder {
 	builder.student.frequencyHistory = frequencyHistory
 	return builder

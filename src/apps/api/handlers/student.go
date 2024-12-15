@@ -127,7 +127,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Tags Estudantes
 // @Accept multipart/form-data
 // @Produce json
-// @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
+// @Param id path string true "ID do estudante" default(02e62826-bf41-4944-adb2-051b6a30a131)
 // @Param name formData string true "Nome do estudante" default(Nome 1)
 // @Param birth_date formData string true "Data de nascimento" default(2000-01-01)
 // @Param cpf formData string true "CPF do estudante" default(73595867041)
@@ -223,7 +223,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 // @Description Remove um estudante do sistema.
 // @Tags Estudantes
 // @Produce json
-// @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
+// @Param id path string true "ID do estudante" default(02e62826-bf41-4944-adb2-051b6a30a131)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -253,7 +253,7 @@ func (this *studentHandlers) Delete(ctx RichContext) error {
 // @Description Recupera todos os estudantes registrados no sistema.
 // @Tags Estudantes
 // @Produce json
-// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Success 200 {array} response.StudentList "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."
@@ -268,7 +268,7 @@ func (this *studentHandlers) List(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomainList(result))
+	return ctx.JSON(http.StatusOK, response.StudentListBuilder().BuildFromDomainList(result))
 }
 
 // Get
@@ -277,7 +277,7 @@ func (this *studentHandlers) List(ctx RichContext) error {
 // @Description Recupera os dados de um estudante específico pelo seu ID.
 // @Tags Estudantes
 // @Produce json
-// @Param id path string true "ID do estudante" default(5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65)
+// @Param id path string true "ID do estudante" default(02e62826-bf41-4944-adb2-051b6a30a131)
 // @Success 200 {array} response.Student "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."

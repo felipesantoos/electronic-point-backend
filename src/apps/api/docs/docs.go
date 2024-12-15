@@ -1267,7 +1267,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.Student"
+                                "$ref": "#/definitions/response.StudentList"
                             }
                         }
                     },
@@ -1494,7 +1494,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65",
+                        "default": "02e62826-bf41-4944-adb2-051b6a30a131",
                         "description": "ID do estudante",
                         "name": "id",
                         "in": "path",
@@ -1577,7 +1577,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65",
+                        "default": "02e62826-bf41-4944-adb2-051b6a30a131",
                         "description": "ID do estudante",
                         "name": "id",
                         "in": "path",
@@ -1737,7 +1737,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "5fa6d07d-4e5a-4d27-8f8b-3de0dbec5c65",
+                        "default": "02e62826-bf41-4944-adb2-051b6a30a131",
                         "description": "ID do estudante",
                         "name": "id",
                         "in": "path",
@@ -2512,6 +2512,65 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/response.TimeRecord"
                     }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "internship_history": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.Internship"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pending_workload": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "total_workload": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workload_completed": {
+                    "type": "integer"
+                }
+            }
+        },
+        "response.StudentList": {
+            "type": "object",
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "course": {
+                    "type": "string"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_internship": {
+                    "$ref": "#/definitions/response.Internship"
+                },
+                "email": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"

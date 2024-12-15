@@ -17,6 +17,7 @@ type Student interface {
 	WorkloadCompleted() int
 	PendingWorkload() int
 	CurrentInternship() internship.Internship
+	InternshipHistory() []internship.Internship
 	FrequencyHistory() []timeRecord.TimeRecord
 
 	SetRegistration(string) errors.Error
@@ -27,5 +28,6 @@ type Student interface {
 	SetWorkloadCompleted(int) errors.Error
 	SetPendingWorkload(int) errors.Error
 	SetCurrentInternship(internship.Internship) errors.Error
+	SetInternshipHistory([]internship.Internship) errors.Error
 	SetFrequencyHistory([]timeRecord.TimeRecord) errors.Error
 }

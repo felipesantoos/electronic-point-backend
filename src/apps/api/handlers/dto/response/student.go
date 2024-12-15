@@ -14,7 +14,8 @@ type Student struct {
 	WorkloadCompleted int          `json:"workload_completed"`
 	PendingWorkload   int          `json:"pending_workload"`
 	CurrentInternship *Internship  `json:"current_internship"`
-	FrequencyHistory  []TimeRecord `json:"frequency_history,omitempty"`
+	InternshipHistory []Internship `json:"internship_history"`
+	FrequencyHistory  []TimeRecord `json:"frequency_history"`
 }
 
 type studentBuilder struct{}
@@ -47,6 +48,7 @@ func (*studentBuilder) BuildFromDomain(data student.Student) Student {
 		WorkloadCompleted: data.WorkloadCompleted(),
 		PendingWorkload:   data.PendingWorkload(),
 		CurrentInternship: currentInternship,
+		InternshipHistory: InternshipBuilder().BuildFromDomainList(data.InternshipHistory()),
 		FrequencyHistory:  TimeRecordBuilder().BuildFromDomainList(data.FrequencyHistory()),
 	}
 }

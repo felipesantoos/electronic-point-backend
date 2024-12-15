@@ -56,19 +56,19 @@ CREATE TABLE time_record (
     CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES student (id)
 );
 
-COPY internship_location (id, name, address, city, lat, long)
+COPY internship_location (id, name, address, city, lat, long, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/internship_location.csv'
     DELIMITER ';' CSV HEADER;
 
-COPY student (id, registration, profile_picture, institution, course, total_workload)
+COPY student (id, registration, profile_picture, institution, course, total_workload, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/student.csv'
     DELIMITER ';' CSV HEADER;
 
-COPY student_works_at_internship_location (id, student_id, internship_location_id, started_in, ended_in)
+COPY student_works_at_internship_location (id, student_id, internship_location_id, started_in, ended_in, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/student_works_at_internship_location.csv'
     DELIMITER ';' CSV HEADER;
 
-COPY time_record (id, date, entry_time, exit_time, location, is_off_site, justification, student_id)
+COPY time_record (id, date, entry_time, exit_time, location, is_off_site, justification, student_id, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/time_record.csv'
     DELIMITER ';' CSV HEADER;
 

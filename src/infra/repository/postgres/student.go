@@ -3,6 +3,7 @@ package postgres
 import (
 	"eletronic_point/src/core/domain/account"
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/domain/student"
@@ -210,7 +211,31 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 	workloadCompleted := calculateWorkloadCompleted(timeRecords)
 	_student.SetWorkloadCompleted(workloadCompleted)
 	_student.SetPendingWorkload(calculatePendingWorkload(_student.TotalWorkload(), workloadCompleted))
+	internships, err := this.listInternshipsByStudent(*_student.ID())
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
+	err = _student.SetInternshipHistory(internships)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
 	return _student, nil
+}
+
+func (this studentRepository) listInternshipsByStudent(studentID uuid.UUID) ([]internship.Internship, errors.Error) {
+	rows, err := repository.Queryx(query.StudentWorksAtInternshipLocation().Select().ByStudentID(), studentID)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
+	internships, err := queryObject.Internship().FromRows(rows)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
+	return internships, nil
 }
 
 func calculateWorkloadCompleted(timeRecords []timeRecord.TimeRecord) int {
