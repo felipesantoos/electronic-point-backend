@@ -47,7 +47,6 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // @Param institution formData string true "Instituição do estudante" default(IFAL 1)
 // @Param course formData string true "Curso do estudante" default(Curso 1)
 // @Param total_workload formData int true "Carga horária total do estágio" default(100)
-// @Param internship_location_id formData string true "ID do local do estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -138,7 +137,6 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Param institution formData string true "Instituição do estudante" default(IFAL 1)
 // @Param course formData string true "Curso do estudante" default(Curso 1)
 // @Param total_workload formData int true "Carga horária total do estágio" default(100)
-// @Param internship_location_id formData string true "ID do local do estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."

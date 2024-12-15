@@ -1276,12 +1276,6 @@ paths:
         name: total_workload
         required: true
         type: integer
-      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
-        description: ID do local do estágio
-        in: formData
-        name: internship_location_id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1505,12 +1499,6 @@ paths:
         name: total_workload
         required: true
         type: integer
-      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
-        description: ID do local do estágio
-        in: formData
-        name: internship_location_id
-        required: true
-        type: string
       produces:
       - application/json
       responses:

@@ -1412,14 +1412,6 @@ const docTemplate = `{
                         "name": "total_workload",
                         "in": "formData",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
-                        "description": "ID do local do estágio",
-                        "name": "internship_location_id",
-                        "in": "formData",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1658,14 +1650,6 @@ const docTemplate = `{
                         "default": 100,
                         "description": "Carga horária total do estágio",
                         "name": "total_workload",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
-                        "description": "ID do local do estágio",
-                        "name": "internship_location_id",
                         "in": "formData",
                         "required": true
                     }

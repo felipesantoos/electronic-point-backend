@@ -28,10 +28,9 @@ func (*studentQueryBuilder) Select() StudentQuerySelectBuilder {
 func (*studentQueryBuilder) Insert() string {
 	return `
 		INSERT INTO student (
-			id, registration, profile_picture, institution, course, internship_location_name, 
-			internship_address, internship_location, total_workload
+			id, registration, profile_picture, institution, course, total_workload
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9
+			$1, $2, $3, $4, $5, $6
 		) RETURNING id
 	`
 }
@@ -44,10 +43,7 @@ func (*studentQueryBuilder) Update() string {
 			profile_picture = $3,
 			institution = $4,
 			course = $5,
-			internship_location_name = $6,
-			internship_address = $7,
-			internship_location = $8,
-			total_workload = $9,
+			total_workload = $6,
 			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $1
 	`
