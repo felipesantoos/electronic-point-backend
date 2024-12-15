@@ -46,10 +46,8 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // @Param profile_picture formData file false "Foto de perfil do estudante (arquivo de imagem)"
 // @Param institution formData string true "Instituição do estudante" default(IFAL 1)
 // @Param course formData string true "Curso do estudante" default(Curso 1)
-// @Param internship_location_name formData string true "Nome do local de estágio" default(Nome do local 1)
-// @Param internship_address formData string true "Endereço do local de estágio" default(Endereço 1)
-// @Param internship_location formData string true "Localização do estágio" default(Localização 1)
 // @Param total_workload formData int true "Carga horária total do estágio" default(100)
+// @Param internship_location_id formData string true "ID do local do estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -73,9 +71,6 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 	registration := ctx.FormValue(formData.StudentRegistration)
 	institution := ctx.FormValue(formData.StudentInstitution)
 	course := ctx.FormValue(formData.StudentCourse)
-	internshipLocationName := ctx.FormValue(formData.StudentInternshipLocationName)
-	internshipAddress := ctx.FormValue(formData.StudentInternshipAddress)
-	internshipLocation := ctx.FormValue(formData.StudentInternshipLocation)
 	totalWorkload, conversionError := strconv.Atoi(ctx.FormValue(formData.StudentTotalWorkload))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
@@ -101,34 +96,27 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		logger.Error().Msg(formFileError.Error())
 		return badRequestErrorWithMessage(formFileError.Error())
 	}
-
 	studentDTO := request.Student{
-		Name:                   name,
-		BirthDate:              birthDate,
-		CPF:                    cpf,
-		Email:                  email,
-		Phone:                  phone,
-		Registration:           registration,
-		ProfilePicture:         filePath,
-		Institution:            institution,
-		Course:                 course,
-		InternshipLocationName: internshipLocationName,
-		InternshipAddress:      internshipAddress,
-		InternshipLocation:     internshipLocation,
-		TotalWorkload:          totalWorkload,
+		Name:           name,
+		BirthDate:      birthDate,
+		CPF:            cpf,
+		Email:          email,
+		Phone:          phone,
+		Registration:   registration,
+		ProfilePicture: filePath,
+		Institution:    institution,
+		Course:         course,
+		TotalWorkload:  totalWorkload,
 	}
-
 	_student, validationError := studentDTO.ToDomain()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-
 	id, err := this.services.Create(_student)
 	if err != nil {
 		return responseFromError(err)
 	}
-
 	return ctx.JSON(http.StatusCreated, response.IDBuilder().FromUUID(*id))
 }
 
@@ -149,10 +137,8 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Param profile_picture formData file false "Foto de perfil do estudante (arquivo de imagem)"
 // @Param institution formData string true "Instituição do estudante" default(IFAL 1)
 // @Param course formData string true "Curso do estudante" default(Curso 1)
-// @Param internship_location_name formData string true "Nome do local de estágio" default(Nome do local 1)
-// @Param internship_address formData string true "Endereço do local de estágio" default(Endereço 1)
-// @Param internship_location formData string true "Localização do estágio" default(Localização 1)
 // @Param total_workload formData int true "Carga horária total do estágio" default(100)
+// @Param internship_location_id formData string true "ID do local do estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -181,9 +167,6 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 	registration := ctx.FormValue(formData.StudentRegistration)
 	institution := ctx.FormValue(formData.StudentInstitution)
 	course := ctx.FormValue(formData.StudentCourse)
-	internshipLocationName := ctx.FormValue(formData.StudentInternshipLocationName)
-	internshipAddress := ctx.FormValue(formData.StudentInternshipAddress)
-	internshipLocation := ctx.FormValue(formData.StudentInternshipLocation)
 	totalWorkload, conversionError := strconv.Atoi(ctx.FormValue(formData.StudentTotalWorkload))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
@@ -210,19 +193,16 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 		return badRequestErrorWithMessage(formFileError.Error())
 	}
 	studentDTO := request.Student{
-		Name:                   name,
-		BirthDate:              birthDate,
-		CPF:                    cpf,
-		Email:                  email,
-		Phone:                  phone,
-		Registration:           registration,
-		ProfilePicture:         filePath,
-		Institution:            institution,
-		Course:                 course,
-		InternshipLocationName: internshipLocationName,
-		InternshipAddress:      internshipAddress,
-		InternshipLocation:     internshipLocation,
-		TotalWorkload:          totalWorkload,
+		Name:           name,
+		BirthDate:      birthDate,
+		CPF:            cpf,
+		Email:          email,
+		Phone:          phone,
+		Registration:   registration,
+		ProfilePicture: filePath,
+		Institution:    institution,
+		Course:         course,
+		TotalWorkload:  totalWorkload,
 	}
 	_student, validationError := studentDTO.ToDomain()
 	if validationError != nil {

@@ -122,6 +122,15 @@ definitions:
       id:
         type: string
     type: object
+  response.Internship:
+    properties:
+      ended_in:
+        type: string
+      location:
+        $ref: '#/definitions/response.InternshipLocation'
+      started_in:
+        type: string
+    type: object
   response.InternshipLocation:
     properties:
       address:
@@ -187,6 +196,8 @@ definitions:
         type: string
       created_at:
         type: string
+      current_internship:
+        $ref: '#/definitions/response.Internship'
       email:
         type: string
       frequency_history:
@@ -196,12 +207,6 @@ definitions:
       id:
         type: string
       institution:
-        type: string
-      internship_address:
-        type: string
-      internship_location:
-        type: string
-      internship_location_name:
         type: string
       name:
         type: string
@@ -903,7 +908,7 @@ paths:
       description: Exclui o local de estágio especificado do sistema.
       operationId: InternshipLocation.Delete
       parameters:
-      - default: ea11bb4b-9aed-4444-9c00-f80bde564063
+      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
         description: ID do local de estágio
         in: path
         name: id
@@ -955,7 +960,7 @@ paths:
       description: Recupera um local de estágio específico com base no ID fornecido.
       operationId: InternshipLocation.Get
       parameters:
-      - default: ea11bb4b-9aed-4444-9c00-f80bde564063
+      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
         description: ID do local de estágio
         in: path
         name: id
@@ -1011,7 +1016,7 @@ paths:
       description: Atualiza os dados de um local de estágio existente no sistema.
       operationId: InternshipLocation.Update
       parameters:
-      - default: ea11bb4b-9aed-4444-9c00-f80bde564063
+      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
         description: ID do local de estágio
         in: path
         name: id
@@ -1226,30 +1231,18 @@ paths:
         name: course
         required: true
         type: string
-      - default: Nome do local 1
-        description: Nome do local de estágio
-        in: formData
-        name: internship_location_name
-        required: true
-        type: string
-      - default: Endereço 1
-        description: Endereço do local de estágio
-        in: formData
-        name: internship_address
-        required: true
-        type: string
-      - default: Localização 1
-        description: Localização do estágio
-        in: formData
-        name: internship_location
-        required: true
-        type: string
       - default: 100
         description: Carga horária total do estágio
         in: formData
         name: total_workload
         required: true
         type: integer
+      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
+        description: ID do local do estágio
+        in: formData
+        name: internship_location_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1467,30 +1460,18 @@ paths:
         name: course
         required: true
         type: string
-      - default: Nome do local 1
-        description: Nome do local de estágio
-        in: formData
-        name: internship_location_name
-        required: true
-        type: string
-      - default: Endereço 1
-        description: Endereço do local de estágio
-        in: formData
-        name: internship_address
-        required: true
-        type: string
-      - default: Localização 1
-        description: Localização do estágio
-        in: formData
-        name: internship_location
-        required: true
-        type: string
       - default: 100
         description: Carga horária total do estágio
         in: formData
         name: total_workload
         required: true
         type: integer
+      - default: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
+        description: ID do local do estágio
+        in: formData
+        name: internship_location_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:

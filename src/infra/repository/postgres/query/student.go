@@ -1,14 +1,11 @@
 package query
 
 const (
-	StudentRegistration           = "student_registration"
-	StudentProfilePicture         = "student_profile_picture"
-	StudentInstitution            = "student_institution"
-	StudentCourse                 = "student_course"
-	StudentInternshipLocationName = "student_internship_location_name"
-	StudentInternshipAddress      = "student_internship_address"
-	StudentInternshipLocation     = "student_internship_location"
-	StudentTotalWorkload          = "student_total_workload"
+	StudentRegistration   = "student_registration"
+	StudentProfilePicture = "student_profile_picture"
+	StudentInstitution    = "student_institution"
+	StudentCourse         = "student_course"
+	StudentTotalWorkload  = "student_total_workload"
 )
 
 type StudentQueryBuilder interface {
@@ -85,12 +82,29 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			student.profile_picture AS student_profile_picture,
 			student.institution AS student_institution,
 			student.course AS student_course,
-			student.internship_location_name AS student_internship_location_name,
-			student.internship_address AS student_internship_address,
-			student.internship_location AS student_internship_location,
-			student.total_workload AS student_total_workload
+			student.total_workload AS student_total_workload,
+			internship_location.id AS internship_location_id,
+			internship_location.name AS internship_location_name,
+			internship_location.address AS internship_location_address,
+			internship_location.city AS internship_location_city,
+			internship_location.lat AS internship_location_lat,
+			internship_location.long AS internship_location_long,
+			student_works_at_internship_location.started_in AS student_works_at_internship_location_started_in,
+			student_works_at_internship_location.ended_in AS student_works_at_internship_location_ended_in
 		FROM student
 			INNER JOIN person ON person.id = student.id
+			LEFT JOIN LATERAL (
+				SELECT 
+					student_works_at_internship_location.id, 
+					student_works_at_internship_location.internship_location_id, 
+					student_works_at_internship_location.started_in, 
+					student_works_at_internship_location.ended_in
+				FROM student_works_at_internship_location
+				WHERE student_works_at_internship_location.student_id = student.id
+				ORDER BY student_works_at_internship_location.created_at DESC
+				LIMIT 1
+			) student_works_at_internship_location ON true
+			LEFT JOIN internship_location ON internship_location.id = student_works_at_internship_location.internship_location_id
 		WHERE student.deleted_at IS NULL
 		ORDER BY person.name ASC
 	`
@@ -109,12 +123,29 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			student.profile_picture AS student_profile_picture,
 			student.institution AS student_institution,
 			student.course AS student_course,
-			student.internship_location_name AS student_internship_location_name,
-			student.internship_address AS student_internship_address,
-			student.internship_location AS student_internship_location,
-			student.total_workload AS student_total_workload
+			student.total_workload AS student_total_workload,
+			internship_location.id AS internship_location_id,
+			internship_location.name AS internship_location_name,
+			internship_location.address AS internship_location_address,
+			internship_location.city AS internship_location_city,
+			internship_location.lat AS internship_location_lat,
+			internship_location.long AS internship_location_long,
+			student_works_at_internship_location.started_in AS student_works_at_internship_location_started_in,
+			student_works_at_internship_location.ended_in AS student_works_at_internship_location_ended_in
 		FROM student
 			INNER JOIN person ON person.id = student.id
+			LEFT JOIN LATERAL (
+				SELECT 
+					student_works_at_internship_location.id, 
+					student_works_at_internship_location.internship_location_id, 
+					student_works_at_internship_location.started_in, 
+					student_works_at_internship_location.ended_in
+				FROM student_works_at_internship_location
+				WHERE student_works_at_internship_location.student_id = student.id
+				ORDER BY student_works_at_internship_location.created_at DESC
+				LIMIT 1
+			) student_works_at_internship_location ON true
+			LEFT JOIN internship_location ON internship_location.id = student_works_at_internship_location.internship_location_id
 		WHERE person.id = $1 AND student.deleted_at IS NULL
 	`
 }

@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
@@ -65,39 +66,6 @@ func (builder *builder) WithCourse(course string) *builder {
 	return builder
 }
 
-func (builder *builder) WithInternshipLocationName(locationName string) *builder {
-	locationName = strings.TrimSpace(locationName)
-	if len(locationName) == 0 {
-		builder.fields = append(builder.fields, messages.StudentInternshipLocationName)
-		builder.errorMessages = append(builder.errorMessages, messages.StudentInternshipLocationNameErrorMessage)
-		return builder
-	}
-	builder.student.internshipLocationName = locationName
-	return builder
-}
-
-func (builder *builder) WithInternshipAddress(address string) *builder {
-	address = strings.TrimSpace(address)
-	if len(address) == 0 {
-		builder.fields = append(builder.fields, messages.StudentInternshipAddress)
-		builder.errorMessages = append(builder.errorMessages, messages.StudentInternshipAddressErrorMessage)
-		return builder
-	}
-	builder.student.internshipAddress = address
-	return builder
-}
-
-func (builder *builder) WithInternshipLocation(location string) *builder {
-	location = strings.TrimSpace(location)
-	if len(location) == 0 {
-		builder.fields = append(builder.fields, messages.StudentInternshipLocation)
-		builder.errorMessages = append(builder.errorMessages, messages.StudentInternshipLocationErrorMessage)
-		return builder
-	}
-	builder.student.internshipLocation = location
-	return builder
-}
-
 func (builder *builder) WithTotalWorkload(totalWorkload int) *builder {
 	if totalWorkload < 0 {
 		builder.fields = append(builder.fields, messages.StudentTotalWorkload)
@@ -125,6 +93,16 @@ func (builder *builder) WithPendingWorkload(pendingWorkload int) *builder {
 		return builder
 	}
 	builder.student.pendingWorkload = pendingWorkload
+	return builder
+}
+
+func (builder *builder) WithCurrentInternship(currentInternship internship.Internship) *builder {
+	if currentInternship == nil {
+		builder.fields = append(builder.fields, messages.Internship)
+		builder.errorMessages = append(builder.errorMessages, messages.InternshipErrorMessage)
+		return builder
+	}
+	builder.student.currentInternship = currentInternship
 	return builder
 }
 

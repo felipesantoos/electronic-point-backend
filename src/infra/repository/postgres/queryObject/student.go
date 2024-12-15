@@ -2,12 +2,15 @@ package queryObject
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/internship"
+	"eletronic_point/src/core/domain/internshipLocation"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/student"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/utils"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -39,13 +42,73 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	profilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
 	institution := fmt.Sprint(data[query.StudentInstitution])
 	course := fmt.Sprint(data[query.StudentCourse])
-	internshipLocationName := fmt.Sprint(data[query.StudentInternshipLocationName])
-	internshipAddress := fmt.Sprint(data[query.StudentInternshipAddress])
-	internshipLocation := fmt.Sprint(data[query.StudentInternshipLocation])
 	totalWorkload, err := strconv.Atoi(fmt.Sprint(data[query.StudentTotalWorkload]))
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
+	}
+	var locationID *uuid.UUID
+	var locationName *string
+	var locationAddress *string
+	var locationCity *string
+	var locationLat *float64
+	var locationLong *float64
+	nullableLocationID := utils.GetNullableValue[[]uint8](data[query.InternshipLocationID])
+	if nullableLocationID != nil {
+		aux, err := uuid.ParseBytes(*nullableLocationID)
+		if err != nil {
+			logger.Error().Msg(err.Error())
+			return nil, errors.NewUnexpected()
+		}
+		locationID = &aux
+	}
+	nullableLocationName := utils.GetNullableValue[string](data[query.InternshipLocationName])
+	if nullableLocationName != nil {
+		locationName = nullableLocationName
+	}
+	nullableLocationAddress := utils.GetNullableValue[string](data[query.InternshipLocationAddress])
+	if nullableLocationAddress != nil {
+		locationAddress = nullableLocationAddress
+	}
+	nullableLocationCity := utils.GetNullableValue[string](data[query.InternshipLocationCity])
+	if nullableLocationCity != nil {
+		locationCity = nullableLocationCity
+	}
+	nullableLocationLat := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLat])
+	nullableLocationLong := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLong])
+	var locationLatString string
+	var locationLongString string
+	if nullableLocationLat != nil {
+		for _, item := range *nullableLocationLat {
+			locationLatString += string(item)
+		}
+		aux, err := strconv.ParseFloat(locationLatString, 64)
+		if err != nil {
+			logger.Error().Msg(err.Error())
+			return nil, errors.NewUnexpected()
+		}
+		locationLat = &aux
+	}
+	if nullableLocationLong != nil {
+		for _, item := range *nullableLocationLong {
+			locationLongString += string(item)
+		}
+		aux, err := strconv.ParseFloat(locationLongString, 64)
+		if err != nil {
+			logger.Error().Msg(err.Error())
+			return nil, errors.NewUnexpected()
+		}
+		locationLong = &aux
+	}
+	var internshipStartedIn *time.Time
+	var internshipEndedIn *time.Time
+	nullableInternshipStartedInString := utils.GetNullableValue[time.Time](data[query.StudentWorksAtInternshipLocationStartedIn])
+	if nullableInternshipStartedInString != nil {
+		internshipStartedIn = nullableInternshipStartedInString
+	}
+	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.StudentWorksAtInternshipLocationEndedIn])
+	if nullableInternshipEndedInString != nil {
+		internshipEndedIn = nullableInternshipEndedInString
 	}
 	_person, validationError := person.NewBuilder().WithID(id).WithName(name).
 		WithBirthDate(birthDate).WithEmail(email).WithCPF(cpf).WithPhone(phone).Build()
@@ -53,17 +116,56 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		logger.Error().Msg(validationError.String())
 		return nil, validationError
 	}
-	_student, validationError := student.NewBuilder().
-		WithPerson(_person).
+	internshipLocationBuilder := internshipLocation.NewBuilder()
+	if locationID != nil {
+		internshipLocationBuilder.WithID(*locationID)
+	}
+	if locationName != nil {
+		internshipLocationBuilder.WithName(*locationName)
+	}
+	if locationAddress != nil {
+		internshipLocationBuilder.WithAddress(*locationAddress)
+	}
+	if locationCity != nil {
+		internshipLocationBuilder.WithCity(*locationCity)
+	}
+	if locationLat != nil {
+		internshipLocationBuilder.WithLat(locationLat)
+	}
+	if locationLong != nil {
+		internshipLocationBuilder.WithLong(locationLong)
+	}
+	location, validationError := internshipLocationBuilder.Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
+	currentInternshipBuilder := internship.NewBuilder()
+	if internshipStartedIn != nil {
+		currentInternshipBuilder.WithStartedIn(*internshipStartedIn)
+	}
+	if internshipEndedIn != nil {
+		currentInternshipBuilder.WithEndedIn(internshipEndedIn)
+	}
+	if locationID != nil {
+		currentInternshipBuilder.WithLocation(location)
+	}
+	currentInternship, validationError := currentInternshipBuilder.Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
+	studentBuilder := student.NewBuilder()
+	studentBuilder.WithPerson(_person).
 		WithRegistration(registration).
 		WithProfilePicture(profilePicture).
 		WithInstitution(institution).
 		WithCourse(course).
-		WithInternshipLocationName(internshipLocationName).
-		WithInternshipAddress(internshipAddress).
-		WithInternshipLocation(internshipLocation).
-		WithTotalWorkload(totalWorkload).
-		Build()
+		WithTotalWorkload(totalWorkload)
+	if internshipStartedIn != nil {
+		studentBuilder.WithCurrentInternship(currentInternship)
+	}
+	_student, validationError := studentBuilder.Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return nil, validationError

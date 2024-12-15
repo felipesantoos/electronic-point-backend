@@ -953,7 +953,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "ea11bb4b-9aed-4444-9c00-f80bde564063",
+                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
                         "description": "ID do local de estágio",
                         "name": "id",
                         "in": "path",
@@ -1033,7 +1033,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "ea11bb4b-9aed-4444-9c00-f80bde564063",
+                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
                         "description": "ID do local de estágio",
                         "name": "id",
                         "in": "path",
@@ -1116,7 +1116,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "default": "ea11bb4b-9aed-4444-9c00-f80bde564063",
+                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
                         "description": "ID do local de estágio",
                         "name": "id",
                         "in": "path",
@@ -1406,34 +1406,18 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "default": "Nome do local 1",
-                        "description": "Nome do local de estágio",
-                        "name": "internship_location_name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "Endereço 1",
-                        "description": "Endereço do local de estágio",
-                        "name": "internship_address",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "Localização 1",
-                        "description": "Localização do estágio",
-                        "name": "internship_location",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "default": 100,
                         "description": "Carga horária total do estágio",
                         "name": "total_workload",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
+                        "description": "ID do local do estágio",
+                        "name": "internship_location_id",
                         "in": "formData",
                         "required": true
                     }
@@ -1670,34 +1654,18 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "default": "Nome do local 1",
-                        "description": "Nome do local de estágio",
-                        "name": "internship_location_name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "Endereço 1",
-                        "description": "Endereço do local de estágio",
-                        "name": "internship_address",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "default": "Localização 1",
-                        "description": "Localização do estágio",
-                        "name": "internship_location",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "default": 100,
                         "description": "Carga horária total do estágio",
                         "name": "total_workload",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75",
+                        "description": "ID do local do estágio",
+                        "name": "internship_location_id",
                         "in": "formData",
                         "required": true
                     }
@@ -2419,6 +2387,20 @@ const docTemplate = `{
                 }
             }
         },
+        "response.Internship": {
+            "type": "object",
+            "properties": {
+                "ended_in": {
+                    "type": "string"
+                },
+                "location": {
+                    "$ref": "#/definitions/response.InternshipLocation"
+                },
+                "started_in": {
+                    "type": "string"
+                }
+            }
+        },
         "response.InternshipLocation": {
             "type": "object",
             "properties": {
@@ -2519,6 +2501,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "current_internship": {
+                    "$ref": "#/definitions/response.Internship"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -2532,15 +2517,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "institution": {
-                    "type": "string"
-                },
-                "internship_address": {
-                    "type": "string"
-                },
-                "internship_location": {
-                    "type": "string"
-                },
-                "internship_location_name": {
                     "type": "string"
                 },
                 "name": {

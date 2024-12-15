@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
@@ -11,18 +12,16 @@ var _ Student = &student{}
 
 type student struct {
 	person.Person
-	name                   string
-	registration           string
-	profilePicture         *string
-	institution            string
-	course                 string
-	internshipLocationName string
-	internshipAddress      string
-	internshipLocation     string
-	totalWorkload          int
-	workloadCompleted      int
-	pendingWorkload        int
-	frequencyHistory       []timeRecord.TimeRecord
+	name              string
+	registration      string
+	profilePicture    *string
+	institution       string
+	course            string
+	totalWorkload     int
+	workloadCompleted int
+	pendingWorkload   int
+	currentInternship internship.Internship
+	frequencyHistory  []timeRecord.TimeRecord
 }
 
 func (s *student) Registration() string {
@@ -41,16 +40,8 @@ func (s *student) Course() string {
 	return s.course
 }
 
-func (s *student) InternshipLocationName() string {
-	return s.internshipLocationName
-}
-
-func (s *student) InternshipAddress() string {
-	return s.internshipAddress
-}
-
-func (s *student) InternshipLocation() string {
-	return s.internshipLocation
+func (s *student) CurrentInternship() internship.Internship {
+	return s.currentInternship
 }
 
 func (s *student) TotalWorkload() int {
@@ -106,27 +97,11 @@ func (s *student) SetCourse(course string) errors.Error {
 	return nil
 }
 
-func (s *student) SetInternshipLocationName(locationName string) errors.Error {
-	if locationName == "" {
-		return errors.NewFromString(messages.StudentInternshipLocationNameErrorMessage)
+func (s *student) SetCurrentInternship(currentInternship internship.Internship) errors.Error {
+	if currentInternship == nil {
+		return errors.NewFromString(messages.InternshipErrorMessage)
 	}
-	s.internshipLocationName = locationName
-	return nil
-}
-
-func (s *student) SetInternshipAddress(address string) errors.Error {
-	if address == "" {
-		return errors.NewFromString(messages.StudentInternshipAddressErrorMessage)
-	}
-	s.internshipAddress = address
-	return nil
-}
-
-func (s *student) SetInternshipLocation(location string) errors.Error {
-	if location == "" {
-		return errors.NewFromString(messages.StudentInternshipLocationErrorMessage)
-	}
-	s.internshipLocation = location
+	s.currentInternship = currentInternship
 	return nil
 }
 

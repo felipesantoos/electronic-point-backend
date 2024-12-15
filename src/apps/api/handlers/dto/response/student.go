@@ -6,17 +6,15 @@ import (
 
 type Student struct {
 	Person
-	Registration           string       `json:"registration"`
-	ProfilePicture         *string      `json:"profile_picture"`
-	Institution            string       `json:"institution"`
-	Course                 string       `json:"course"`
-	InternshipLocationName string       `json:"internship_location_name"`
-	InternshipAddress      string       `json:"internship_address"`
-	InternshipLocation     string       `json:"internship_location"`
-	TotalWorkload          int          `json:"total_workload"`
-	WorkloadCompleted      int          `json:"workload_completed"`
-	PendingWorkload        int          `json:"pending_workload"`
-	FrequencyHistory       []TimeRecord `json:"frequency_history,omitempty"`
+	Registration      string       `json:"registration"`
+	ProfilePicture    *string      `json:"profile_picture"`
+	Institution       string       `json:"institution"`
+	Course            string       `json:"course"`
+	TotalWorkload     int          `json:"total_workload"`
+	WorkloadCompleted int          `json:"workload_completed"`
+	PendingWorkload   int          `json:"pending_workload"`
+	CurrentInternship *Internship  `json:"current_internship"`
+	FrequencyHistory  []TimeRecord `json:"frequency_history,omitempty"`
 }
 
 type studentBuilder struct{}
@@ -34,19 +32,22 @@ func (*studentBuilder) BuildFromDomain(data student.Student) Student {
 		CPF:       data.CPF(),
 		Phone:     data.Phone(),
 	}
+	var currentInternship *Internship
+	if data.CurrentInternship() != nil {
+		aux := InternshipBuilder().BuildFromDomain(data.CurrentInternship())
+		currentInternship = &aux
+	}
 	return Student{
-		Person:                 _person,
-		Registration:           data.Registration(),
-		ProfilePicture:         data.ProfilePicture(),
-		Institution:            data.Institution(),
-		Course:                 data.Course(),
-		InternshipLocationName: data.InternshipLocationName(),
-		InternshipAddress:      data.InternshipAddress(),
-		InternshipLocation:     data.InternshipLocation(),
-		TotalWorkload:          data.TotalWorkload(),
-		WorkloadCompleted:      data.WorkloadCompleted(),
-		PendingWorkload:        data.PendingWorkload(),
-		FrequencyHistory:       TimeRecordBuilder().BuildFromDomainList(data.FrequencyHistory()),
+		Person:            _person,
+		Registration:      data.Registration(),
+		ProfilePicture:    data.ProfilePicture(),
+		Institution:       data.Institution(),
+		Course:            data.Course(),
+		TotalWorkload:     data.TotalWorkload(),
+		WorkloadCompleted: data.WorkloadCompleted(),
+		PendingWorkload:   data.PendingWorkload(),
+		CurrentInternship: currentInternship,
+		FrequencyHistory:  TimeRecordBuilder().BuildFromDomainList(data.FrequencyHistory()),
 	}
 }
 

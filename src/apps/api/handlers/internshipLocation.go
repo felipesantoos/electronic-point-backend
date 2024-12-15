@@ -76,7 +76,7 @@ func (this *internshipLocationHandlers) Create(ctx RichContext) error {
 // @Tags Locais de estágio
 // @Accept application/json
 // @Produce json
-// @Param id path string true "ID do local de estágio" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Param id path string true "ID do local de estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Param body body request.InternshipLocation true "Dados do local de estágio"
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -125,7 +125,7 @@ func (this *internshipLocationHandlers) Update(ctx RichContext) error {
 // @Description Exclui o local de estágio especificado do sistema.
 // @Tags Locais de estágio
 // @Produce json
-// @Param id path string true "ID do local de estágio" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Param id path string true "ID do local de estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -190,7 +190,7 @@ func (this *internshipLocationHandlers) List(ctx RichContext) error {
 // @Description Recupera um local de estágio específico com base no ID fornecido.
 // @Tags Locais de estágio
 // @Produce json
-// @Param id path string true "ID do local de estágio" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Param id path string true "ID do local de estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 200 {object} response.InternshipLocation "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
