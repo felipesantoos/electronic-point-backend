@@ -4,7 +4,10 @@ import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/internshipLocation"
 	"eletronic_point/src/core/messages"
+	"eletronic_point/src/utils/validator"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Builder struct {
@@ -19,6 +22,16 @@ func NewBuilder() *Builder {
 		errorMessages: []string{},
 		internship:    &internship{},
 	}
+}
+
+func (b *Builder) WithID(id uuid.UUID) *Builder {
+	if !validator.IsUUIDValid(id) {
+		b.fields = append(b.fields, messages.InternshipID)
+		b.errorMessages = append(b.errorMessages, messages.InternshipIDErrorMessage)
+		return b
+	}
+	b.internship.id = id
+	return b
 }
 
 func (b *Builder) WithStartedIn(startedIn time.Time) *Builder {

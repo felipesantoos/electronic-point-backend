@@ -26,6 +26,23 @@ func Internship() InternshipObjectBuilder {
 }
 
 func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (internship.Internship, errors.Error) {
+	internshipID, err := uuid.Parse(string(data[query.StudentWorksAtInternshipLocationID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	layout := "2006-01-02 15:04:05 -0700 -0700"
+	internshipStartedInString := fmt.Sprint(data[query.StudentWorksAtInternshipLocationStartedIn])
+	internshipStartedIn, err := time.Parse(layout, internshipStartedInString)
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	var internshipEndedIn *time.Time
+	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.StudentWorksAtInternshipLocationEndedIn])
+	if nullableInternshipEndedInString != nil {
+		internshipEndedIn = nullableInternshipEndedInString
+	}
 	locationID, err := uuid.Parse(string(data[query.InternshipLocationID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())
@@ -62,18 +79,6 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 		}
 		locationLong = &aux
 	}
-	layout := "2006-01-02 15:04:05 -0700 -0700"
-	internshipStartedInString := fmt.Sprint(data[query.StudentWorksAtInternshipLocationStartedIn])
-	internshipStartedIn, err := time.Parse(layout, internshipStartedInString)
-	if err != nil {
-		logger.Error().Msg(err.Error())
-		return nil, errors.NewUnexpected()
-	}
-	var internshipEndedIn *time.Time
-	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.StudentWorksAtInternshipLocationEndedIn])
-	if nullableInternshipEndedInString != nil {
-		internshipEndedIn = nullableInternshipEndedInString
-	}
 	location, validationError := internshipLocation.NewBuilder().
 		WithID(locationID).
 		WithName(locationName).
@@ -87,6 +92,7 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 		return nil, validationError
 	}
 	_internship, validationError := internship.NewBuilder().
+		WithID(internshipID).
 		WithStartedIn(internshipStartedIn).
 		WithEndedIn(internshipEndedIn).
 		WithLocation(location).

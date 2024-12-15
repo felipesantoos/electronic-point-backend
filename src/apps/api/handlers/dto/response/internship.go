@@ -3,9 +3,12 @@ package response
 import (
 	"eletronic_point/src/core/domain/internship"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Internship struct {
+	ID        uuid.UUID          `json:"id"`
 	StartedIn time.Time          `json:"started_in"`
 	EndedIn   *time.Time         `json:"ended_in"`
 	Location  InternshipLocation `json:"location"`
@@ -23,6 +26,7 @@ func (*internshipBuilder) BuildFromDomain(data internship.Internship) Internship
 		location = InternshipLocationBuilder().BuildFromDomain(data.Location())
 	}
 	return Internship{
+		ID:        data.ID(),
 		StartedIn: data.StartedIn(),
 		EndedIn:   data.EndedIn(),
 		Location:  location,

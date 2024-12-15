@@ -2377,6 +2377,9 @@ const docTemplate = `{
                 "ended_in": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "location": {
                     "$ref": "#/definitions/response.InternshipLocation"
                 },

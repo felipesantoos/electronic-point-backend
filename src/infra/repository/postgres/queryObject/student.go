@@ -100,6 +100,16 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		}
 		locationLong = &aux
 	}
+	var internshipID *uuid.UUID
+	nullableInternshipID := utils.GetNullableValue[[]uint8](data[query.StudentWorksAtInternshipLocationID])
+	if nullableInternshipID != nil {
+		aux, err := uuid.ParseBytes(*nullableInternshipID)
+		if err != nil {
+			logger.Error().Msg(err.Error())
+			return nil, errors.NewUnexpected()
+		}
+		internshipID = &aux
+	}
 	var internshipStartedIn *time.Time
 	var internshipEndedIn *time.Time
 	nullableInternshipStartedInString := utils.GetNullableValue[time.Time](data[query.StudentWorksAtInternshipLocationStartedIn])
@@ -141,6 +151,9 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		return nil, validationError
 	}
 	currentInternshipBuilder := internship.NewBuilder()
+	if internshipID != nil {
+		currentInternshipBuilder.WithID(*internshipID)
+	}
 	if internshipStartedIn != nil {
 		currentInternshipBuilder.WithStartedIn(*internshipStartedIn)
 	}

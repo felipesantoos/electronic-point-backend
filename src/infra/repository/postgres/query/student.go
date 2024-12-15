@@ -85,6 +85,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			internship_location.city AS internship_location_city,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
+			student_works_at_internship_location.id AS student_works_at_internship_location_id,
 			student_works_at_internship_location.started_in AS student_works_at_internship_location_started_in,
 			student_works_at_internship_location.ended_in AS student_works_at_internship_location_ended_in
 		FROM student
@@ -126,6 +127,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			internship_location.city AS internship_location_city,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
+			student_works_at_internship_location.id AS student_works_at_internship_location_id,
 			student_works_at_internship_location.started_in AS student_works_at_internship_location_started_in,
 			student_works_at_internship_location.ended_in AS student_works_at_internship_location_ended_in
 		FROM student
