@@ -1,46 +1,46 @@
 package query
 
 const (
-	StudentWorksAtInternshipLocationID        = "student_works_at_internship_location_id"
-	StudentWorksAtInternshipLocationStartedIn = "student_works_at_internship_location_started_in"
-	StudentWorksAtInternshipLocationEndedIn   = "student_works_at_internship_location_ended_in"
+	InternshipID        = "internship_id"
+	InternshipStartedIn = "internship_started_in"
+	InternshipEndedIn   = "internship_ended_in"
 )
 
-type StudentWorksAtInternshipLocationQueryBuilder interface {
-	Select() StudentWorksAtInternshipLocationQuerySelectBuilder
+type InternshipQueryBuilder interface {
+	Select() InternshipQuerySelectBuilder
 }
 
-type studentWorksAtInternshipLocationQueryBuilder struct{}
+type internshipQueryBuilder struct{}
 
-func StudentWorksAtInternshipLocation() StudentWorksAtInternshipLocationQueryBuilder {
-	return &studentWorksAtInternshipLocationQueryBuilder{}
+func Internship() InternshipQueryBuilder {
+	return &internshipQueryBuilder{}
 }
 
-func (*studentWorksAtInternshipLocationQueryBuilder) Select() StudentWorksAtInternshipLocationQuerySelectBuilder {
-	return &studentWorksAtInternshipLocationQuerySelectBuilder{}
+func (*internshipQueryBuilder) Select() InternshipQuerySelectBuilder {
+	return &internshipQuerySelectBuilder{}
 }
 
-type StudentWorksAtInternshipLocationQuerySelectBuilder interface {
+type InternshipQuerySelectBuilder interface {
 	ByStudentID() string
 }
 
-type studentWorksAtInternshipLocationQuerySelectBuilder struct{}
+type internshipQuerySelectBuilder struct{}
 
-func (studentWorksAtInternshipLocationQuerySelectBuilder *studentWorksAtInternshipLocationQuerySelectBuilder) ByStudentID() string {
+func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) ByStudentID() string {
 	return `
 		SELECT
-			student_works_at_internship_location.id AS student_works_at_internship_location_id,
-			student_works_at_internship_location.started_in AS student_works_at_internship_location_started_in,
-			student_works_at_internship_location.ended_in AS student_works_at_internship_location_ended_in,
+			internship.id AS internship_id,
+			internship.started_in AS internship_started_in,
+			internship.ended_in AS internship_ended_in,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
 			internship_location.address AS internship_location_address,
 			internship_location.city AS internship_location_city,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long
-		FROM student_works_at_internship_location
-			INNER JOIN internship_location ON internship_location.id = student_works_at_internship_location.internship_location_id
-		WHERE student_works_at_internship_location.student_id = $1
-		ORDER BY student_works_at_internship_location.created_at DESC
+		FROM internship
+			INNER JOIN internship_location ON internship_location.id = internship.internship_location_id
+		WHERE internship.student_id = $1
+		ORDER BY internship.created_at DESC
 	`
 }

@@ -26,20 +26,20 @@ func Internship() InternshipObjectBuilder {
 }
 
 func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (internship.Internship, errors.Error) {
-	internshipID, err := uuid.Parse(string(data[query.StudentWorksAtInternshipLocationID].([]uint8)))
+	internshipID, err := uuid.Parse(string(data[query.InternshipID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
 	layout := "2006-01-02 15:04:05 -0700 -0700"
-	internshipStartedInString := fmt.Sprint(data[query.StudentWorksAtInternshipLocationStartedIn])
+	internshipStartedInString := fmt.Sprint(data[query.InternshipStartedIn])
 	internshipStartedIn, err := time.Parse(layout, internshipStartedInString)
 	if err != nil {
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
 	var internshipEndedIn *time.Time
-	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.StudentWorksAtInternshipLocationEndedIn])
+	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
 	if nullableInternshipEndedInString != nil {
 		internshipEndedIn = nullableInternshipEndedInString
 	}

@@ -76,8 +76,8 @@ func (internshipLocationQuerySelectBuilder *internshipLocationQuerySelectBuilder
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long
 		FROM internship_location
-			LEFT JOIN student_works_at_internship_location ON student_works_at_internship_location.internship_location_id = internship_location.id
-			LEFT JOIN student ON student.id = student_works_at_internship_location.student_id
+			LEFT JOIN internship ON internship.internship_location_id = internship_location.id
+			LEFT JOIN student ON student.id = internship.student_id
 		WHERE internship_location.deleted_at IS NULL
 			AND ($1::uuid IS NULL OR student.id = $1)
 		ORDER BY internship_location.name ASC

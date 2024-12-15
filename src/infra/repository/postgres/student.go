@@ -225,7 +225,7 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 }
 
 func (this studentRepository) listInternshipsByStudent(studentID uuid.UUID) ([]internship.Internship, errors.Error) {
-	rows, err := repository.Queryx(query.StudentWorksAtInternshipLocation().Select().ByStudentID(), studentID)
+	rows, err := repository.Queryx(query.Internship().Select().ByStudentID(), studentID)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
