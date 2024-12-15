@@ -32,11 +32,15 @@ func NewAuthHandler(service primary.AuthPort) AuthHandler {
 // Login
 // @ID Auth.Login
 // @Summary Adquirir autorização de acesso aos recursos da API através de credenciais de uma conta.
+// @Description | E-mail         | Senha  | Função    |
+// @Description |----------------|--------|-----------|
+// @Description | jose@gmail.com | 123456 | Professor |
+// @Description | ana@gmail.com  | 123456 | Esudante  |
 // @Accept json
 // @Param json body request.Credentials true "JSON com todos os dados necessários para o processo de autenticação."
 // @Tags Anônimo
 // @Produce json
-// @Success 200 {object} response.Authorization "Requisição realizada com sucesso."
+// @Success 201 {object} response.Authorization "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."
@@ -64,7 +68,7 @@ func (h *authHandler) Login(context RichContext) error {
 	}
 	tokenCookie := h.prepareTokenCookie(authorization)
 	context.SetCookie(tokenCookie)
-	return context.NoContent(http.StatusOK)
+	return context.NoContent(http.StatusCreated)
 }
 
 // Logout

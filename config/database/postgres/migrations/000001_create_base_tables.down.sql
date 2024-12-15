@@ -1,13 +1,16 @@
-TRUNCATE professional;
-TRUNCATE account;
-TRUNCATE person;
-TRUNCATE activity_type;
-TRUNCATE account_role;
+--- Dropping Triggers
+DROP TRIGGER IF EXISTS update_entry_updated_at ON account;
+DROP TRIGGER IF EXISTS update_entry_updated_at ON person;
 
-DROP TABLE knowledge_area;
-DROP TABLE professional;
-DROP TABLE professional_knowledge_area;
-DROP TABLE password_reset;
-DROP TABLE account;
-DROP TABLE person;
-DROP TABLE account_role;
+--- Dropping Tables
+DROP TABLE IF EXISTS professional;
+DROP TABLE IF EXISTS password_reset;
+DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS person;
+DROP TABLE IF EXISTS account_role;
+
+--- Dropping Function
+DROP FUNCTION IF EXISTS update_updated_at_prop;
+
+--- Dropping Extension
+DROP EXTENSION IF EXISTS "uuid-ossp";

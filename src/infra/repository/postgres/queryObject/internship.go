@@ -38,11 +38,7 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
-	var internshipEndedIn *time.Time
-	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
-	if nullableInternshipEndedInString != nil {
-		internshipEndedIn = nullableInternshipEndedInString
-	}
+	internshipEndedIn := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
 	locationID, err := uuid.Parse(string(data[query.InternshipLocationID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())

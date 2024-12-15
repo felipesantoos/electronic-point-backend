@@ -48,11 +48,6 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		return nil, errors.NewUnexpected()
 	}
 	var locationID *uuid.UUID
-	var locationName *string
-	var locationAddress *string
-	var locationCity *string
-	var locationLat *float64
-	var locationLong *float64
 	nullableLocationID := utils.GetNullableValue[[]uint8](data[query.InternshipLocationID])
 	if nullableLocationID != nil {
 		aux, err := uuid.ParseBytes(*nullableLocationID)
@@ -62,18 +57,11 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		}
 		locationID = &aux
 	}
-	nullableLocationName := utils.GetNullableValue[string](data[query.InternshipLocationName])
-	if nullableLocationName != nil {
-		locationName = nullableLocationName
-	}
-	nullableLocationAddress := utils.GetNullableValue[string](data[query.InternshipLocationAddress])
-	if nullableLocationAddress != nil {
-		locationAddress = nullableLocationAddress
-	}
-	nullableLocationCity := utils.GetNullableValue[string](data[query.InternshipLocationCity])
-	if nullableLocationCity != nil {
-		locationCity = nullableLocationCity
-	}
+	locationName := utils.GetNullableValue[string](data[query.InternshipLocationName])
+	locationAddress := utils.GetNullableValue[string](data[query.InternshipLocationAddress])
+	locationCity := utils.GetNullableValue[string](data[query.InternshipLocationCity])
+	var locationLat *float64
+	var locationLong *float64
 	nullableLocationLat := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLat])
 	nullableLocationLong := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLong])
 	var locationLatString string
@@ -110,16 +98,8 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		}
 		internshipID = &aux
 	}
-	var internshipStartedIn *time.Time
-	var internshipEndedIn *time.Time
-	nullableInternshipStartedInString := utils.GetNullableValue[time.Time](data[query.InternshipStartedIn])
-	if nullableInternshipStartedInString != nil {
-		internshipStartedIn = nullableInternshipStartedInString
-	}
-	nullableInternshipEndedInString := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
-	if nullableInternshipEndedInString != nil {
-		internshipEndedIn = nullableInternshipEndedInString
-	}
+	internshipStartedIn := utils.GetNullableValue[time.Time](data[query.InternshipStartedIn])
+	internshipEndedIn := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
 	_person, validationError := person.NewBuilder().WithID(id).WithName(name).
 		WithBirthDate(birthDate).WithEmail(email).WithCPF(cpf).WithPhone(phone).Build()
 	if validationError != nil {

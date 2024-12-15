@@ -23,8 +23,10 @@ definitions:
   request.Credentials:
     properties:
       email:
+        example: jose@gmail.com
         type: string
       password:
+        example: "123456"
         type: string
     type: object
   request.InternshipLocation:
@@ -563,6 +565,11 @@ paths:
     post:
       consumes:
       - application/json
+      description: |-
+        | E-mail         | Senha  | Função    |
+        |----------------|--------|-----------|
+        | jose@gmail.com | 123456 | Professor |
+        | ana@gmail.com  | 123456 | Esudante  |
       operationId: Auth.Login
       parameters:
       - description: JSON com todos os dados necessários para o processo de autenticação.
@@ -574,7 +581,7 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "201":
           description: Requisição realizada com sucesso.
           schema:
             $ref: '#/definitions/response.Authorization'

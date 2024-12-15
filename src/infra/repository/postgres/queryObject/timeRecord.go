@@ -43,12 +43,7 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
-	exitTimeString := fmt.Sprint(data[query.TimeRecordExitTime])
-	exitTime, err := time.Parse(layout, exitTimeString)
-	if err != nil {
-		logger.Error().Msg(err.Error())
-		return nil, errors.NewUnexpected()
-	}
+	exitTime := utils.GetNullableValue[time.Time](data[query.TimeRecordExitTime])
 	location := fmt.Sprint(data[query.TimeRecordLocation])
 	isOffSite, err := strconv.ParseBool(fmt.Sprint(data[query.TimeRecordIsOffSite]))
 	if err != nil {
@@ -65,7 +60,7 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 		WithID(id).
 		WithDate(date).
 		WithEntryTime(entryTime).
-		WithExitTime(&exitTime).
+		WithExitTime(exitTime).
 		WithLocation(location).
 		WithIsOffSite(isOffSite).
 		WithJustification(justification).

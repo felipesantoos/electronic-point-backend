@@ -392,6 +392,7 @@ const docTemplate = `{
         },
         "/auth/login": {
             "post": {
+                "description": "| E-mail         | Senha  | Função    |\n|----------------|--------|-----------|\n| jose@gmail.com | 123456 | Professor |\n| ana@gmail.com  | 123456 | Esudante  |",
                 "consumes": [
                     "application/json"
                 ],
@@ -415,7 +416,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Requisição realizada com sucesso.",
                         "schema": {
                             "$ref": "#/definitions/response.Authorization"
@@ -2223,10 +2224,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "jose@gmail.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123456"
                 }
             }
         },

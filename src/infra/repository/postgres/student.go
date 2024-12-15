@@ -241,10 +241,12 @@ func (this studentRepository) listInternshipsByStudent(studentID uuid.UUID) ([]i
 func calculateWorkloadCompleted(timeRecords []timeRecord.TimeRecord) int {
 	sum := 0
 	for _, _timeRecord := range timeRecords {
-		duration := _timeRecord.ExitTime().Sub(_timeRecord.EntryTime())
-		hours := duration.Hours()
-		fullHours := int(hours)
-		sum += fullHours
+		if _timeRecord.ExitTime() != nil {
+			duration := _timeRecord.ExitTime().Sub(_timeRecord.EntryTime())
+			hours := duration.Hours()
+			fullHours := int(hours)
+			sum += fullHours
+		}
 	}
 	return sum
 }
