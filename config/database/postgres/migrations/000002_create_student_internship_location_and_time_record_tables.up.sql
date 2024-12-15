@@ -1,5 +1,5 @@
 CREATE TABLE internship_location (
-    id UUID NOT NULL,
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
     name VARCHAR(200) NOT NULL,
     address VARCHAR(200) NOT NULL,
     city VARCHAR(100) NOT NULL,
@@ -13,19 +13,31 @@ CREATE TABLE internship_location (
 
 CREATE TABLE student (
     id UUID NOT NULL,
-    registration VARCHAR (10) NOT NULL UNIQUE,
+    registration VARCHAR(10) NOT NULL UNIQUE,
     profile_picture TEXT NULL,
     institution VARCHAR(200) NOT NULL,
     course VARCHAR(200) NOT NULL,
     total_workload INT,
-    internship_location_id UUID NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT student_pk PRIMARY KEY (id),
     CONSTRAINT student_person_fk FOREIGN KEY (id) REFERENCES person (id),
-    CONSTRAINT student_internship_location_fk FOREIGN KEY (internship_location_id) REFERENCES internship_location (id),
     CONSTRAINT student_registration_uk UNIQUE (registration)
+);
+
+CREATE TABLE student_works_at_internship_location (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    student_id UUID NOT NULL,
+    internship_location_id UUID NOT NULL,
+    started_in DATE NOT NULL,
+    ended_in DATE NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
+    CONSTRAINT student_works_at_internship_location_pk PRIMARY KEY (id),
+    CONSTRAINT student_works_at_internship_location_student_fk FOREIGN KEY (student_id) REFERENCES student (id),
+    CONSTRAINT student_works_at_internship_location_internship_location_fk FOREIGN KEY (internship_location_id) REFERENCES internship_location (id)
 );
 
 CREATE TABLE time_record (
@@ -48,8 +60,12 @@ COPY internship_location (id, name, address, city, lat, long)
     FROM '/fixtures/000002/internship_location.csv'
     DELIMITER ';' CSV HEADER;
 
-COPY student (id, registration, profile_picture, institution, course, total_workload, internship_location_id)
+COPY student (id, registration, profile_picture, institution, course, total_workload)
     FROM '/fixtures/000002/student.csv'
+    DELIMITER ';' CSV HEADER;
+
+COPY student_works_at_internship_location (id, student_id, internship_location_id, started_in, ended_in)
+    FROM '/fixtures/000002/student_works_at_internship_location.csv'
     DELIMITER ';' CSV HEADER;
 
 COPY time_record (id, date, entry_time, exit_time, location, is_off_site, justification, student_id)

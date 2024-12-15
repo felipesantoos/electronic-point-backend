@@ -51,7 +51,7 @@ func (*studentBuilder) BuildFromDomain(data student.Student) Student {
 }
 
 func (*studentBuilder) BuildFromDomainList(data []student.Student) []Student {
-	var students []Student
+	students := make([]Student, 0)
 	for _, student := range data {
 		students = append(students, StudentBuilder().BuildFromDomain(student))
 	}

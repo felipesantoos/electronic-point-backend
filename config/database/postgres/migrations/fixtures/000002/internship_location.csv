@@ -1,11 +1,11 @@
 id;name;address;city;lat;long
 "8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75";"Construtora ABC";"Rua das Palmeiras, 123";"Rio de Janeiro";-22.9068;-43.1729
-"6fb2e2a7-497d-41a7-8fcf-3e8d0b4caa32";"Escritório de Advocacia XYZ";"Avenida Paulista, 456";"São Paulo";-23.5505;-46.6333
+"6fb2e2a7-497d-41a7-8fcf-3e8d0b4caa32";"Escritório de Advocacia XYZ";"Avenida Paulista, 456";"São Paulo";;
 "2b41e8a8-c6c4-497e-8b24-07d5fb7f4963";"Hospital Santa Casa";"Rua da Saúde, 789";"Belo Horizonte";-19.9208;-43.9378
-"bc7a83f2-409c-48a3-a9e7-08cb64a5e7b9";"Empresa de Tecnologia TecX";"Rua do Progresso, 321";"Curitiba";-25.4284;-49.2733
+"bc7a83f2-409c-48a3-a9e7-08cb64a5e7b9";"Empresa de Tecnologia TecX";"Rua do Progresso, 321";"Curitiba";;
 "f5e78023-1a5e-4a2c-8c23-320b31792b21";"Escritório de Arquitetura Design & Cia";"Setor Comercial Sul, Quadra 2";"Brasília";-15.8267;-47.9218
-"a89ed103-50e2-49cd-810d-b7f2307cc94a";"Banco Nacional do Brasil";"Avenida Central, 987";"Rio de Janeiro";-22.9068;-43.1729
+"a89ed103-50e2-49cd-810d-b7f2307cc94a";"Banco Nacional do Brasil";"Avenida Central, 987";"Rio de Janeiro";;
 "c32b7d23-bfa2-47a8-91b8-f01b6a5dfd2d";"Agência Criativa Arte";"Rua da Inovação, 654";"Florianópolis";-27.5954;-48.5480
-"8a74db0a-63c4-49c8-861a-fd3b5a1e4e21";"Startup CodeLab";"Rua do Futuro, 111";"Fortaleza";-3.7172;-38.5433
+"8a74db0a-63c4-49c8-861a-fd3b5a1e4e21";"Startup CodeLab";"Rua do Futuro, 111";"Fortaleza";;
 "b5e64f71-f99c-4943-8efb-6cb8b567eabe";"Organização Global Consultores";"Avenida da Liberdade, 222";"Salvador";-12.9714;-38.5014
 "f3263b1c-9073-49e3-9284-12fb7b92768f";"Companhia de Energia Elétrica Sul";"Avenida dos Estados, 333";"Porto Alegre";-30.0346;-51.2177

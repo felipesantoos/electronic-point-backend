@@ -33,3 +33,8 @@ func TimeRecordServices() primary.TimeRecordPort {
 	repository := postgres.NewTimeRecordRepository()
 	return services.NewTimeRecordServices(repository)
 }
+
+func InternshipLocationServices() primary.InternshipLocationPort {
+	repository := postgres.NewInternshipLocationRepository()
+	return services.NewInternshipLocationServices(repository)
+}

@@ -14,4 +14,6 @@ const (
 	InternshipLocationCityErrorMessage    = "internship location city cannot be empty"
 	InternshipLocationLatErrorMessage     = "internship location latitude must be between -90 and 90"
 	InternshipLocationLongErrorMessage    = "internship location longitude must be between -180 and 180"
+
+	InternshipLocationNotFoundErrorMessage = "internship location not found"
 )

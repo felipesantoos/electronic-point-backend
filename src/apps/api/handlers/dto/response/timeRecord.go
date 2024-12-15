@@ -38,7 +38,7 @@ func (*timeRecordBuilder) BuildFromDomain(data timeRecord.TimeRecord) TimeRecord
 }
 
 func (*timeRecordBuilder) BuildFromDomainList(data []timeRecord.TimeRecord) []TimeRecord {
-	var timeRecords []TimeRecord
+	timeRecords := make([]TimeRecord, 0)
 	for _, record := range data {
 		timeRecords = append(timeRecords, TimeRecordBuilder().BuildFromDomain(record))
 	}

@@ -1,11 +1,11 @@
-id;registration;profile_picture;institution;course;total_workload;internship_location_id
-"02e62826-bf41-4944-adb2-051b6a30a131";"202310001";"https://example.com/pictures/ana.jpg";"Universidade Federal do Rio de Janeiro";"Engenharia Civil";480;"8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75"
-"11130b4c-a00e-48cd-aa23-7914e39a5955";"202310002";"https://example.com/pictures/carlos.jpg";"Universidade Estadual de São Paulo";"Direito";360;"6fb2e2a7-497d-41a7-8fcf-3e8d0b4caa32"
-"7e7cc9cb-e4a4-4404-aa99-6793780443f3";"202310003";"https://example.com/pictures/mariana.jpg";"Universidade Federal de Minas Gerais";"Medicina";720;"2b41e8a8-c6c4-497e-8b24-07d5fb7f4963"
-"1a7b07c1-f839-4caa-ba08-482792d75e25";"202310004";"https://example.com/pictures/joao.jpg";"Universidade Federal do Paraná";"Ciência da Computação";400;"bc7a83f2-409c-48a3-a9e7-08cb64a5e7b9"
-"170fbda4-78a8-4c2e-bd0d-0c682610b4b8";"202310005";"https://example.com/pictures/larissa.jpg";"Universidade de Brasília";"Arquitetura";300;"f5e78023-1a5e-4a2c-8c23-320b31792b21"
-"74c7beea-e835-4ea0-8d89-bc40d96e9aad";"202310006";"https://example.com/pictures/guilherme.jpg";"Universidade Estadual do Rio de Janeiro";"Economia";450;"a89ed103-50e2-49cd-810d-b7f2307cc94a"
-"886125d1-4a29-40ac-a0ea-a2370e820ed8";"202310007";"https://example.com/pictures/beatriz.jpg";"Universidade Federal de Santa Catarina";"Design";360;"c32b7d23-bfa2-47a8-91b8-f01b6a5dfd2d"
-"fbaedc83-938a-44dc-8a82-c78682905784";"202310008";"https://example.com/pictures/rafael.jpg";"Universidade Federal do Ceará";"Engenharia de Software";420;"8a74db0a-63c4-49c8-861a-fd3b5a1e4e21"
-"02f3b455-2fbc-4bd1-9efc-848ecbd67fcf";"202310009";"https://example.com/pictures/isabela.jpg";"Universidade Federal da Bahia";"Administração";500;"b5e64f71-f99c-4943-8efb-6cb8b567eabe"
-"3787f99a-66bd-4be3-93ff-78faaa8b54e1";"202310010";"https://example.com/pictures/victor.jpg";"Universidade Federal do Rio Grande do Sul";"Engenharia Elétrica";600;"f3263b1c-9073-49e3-9284-12fb7b92768f"
+id;registration;profile_picture;institution;course;total_workload
+"02e62826-bf41-4944-adb2-051b6a30a131";"202310001";"https://example.com/pictures/ana.jpg";"Universidade Federal do Rio de Janeiro";"Engenharia Civil";480
+"11130b4c-a00e-48cd-aa23-7914e39a5955";"202310002";"https://example.com/pictures/carlos.jpg";"Universidade Estadual de São Paulo";"Direito";360
+"7e7cc9cb-e4a4-4404-aa99-6793780443f3";"202310003";"https://example.com/pictures/mariana.jpg";"Universidade Federal de Minas Gerais";"Medicina";720
+"1a7b07c1-f839-4caa-ba08-482792d75e25";"202310004";"https://example.com/pictures/joao.jpg";"Universidade Federal do Paraná";"Ciência da Computação";400
+"170fbda4-78a8-4c2e-bd0d-0c682610b4b8";"202310005";"https://example.com/pictures/larissa.jpg";"Universidade de Brasília";"Arquitetura";300
+"74c7beea-e835-4ea0-8d89-bc40d96e9aad";"202310006";"https://example.com/pictures/guilherme.jpg";"Universidade Estadual do Rio de Janeiro";"Economia";450
+"886125d1-4a29-40ac-a0ea-a2370e820ed8";"202310007";"https://example.com/pictures/beatriz.jpg";"Universidade Federal de Santa Catarina";"Design";360
+"fbaedc83-938a-44dc-8a82-c78682905784";"202310008";"https://example.com/pictures/rafael.jpg";"Universidade Federal do Ceará";"Engenharia de Software";420
+"02f3b455-2fbc-4bd1-9efc-848ecbd67fcf";"202310009";"https://example.com/pictures/isabela.jpg";"Universidade Federal da Bahia";"Administração";500
+"3787f99a-66bd-4be3-93ff-78faaa8b54e1";"202310010";"https://example.com/pictures/victor.jpg";"Universidade Federal do Rio Grande do Sul";"Engenharia Elétrica";600

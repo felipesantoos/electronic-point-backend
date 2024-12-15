@@ -14,7 +14,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type TimeRecordHandlers interface {
+type InternshipLocationHandlers interface {
 	Create(RichContext) error
 	Update(RichContext) error
 	Delete(RichContext) error
@@ -22,22 +22,22 @@ type TimeRecordHandlers interface {
 	Get(RichContext) error
 }
 
-type timeRecordHandlers struct {
-	services primary.TimeRecordPort
+type internshipLocationHandlers struct {
+	services primary.InternshipLocationPort
 }
 
-func NewTimeRecordHandlers(services primary.TimeRecordPort) TimeRecordHandlers {
-	return &timeRecordHandlers{services}
+func NewInternshipLocationHandlers(services primary.InternshipLocationPort) InternshipLocationHandlers {
+	return &internshipLocationHandlers{services}
 }
 
 // Create
-// @ID TimeRecord.Create
-// @Summary Crie um novo registro de tempo.
-// @Description Cria um novo registro de tempo no sistema com os dados fornecidos.
-// @Tags Registros de tempo
+// @ID InternshipLocation.Create
+// @Summary Crie um novo local de estágio.
+// @Description Cria um novo local de estágio no sistema com os dados fornecidos.
+// @Tags Locais de estágio
 // @Accept application/json
 // @Produce json
-// @Param body body request.TimeRecord true "Dados de registro de tempo"
+// @Param body body request.InternshipLocation true "Dados do local de estágio"
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -47,31 +47,22 @@ func NewTimeRecordHandlers(services primary.TimeRecordPort) TimeRecordHandlers {
 // @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
-// @Router /time-records [post]
-func (this *timeRecordHandlers) Create(ctx RichContext) error {
-	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
+// @Router /internship-locations [post]
+func (this *internshipLocationHandlers) Create(ctx RichContext) error {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
 		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
-	var timeRecordDTO request.TimeRecord
-	if err := ctx.Bind(&timeRecordDTO); err != nil {
+	var internshipLocationDTO request.InternshipLocation
+	if err := ctx.Bind(&internshipLocationDTO); err != nil {
 		logger.Error().Msg(err.Error())
 		return badRequestErrorWithMessage(err.Error())
 	}
-	_timeRecord, validationError := timeRecordDTO.ToDomain()
+	_internshipLocation, validationError := internshipLocationDTO.ToDomain()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-	var studentID uuid.UUID
-	if ctx.ProfileID() != nil {
-		studentID = *ctx.ProfileID()
-	}
-	err := _timeRecord.SetStudentID(studentID)
-	if err != nil {
-		logger.Error().Msg(err.String())
-		return unprocessableEntityErrorWithMessage(messages.StudentIDErrorMessage)
-	}
-	id, err := this.services.Create(_timeRecord)
+	id, err := this.services.Create(_internshipLocation)
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -79,14 +70,14 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 }
 
 // Update
-// @ID TimeRecord.Update
-// @Summary Atualizar um registro de tempo existente.
-// @Description Atualiza os dados de um registro de tempo existente no sistema.
-// @Tags Registros de tempo
+// @ID InternshipLocation.Update
+// @Summary Atualizar um local de estágio existente.
+// @Description Atualiza os dados de um local de estágio existente no sistema.
+// @Tags Locais de estágio
 // @Accept application/json
 // @Produce json
-// @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
-// @Param body body request.TimeRecord true "Dados de registro de tempo"
+// @Param id path string true "ID do local de estágio" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Param body body request.InternshipLocation true "Dados do local de estágio"
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -96,9 +87,9 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 // @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
-// @Router /time-records/{id} [put]
-func (this *timeRecordHandlers) Update(ctx RichContext) error {
-	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
+// @Router /internship-locations/{id} [put]
+func (this *internshipLocationHandlers) Update(ctx RichContext) error {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
 		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
@@ -106,27 +97,22 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	var timeRecordDTO request.TimeRecord
-	if err := ctx.Bind(&timeRecordDTO); err != nil {
+	var internshipLocationDTO request.InternshipLocation
+	if err := ctx.Bind(&internshipLocationDTO); err != nil {
 		logger.Error().Msg(err.Error())
 		return badRequestErrorWithMessage(err.Error())
 	}
-	_timeRecord, validationError := timeRecordDTO.ToDomain()
+	_internshipLocation, validationError := internshipLocationDTO.ToDomain()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-	_timeRecord.SetID(id)
-	var studentID uuid.UUID
-	if ctx.ProfileID() != nil {
-		studentID = *ctx.ProfileID()
+	validationError = _internshipLocation.SetID(id)
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-	err := _timeRecord.SetStudentID(studentID)
-	if err != nil {
-		logger.Error().Msg(err.String())
-		return unprocessableEntityErrorWithMessage(messages.StudentIDErrorMessage)
-	}
-	err = this.services.Update(_timeRecord)
+	err := this.services.Update(_internshipLocation)
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -134,12 +120,12 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 }
 
 // Delete
-// @ID TimeRecord.Delete
-// @Summary Excluir um registro de tempo por ID.
-// @Description Exclui o registro de tempo especificado do sistema.
-// @Tags Registros de tempo
+// @ID InternshipLocation.Delete
+// @Summary Excluir um local de estágio por ID.
+// @Description Exclui o local de estágio especificado do sistema.
+// @Tags Locais de estágio
 // @Produce json
-// @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Param id path string true "ID do local de estágio" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -149,8 +135,8 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 // @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
-// @Router /time-records/{id} [delete]
-func (this *timeRecordHandlers) Delete(ctx RichContext) error {
+// @Router /internship-locations/{id} [delete]
+func (this *internshipLocationHandlers) Delete(ctx RichContext) error {
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
@@ -164,13 +150,13 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 }
 
 // List
-// @ID TimeRecord.List
-// @Summary Listar todos os registros de tempo.
-// @Description Recupera uma lista de todos os registros de tempo no sistema.
-// @Tags Registros de tempo
+// @ID InternshipLocation.List
+// @Summary Listar todos os locais de estágio.
+// @Description Recupera uma lista de todos os locais de estágio no sistema.
+// @Tags Locais de estágio
 // @Produce json
 // @Param studentID query string false "ID do estudante"
-// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Success 200 {array} response.InternshipLocation "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."
@@ -179,8 +165,8 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
-// @Router /time-records [get]
-func (this *timeRecordHandlers) List(ctx RichContext) error {
+// @Router /internship-locations [get]
+func (this *internshipLocationHandlers) List(ctx RichContext) error {
 	var studentID *uuid.UUID
 	if !checkers.IsEmpty(ctx.QueryParam(params.StudentID)) {
 		value, conversionError := getUUIDQueryParamValue(ctx, params.StudentID)
@@ -190,22 +176,22 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 		}
 		studentID = value
 	}
-	_filters := filters.TimeRecordFilters{StudentID: studentID}
-	timeRecords, err := this.services.List(_filters)
+	_filters := filters.InternshipLocationFilters{StudentID: studentID}
+	internshipLocations, err := this.services.List(_filters)
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.JSON(http.StatusOK, response.TimeRecordBuilder().BuildFromDomainList(timeRecords))
+	return ctx.JSON(http.StatusOK, response.InternshipLocationBuilder().BuildFromDomainList(internshipLocations))
 }
 
 // Get
-// @ID TimeRecord.Get
-// @Summary Obtenha um registro de tempo por ID.
-// @Description Recupera os detalhes de um registro de tempo específico por ID.
-// @Tags Registros de tempo
+// @ID InternshipLocation.Get
+// @Summary Recuperar um local de estágio por ID.
+// @Description Recupera um local de estágio específico com base no ID fornecido.
+// @Tags Locais de estágio
 // @Produce json
-// @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
-// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Param id path string true "ID do local de estágio" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Success 200 {object} response.InternshipLocation "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."
@@ -214,16 +200,16 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 // @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
-// @Router /time-records/{id} [get]
-func (this *timeRecordHandlers) Get(ctx RichContext) error {
+// @Router /internship-locations/{id} [get]
+func (this *internshipLocationHandlers) Get(ctx RichContext) error {
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	_timeRecord, err := this.services.Get(id)
+	_internshipLocation, err := this.services.Get(id)
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.JSON(http.StatusOK, response.TimeRecordBuilder().BuildFromDomain(_timeRecord))
+	return ctx.JSON(http.StatusOK, response.InternshipLocationBuilder().BuildFromDomain(_internshipLocation))
 }

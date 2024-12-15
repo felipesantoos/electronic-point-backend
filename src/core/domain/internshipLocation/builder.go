@@ -1,4 +1,4 @@
-package internshiplocation
+package internshipLocation
 
 import (
 	"eletronic_point/src/core/domain/errors"

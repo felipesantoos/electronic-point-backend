@@ -27,7 +27,7 @@ func (*roleBuilder) BuildFromDomain(data role.Role) Role {
 }
 
 func (r *roleBuilder) BuildFromDomainList(data []role.Role) []Role {
-	var result []Role
+	result := make([]Role, 0)
 	for _, item := range data {
 		result = append(result, r.BuildFromDomain(item))
 	}
