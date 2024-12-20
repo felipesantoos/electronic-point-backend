@@ -24,6 +24,7 @@ func NewResourcesHandler(usecase primary.ResourcesPort) ResourcesHandler {
 // @Description Pode ser utilizada para visualizar as funções de conta cadastradas no banco de dados e adquirir o
 // @Description identificador da função desejada para a criação de uma nova conta.
 // @Tags Recursos
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} response.Role "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."

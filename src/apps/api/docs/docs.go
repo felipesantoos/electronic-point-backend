@@ -20,6 +20,11 @@ const docTemplate = `{
     "paths": {
         "/accounts/profile": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Esta rota retorna todas as informações de todas as contas cadastradas no banco de dados.\nDados como \"professional\" irão somente aparecer caso a role da conta for própria para contenção desses.",
                 "produces": [
                     "application/json"
@@ -87,6 +92,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -163,6 +173,11 @@ const docTemplate = `{
         },
         "/accounts/update-password": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -239,6 +254,11 @@ const docTemplate = `{
         },
         "/admin/accounts": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Esta rota retorna todas as informações de todas as contas cadastradas no banco de dados.\nDados como \"professional\" irão somente aparecer caso a role da conta for própria para contenção desses.",
                 "produces": [
                     "application/json"
@@ -309,6 +329,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Ao enviar dados para cadastro de uma nova conta, os dados relacionados à \"Profissional\"\nsão facultativos, tendo somente que enviar os dados que são relacionados à role definida.",
                 "consumes": [
                     "application/json"
@@ -475,6 +500,11 @@ const docTemplate = `{
         },
         "/auth/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -781,6 +811,11 @@ const docTemplate = `{
         },
         "/internship-locations": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera uma lista de todos os locais de estágio no sistema.",
                 "produces": [
                     "application/json"
@@ -859,6 +894,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Cria um novo local de estágio no sistema com os dados fornecidos.",
                 "consumes": [
                     "application/json"
@@ -942,6 +982,11 @@ const docTemplate = `{
         },
         "/internship-locations/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera um local de estágio específico com base no ID fornecido.",
                 "produces": [
                     "application/json"
@@ -1019,6 +1064,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Atualiza os dados de um local de estágio existente no sistema.",
                 "consumes": [
                     "application/json"
@@ -1105,6 +1155,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Exclui o local de estágio especificado do sistema.",
                 "produces": [
                     "application/json"
@@ -1181,6 +1236,11 @@ const docTemplate = `{
         },
         "/internships": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera uma lista de todos os estágios no sistema.",
                 "produces": [
                     "application/json"
@@ -1259,6 +1319,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Cria um novo estágio no sistema com os dados fornecidos.",
                 "consumes": [
                     "application/json"
@@ -1342,6 +1407,11 @@ const docTemplate = `{
         },
         "/internships/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera um estágio específico pelo ID.",
                 "produces": [
                     "application/json"
@@ -1419,6 +1489,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Atualiza os dados de um estágio existente no sistema.",
                 "consumes": [
                     "application/json"
@@ -1505,6 +1580,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Exclui o estágio especificado do sistema.",
                 "produces": [
                     "application/json"
@@ -1581,6 +1661,11 @@ const docTemplate = `{
         },
         "/res/account-roles": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Pode ser utilizada para visualizar as funções de conta cadastradas no banco de dados e adquirir o\nidentificador da função desejada para a criação de uma nova conta.",
                 "produces": [
                     "application/json"
@@ -1653,6 +1738,11 @@ const docTemplate = `{
         },
         "/students": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera todos os estudantes registrados no sistema.",
                 "produces": [
                     "application/json"
@@ -1723,6 +1813,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Cria um novo estudante no sistema com os dados fornecidos. O campo ` + "`" + `profile_picture` + "`" + ` deve ser enviado como um arquivo em um formulário.",
                 "consumes": [
                     "multipart/form-data"
@@ -1875,6 +1970,11 @@ const docTemplate = `{
         },
         "/students/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera os dados de um estudante específico pelo seu ID.",
                 "produces": [
                     "application/json"
@@ -1955,6 +2055,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Atualiza os dados de um estudante existente no sistema.",
                 "consumes": [
                     "multipart/form-data"
@@ -2110,6 +2215,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Remove um estudante do sistema.",
                 "produces": [
                     "application/json"
@@ -2186,6 +2296,11 @@ const docTemplate = `{
         },
         "/time-records": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera uma lista de todos os registros de tempo no sistema.",
                 "produces": [
                     "application/json"
@@ -2264,6 +2379,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Cria um novo registro de tempo no sistema com os dados fornecidos.",
                 "consumes": [
                     "application/json"
@@ -2347,6 +2467,11 @@ const docTemplate = `{
         },
         "/time-records/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Recupera os detalhes de um registro de tempo específico por ID.",
                 "produces": [
                     "application/json"
@@ -2427,6 +2552,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Atualiza os dados de um registro de tempo existente no sistema.",
                 "consumes": [
                     "application/json"
@@ -2513,6 +2643,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Exclui o registro de tempo especificado do sistema.",
                 "produces": [
                     "application/json"
@@ -3046,6 +3181,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

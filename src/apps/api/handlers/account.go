@@ -31,6 +31,7 @@ func NewAccountHandler(service primary.AccountPort) AccountHandler {
 // @Description Esta rota retorna todas as informações de todas as contas cadastradas no banco de dados.
 // @Description Dados como "professional" irão somente aparecer caso a role da conta for própria para contenção desses.
 // @Tags Administrador
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} response.Account "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -60,6 +61,7 @@ func (h *accountHandler) List(context RichContext) error {
 // @Description Esta rota retorna todas as informações de todas as contas cadastradas no banco de dados.
 // @Description Dados como "professional" irão somente aparecer caso a role da conta for própria para contenção desses.
 // @Tags Geral
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {object} response.Account "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -87,6 +89,7 @@ func (h *accountHandler) FindProfile(context RichContext) error {
 // @Accept json
 // @Param json body request.CreateAccount true "JSON com todos os dados necessários para o cadastro de uma conta de usuário."
 // @Tags Administrador
+// @Security BearerAuth
 // @Produce json
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -121,6 +124,7 @@ func (h *accountHandler) Create(context RichContext) error {
 // @Summary Atualizar dados do perfil de uma conta.
 // @Accept json
 // @Tags Geral
+// @Security BearerAuth
 // @Param json  body request.UpdateAccountProfile true "JSON com todos os dados necessários para o processo de atualização de dados do perfil."
 // @Success 200
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -157,6 +161,7 @@ func (h *accountHandler) UpdateProfile(context RichContext) error {
 // @Summary Realizar a atualização de senha de uma conta.
 // @Accept json
 // @Tags Geral
+// @Security BearerAuth
 // @Param json  body request.UpdatePassword true "JSON com todos os dados necessários para a atualização da senha da conta."
 // @Success 200
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."

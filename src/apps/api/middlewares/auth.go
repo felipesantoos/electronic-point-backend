@@ -12,7 +12,6 @@ import (
 	"eletronic_point/src/apps/api/handlers"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/utils"
-	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/utils/tokenextractor"
@@ -49,39 +48,34 @@ func Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 		log.Fatal().Err(err)
 	}
 	return func(ctx echo.Context) error {
-		tokenCookie, err := ctx.Cookie(handlers.COOKIE_TOKEN_NAME)
-		var accRole string = role.ANONYMOUS_ROLE_CODE
-		var claims *authorization.AuthClaims
-		if err == nil {
-			token := tokenCookie.Value
-			if valid, _ := sessionIsValidWith(token); !valid {
-				ctx.SetCookie(negativeTokenCookie())
-			} else {
-				var ok bool
-				if accRole, ok = utils.ExtractAuthorizationAccountRole(token); !ok {
-					return ctx.NoContent(http.StatusUnauthorized)
-				}
-				claims, _ = utils.ExtractTokenClaims(token)
-				ctx.Set("authenticated", true)
-			}
-		}
+		authHeader := ctx.Request().Header.Get("Authorization")
+		_, token := utils.ExtractToken(authHeader)
 		method := ctx.Request().Method
 		path := ctx.Request().URL.Path
-		if ok, err := enforcer.Enforce(strings.ToLower(accRole), path, method); err != nil {
+		if accRole, ok := utils.ExtractAuthorizationAccountRole(token); !ok {
+			return ctx.NoContent(http.StatusUnauthorized)
+		} else if ok, err = enforcer.Enforce(strings.ToLower(accRole), path, method); err != nil {
 			return ctx.NoContent(http.StatusInternalServerError)
 		} else if accRole == role.ANONYMOUS_ROLE_CODE && !ok {
 			return ctx.NoContent(http.StatusUnauthorized)
 		} else if !ok {
-			var logData map[string]interface{} = map[string]interface{}{
-				"path":   path,
-				"method": method,
-				"role":   accRole,
-			}
-			if claims != nil {
-				logData["user_id"] = claims.AccountID
-			}
-			logger.Warn().Fields(logData).Msg("FORBIDDEN ACCESS")
+			claims, _ := utils.ExtractTokenClaims(token)
+			logger.Warn().Fields(map[string]interface{}{
+				"path":    path,
+				"method":  method,
+				"role":    accRole,
+				"user_id": claims.AccountID,
+			}).Msg("FORBIDDEN ACCESS")
 			return ctx.NoContent(http.StatusForbidden)
+		} else if accRole != role.ANONYMOUS_ROLE_CODE {
+			_, authToken := utils.ExtractToken(authHeader)
+			if valid, err := sessionIsValidWith(authToken); !valid {
+				if err != nil {
+					return ctx.JSON(http.StatusUnauthorized, response.ErrorBuilder().NewUnauthorizedError())
+				}
+				return ctx.NoContent(http.StatusUnauthorized)
+			}
+			ctx.Set("authenticated", true)
 		}
 		return next(ctx)
 	}

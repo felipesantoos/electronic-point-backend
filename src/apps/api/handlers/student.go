@@ -35,6 +35,7 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // @Summary Criar um novo estudante.
 // @Description Cria um novo estudante no sistema com os dados fornecidos. O campo `profile_picture` deve ser enviado como um arquivo em um formulário.
 // @Tags Estudantes
+// @Security BearerAuth
 // @Accept multipart/form-data
 // @Produce json
 // @Param name formData string true "Nome do estudante" default(Nome 1)
@@ -124,6 +125,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Summary Atualizar informações de um estudante.
 // @Description Atualiza os dados de um estudante existente no sistema.
 // @Tags Estudantes
+// @Security BearerAuth
 // @Accept multipart/form-data
 // @Produce json
 // @Param id path string true "ID do estudante" default(02e62826-bf41-4944-adb2-051b6a30a131)
@@ -220,6 +222,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 // @Summary Deletar um estudante.
 // @Description Remove um estudante do sistema.
 // @Tags Estudantes
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do estudante" default(02e62826-bf41-4944-adb2-051b6a30a131)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
@@ -250,6 +253,7 @@ func (this *studentHandlers) Delete(ctx RichContext) error {
 // @Summary Listar todos os estudantes.
 // @Description Recupera todos os estudantes registrados no sistema.
 // @Tags Estudantes
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} response.StudentList "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -274,6 +278,7 @@ func (this *studentHandlers) List(ctx RichContext) error {
 // @Summary Obter um estudante por ID.
 // @Description Recupera os dados de um estudante específico pelo seu ID.
 // @Tags Estudantes
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do estudante" default(02e62826-bf41-4944-adb2-051b6a30a131)
 // @Success 200 {array} response.Student "Requisição realizada com sucesso."

@@ -35,6 +35,7 @@ func NewTimeRecordHandlers(services primary.TimeRecordPort) TimeRecordHandlers {
 // @Summary Crie um novo registro de tempo.
 // @Description Cria um novo registro de tempo no sistema com os dados fornecidos.
 // @Tags Registros de tempo
+// @Security BearerAuth
 // @Accept application/json
 // @Produce json
 // @Param body body request.TimeRecord true "Dados de registro de tempo"
@@ -83,6 +84,7 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 // @Summary Atualizar um registro de tempo existente.
 // @Description Atualiza os dados de um registro de tempo existente no sistema.
 // @Tags Registros de tempo
+// @Security BearerAuth
 // @Accept application/json
 // @Produce json
 // @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
@@ -138,6 +140,7 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 // @Summary Excluir um registro de tempo por ID.
 // @Description Exclui o registro de tempo especificado do sistema.
 // @Tags Registros de tempo
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
@@ -168,6 +171,7 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Summary Listar todos os registros de tempo.
 // @Description Recupera uma lista de todos os registros de tempo no sistema.
 // @Tags Registros de tempo
+// @Security BearerAuth
 // @Produce json
 // @Param studentID query string false "ID do estudante"
 // @Success 200 {array} response.Student "Requisição realizada com sucesso."
@@ -203,6 +207,7 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 // @Summary Obtenha um registro de tempo por ID.
 // @Description Recupera os detalhes de um registro de tempo específico por ID.
 // @Tags Registros de tempo
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
 // @Success 200 {array} response.Student "Requisição realizada com sucesso."

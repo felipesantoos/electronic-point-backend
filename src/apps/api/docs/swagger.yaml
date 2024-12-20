@@ -359,6 +359,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Pesquisar dados do perfil de uma conta.
       tags:
       - Geral
@@ -411,6 +413,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Atualizar dados do perfil de uma conta.
       tags:
       - Geral
@@ -464,6 +468,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Realizar a atualização de senha de uma conta.
       tags:
       - Geral
@@ -516,6 +522,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Listar todas as contas existentes do banco de dados.
       tags:
       - Administrador
@@ -575,6 +583,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Cadastrar uma nova conta de usuário
       tags:
       - Administrador
@@ -682,6 +692,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Remove a sessão do registro de sessões permitidas.
       tags:
       - Geral
@@ -909,6 +921,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Listar todos os locais de estágio.
       tags:
       - Locais de estágio
@@ -965,6 +979,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Crie um novo local de estágio.
       tags:
       - Locais de estágio
@@ -1018,6 +1034,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Excluir um local de estágio por ID.
       tags:
       - Locais de estágio
@@ -1072,6 +1090,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Recuperar um local de estágio por ID.
       tags:
       - Locais de estágio
@@ -1132,6 +1152,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Atualizar um local de estágio existente.
       tags:
       - Locais de estágio
@@ -1187,6 +1209,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Listar todos os estágios.
       tags:
       - Estágios
@@ -1243,6 +1267,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Crie um novo estágio.
       tags:
       - Estágios
@@ -1296,6 +1322,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Excluir um estágio por ID.
       tags:
       - Estágios
@@ -1350,6 +1378,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Recuperar um estágio.
       tags:
       - Estágios
@@ -1410,6 +1440,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Atualizar um estágio existente.
       tags:
       - Estágios
@@ -1462,6 +1494,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Listar todas as funções de conta existentes do banco de dados.
       tags:
       - Recursos
@@ -1512,6 +1546,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Listar todos os estudantes.
       tags:
       - Estudantes
@@ -1621,6 +1657,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Criar um novo estudante.
       tags:
       - Estudantes
@@ -1674,6 +1712,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Deletar um estudante.
       tags:
       - Estudantes
@@ -1730,6 +1770,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Obter um estudante por ID.
       tags:
       - Estudantes
@@ -1842,6 +1884,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Atualizar informações de um estudante.
       tags:
       - Estudantes
@@ -1897,6 +1941,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Listar todos os registros de tempo.
       tags:
       - Registros de tempo
@@ -1953,6 +1999,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Crie um novo registro de tempo.
       tags:
       - Registros de tempo
@@ -2006,6 +2054,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Excluir um registro de tempo por ID.
       tags:
       - Registros de tempo
@@ -2062,6 +2112,8 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Obtenha um registro de tempo por ID.
       tags:
       - Registros de tempo
@@ -2122,7 +2174,14 @@ paths:
           description: A base de dados está temporariamente indisponível.
           schema:
             $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
       summary: Atualizar um registro de tempo existente.
       tags:
       - Registros de tempo
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
