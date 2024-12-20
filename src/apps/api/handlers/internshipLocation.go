@@ -35,6 +35,7 @@ func NewInternshipLocationHandlers(services primary.InternshipLocationPort) Inte
 // @Summary Crie um novo local de estágio.
 // @Description Cria um novo local de estágio no sistema com os dados fornecidos.
 // @Tags Locais de estágio
+// @Security BearerAuth
 // @Accept application/json
 // @Produce json
 // @Param body body request.InternshipLocation true "Dados do local de estágio"
@@ -74,6 +75,7 @@ func (this *internshipLocationHandlers) Create(ctx RichContext) error {
 // @Summary Atualizar um local de estágio existente.
 // @Description Atualiza os dados de um local de estágio existente no sistema.
 // @Tags Locais de estágio
+// @Security BearerAuth
 // @Accept application/json
 // @Produce json
 // @Param id path string true "ID do local de estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
@@ -124,6 +126,7 @@ func (this *internshipLocationHandlers) Update(ctx RichContext) error {
 // @Summary Excluir um local de estágio por ID.
 // @Description Exclui o local de estágio especificado do sistema.
 // @Tags Locais de estágio
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do local de estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
@@ -154,6 +157,7 @@ func (this *internshipLocationHandlers) Delete(ctx RichContext) error {
 // @Summary Listar todos os locais de estágio.
 // @Description Recupera uma lista de todos os locais de estágio no sistema.
 // @Tags Locais de estágio
+// @Security BearerAuth
 // @Produce json
 // @Param studentID query string false "ID do estudante"
 // @Success 200 {array} response.InternshipLocation "Requisição realizada com sucesso."
@@ -189,6 +193,7 @@ func (this *internshipLocationHandlers) List(ctx RichContext) error {
 // @Summary Recuperar um local de estágio por ID.
 // @Description Recupera um local de estágio específico com base no ID fornecido.
 // @Tags Locais de estágio
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do local de estágio" default(8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75)
 // @Success 200 {object} response.InternshipLocation "Requisição realizada com sucesso."

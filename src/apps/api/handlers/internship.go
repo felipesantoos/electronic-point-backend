@@ -35,6 +35,7 @@ func NewInternshipHandlers(services primary.InternshipPort) InternshipHandlers {
 // @Summary Crie um novo estágio.
 // @Description Cria um novo estágio no sistema com os dados fornecidos.
 // @Tags Estágios
+// @Security BearerAuth
 // @Accept application/json
 // @Produce json
 // @Param body body request.Internship true "Dados de estágio"
@@ -74,6 +75,7 @@ func (this *internshipHandlers) Create(ctx RichContext) error {
 // @Summary Atualizar um estágio existente.
 // @Description Atualiza os dados de um estágio existente no sistema.
 // @Tags Estágios
+// @Security BearerAuth
 // @Accept application/json
 // @Produce json
 // @Param id path string true "ID do estágio" default(9ec95529-06d5-47e2-b617-1606088ac9e6)
@@ -120,6 +122,7 @@ func (this *internshipHandlers) Update(ctx RichContext) error {
 // @Summary Excluir um estágio por ID.
 // @Description Exclui o estágio especificado do sistema.
 // @Tags Estágios
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do estágio" default(9ec95529-06d5-47e2-b617-1606088ac9e6)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
@@ -150,6 +153,7 @@ func (this *internshipHandlers) Delete(ctx RichContext) error {
 // @Summary Listar todos os estágios.
 // @Description Recupera uma lista de todos os estágios no sistema.
 // @Tags Estágios
+// @Security BearerAuth
 // @Produce json
 // @Param studentID query string false "ID do estudante"
 // @Success 200 {array} response.Internship "Requisição realizada com sucesso."
@@ -185,6 +189,7 @@ func (this *internshipHandlers) List(ctx RichContext) error {
 // @Summary Recuperar um estágio.
 // @Description Recupera um estágio específico pelo ID.
 // @Tags Estágios
+// @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do estágio" default(9ec95529-06d5-47e2-b617-1606088ac9e6)
 // @Success 200 {object} response.Internship "Requisição realizada com sucesso."

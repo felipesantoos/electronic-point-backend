@@ -66,15 +66,15 @@ func (h *authHandler) Login(context RichContext) error {
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
-	tokenCookie := h.prepareTokenCookie(authorization)
-	context.SetCookie(tokenCookie)
-	return context.NoContent(http.StatusCreated)
+	return context.JSON(http.StatusCreated,
+		response.NewAuthorizationBuilder().BuildFromDomain(authorization))
 }
 
 // Logout
 // @ID Auth.Logout
 // @Summary Remove a sessão do registro de sessões permitidas.
 // @Tags Geral
+// @Security BearerAuth
 // @Produce json
 // @Success 204 "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."

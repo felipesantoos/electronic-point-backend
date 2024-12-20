@@ -55,6 +55,7 @@ type api struct {
 // @contact.name DIT - IFAL
 // @contact.email wmrn1@aluno.ifal.edu.br
 // @BasePath /api
+// @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
 func NewAPI(host string, port int) API {
