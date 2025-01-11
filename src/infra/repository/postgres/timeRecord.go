@@ -71,7 +71,8 @@ func (this timeRecordRepository) Delete(id uuid.UUID) errors.Error {
 }
 
 func (this timeRecordRepository) List(_filters filters.TimeRecordFilters) ([]timeRecord.TimeRecord, errors.Error) {
-	rows, err := repository.Queryx(query.TimeRecord().Select().All(), _filters.StudentID)
+	rows, err := repository.Queryx(query.TimeRecord().Select().All(), _filters.StudentID,
+		_filters.StartDate, _filters.EndDate)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

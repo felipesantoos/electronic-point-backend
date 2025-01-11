@@ -84,6 +84,7 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) All() string {
 		FROM time_record
 		WHERE time_record.deleted_at IS NULL
 			AND time_record.student_id = COALESCE($1, time_record.student_id)
+			AND time_record.date BETWEEN COALESCE($2, time_record.date) AND COALESCE($3, time_record.date)
 		ORDER BY time_record.date ASC
 	`
 }
