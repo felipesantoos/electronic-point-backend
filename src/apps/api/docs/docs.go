@@ -2804,10 +2804,6 @@ const docTemplate = `{
         "request.InternshipLocation": {
             "type": "object",
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "Rua Exemplo, 123"
-                },
                 "city": {
                     "type": "string",
                     "example": "Cidade Exemplo"
@@ -2823,6 +2819,22 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Estágio Exemplo"
+                },
+                "neighborhood": {
+                    "type": "string",
+                    "example": "Bairro Exemplo"
+                },
+                "number": {
+                    "type": "string",
+                    "example": "123"
+                },
+                "street": {
+                    "type": "string",
+                    "example": "Rua Exemplo"
+                },
+                "zip_code": {
+                    "type": "string",
+                    "example": "57260-000"
                 }
             }
         },
@@ -2965,9 +2977,6 @@ const docTemplate = `{
         "response.InternshipLocation": {
             "type": "object",
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "city": {
                     "type": "string"
                 },
@@ -2981,6 +2990,18 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "neighborhood": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "zip_code": {
                     "type": "string"
                 }
             }

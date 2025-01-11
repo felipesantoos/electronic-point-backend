@@ -46,9 +46,6 @@ definitions:
     type: object
   request.InternshipLocation:
     properties:
-      address:
-        example: Rua Exemplo, 123
-        type: string
       city:
         example: Cidade Exemplo
         type: string
@@ -60,6 +57,18 @@ definitions:
         type: number
       name:
         example: Estágio Exemplo
+        type: string
+      neighborhood:
+        example: Bairro Exemplo
+        type: string
+      number:
+        example: "123"
+        type: string
+      street:
+        example: Rua Exemplo
+        type: string
+      zip_code:
+        example: 57260-000
         type: string
     type: object
   request.TimeRecord:
@@ -154,8 +163,6 @@ definitions:
     type: object
   response.InternshipLocation:
     properties:
-      address:
-        type: string
       city:
         type: string
       id:
@@ -165,6 +172,14 @@ definitions:
       long:
         type: number
       name:
+        type: string
+      neighborhood:
+        type: string
+      number:
+        type: string
+      street:
+        type: string
+      zip_code:
         type: string
     type: object
   response.InvalidField:

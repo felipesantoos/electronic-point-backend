@@ -22,7 +22,8 @@ func NewInternshipLocationRepository() secondary.InternshipLocationPort {
 func (this internshipLocationRepository) Create(_internshipLocation internshipLocation.InternshipLocation) (*uuid.UUID, errors.Error) {
 	var id uuid.UUID
 	rows, err := repository.Queryx(query.InternshipLocation().Insert(), _internshipLocation.Name(),
-		_internshipLocation.Address(), _internshipLocation.City(), _internshipLocation.Lat(),
+		_internshipLocation.Number(), _internshipLocation.Street(), _internshipLocation.Neighborhood(),
+		_internshipLocation.City(), _internshipLocation.ZipCode(), _internshipLocation.Lat(),
 		_internshipLocation.Long())
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -42,7 +43,8 @@ func (this internshipLocationRepository) Create(_internshipLocation internshipLo
 
 func (this internshipLocationRepository) Update(_internshipLocation internshipLocation.InternshipLocation) errors.Error {
 	_, err := repository.ExecQuery(query.InternshipLocation().Update(), _internshipLocation.ID(),
-		_internshipLocation.Name(), _internshipLocation.Address(), _internshipLocation.City(),
+		_internshipLocation.Name(), _internshipLocation.Number(), _internshipLocation.Street(),
+		_internshipLocation.Neighborhood(), _internshipLocation.City(), _internshipLocation.ZipCode(),
 		_internshipLocation.Lat(), _internshipLocation.Long())
 	if err != nil {
 		logger.Error().Msg(err.String())

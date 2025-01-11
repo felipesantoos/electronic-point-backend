@@ -1,10 +1,13 @@
 CREATE TABLE internship_location (
     id UUID NOT NULL DEFAULT uuid_generate_v4(),
     name VARCHAR(200) NOT NULL,
-    address VARCHAR(200) NOT NULL,
+    number VARCHAR(5) NOT NULL,
+    street VARCHAR(100) NOT NULL,
+    neighborhood VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
-    lat NUMERIC NULL,
-    long NUMERIC NULL,
+    zip_code VARCHAR(100) NOT NULL,
+    lat NUMERIC NOT NULL,
+    long NUMERIC NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
@@ -56,7 +59,7 @@ CREATE TABLE time_record (
     CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES student (id)
 );
 
-COPY internship_location (id, name, address, city, lat, long, created_at, updated_at, deleted_at)
+COPY internship_location (id, name, number, street, neighborhood, city, zip_code, lat, long, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/internship_location.csv'
     DELIMITER ';' CSV HEADER;
 

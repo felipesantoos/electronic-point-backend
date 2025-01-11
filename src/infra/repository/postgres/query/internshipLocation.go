@@ -1,12 +1,15 @@
 package query
 
 const (
-	InternshipLocationID      = "internship_location_id"
-	InternshipLocationName    = "internship_location_name"
-	InternshipLocationAddress = "internship_location_address"
-	InternshipLocationCity    = "internship_location_city"
-	InternshipLocationLat     = "internship_location_lat"
-	InternshipLocationLong    = "internship_location_long"
+	InternshipLocationID           = "internship_location_id"
+	InternshipLocationName         = "internship_location_name"
+	InternshipLocationNumber       = "internship_location_number"
+	InternshipLocationStreet       = "internship_location_street"
+	InternshipLocationNeighborhood = "internship_location_neighborhood"
+	InternshipLocationCity         = "internship_location_city"
+	InternshipLocationZipCode      = "internship_location_zip_code"
+	InternshipLocationLat          = "internship_location_lat"
+	InternshipLocationLong         = "internship_location_long"
 )
 
 type InternshipLocationQueryBuilder interface {
@@ -29,9 +32,9 @@ func (*internshipLocationQueryBuilder) Select() InternshipLocationQuerySelectBui
 func (*internshipLocationQueryBuilder) Insert() string {
 	return `
 		INSERT INTO internship_location (
-			name, address, city, lat, long
+			name, number, street, neighborhood, city, zip_code, lat, long
 		) VALUES (
-			$1, $2, $3, $4, $5
+			$1, $2, $3, $4, $5, $6, $7, $8
 		) RETURNING id
 	`
 }
@@ -41,10 +44,13 @@ func (*internshipLocationQueryBuilder) Update() string {
 		UPDATE internship_location
 		SET
 			name = $2,
-			address = $3,
-			city = $4,
-			lat = $5,
-			long = $6,
+			number = $3,
+			street = $4,
+			neighborhood = $5,
+			city = $6,
+			zip_code = $7,
+			lat = $8,
+			long = $9,
 			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $1
 	`
@@ -71,8 +77,11 @@ func (internshipLocationQuerySelectBuilder *internshipLocationQuerySelectBuilder
 		SELECT DISTINCT
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
-			internship_location.address AS internship_location_address,
+			internship_location.number AS internship_location_number,
+			internship_location.street AS internship_location_street,
+			internship_location.neighborhood AS internship_location_neighborhood,
 			internship_location.city AS internship_location_city,
+			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long
 		FROM internship_location
@@ -89,8 +98,11 @@ func (internshipLocationQuerySelectBuilder *internshipLocationQuerySelectBuilder
 		SELECT
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
-			internship_location.address AS internship_location_address,
+			internship_location.number AS internship_location_number,
+			internship_location.street AS internship_location_street,
+			internship_location.neighborhood AS internship_location_neighborhood,
 			internship_location.city AS internship_location_city,
+			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long
 		FROM internship_location

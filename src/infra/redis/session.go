@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"eletronic_point/src/apps/api/utils"
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/interfaces/secondary"
@@ -22,7 +23,11 @@ func (r *redisSessionRepository) Store(uID *uuid.UUID, accessToken string) error
 		return err
 	}
 	uSessionKey := r.getUserSessionKey(uID)
-	if err := conn.Set(uSessionKey, accessToken, authorization.TOKEN_TIMEOUT).Err(); err != nil {
+	tokenTimeout := authorization.TOKEN_TIMEOUT
+	if !utils.IsAPIInProdMode() {
+		tokenTimeout = time.Hour * 24
+	}
+	if err := conn.Set(uSessionKey, accessToken, tokenTimeout).Err(); err != nil {
 		logger.Log().Msg(fmt.Sprintf("an error occurred when trying to save user session: %s", err.Error()))
 		return errors.NewUnexpected()
 	}

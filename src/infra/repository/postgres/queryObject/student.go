@@ -58,8 +58,11 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		locationID = &aux
 	}
 	locationName := utils.GetNullableValue[string](data[query.InternshipLocationName])
-	locationAddress := utils.GetNullableValue[string](data[query.InternshipLocationAddress])
+	locationNumber := utils.GetNullableValue[string](data[query.InternshipLocationNumber])
+	locationStreet := utils.GetNullableValue[string](data[query.InternshipLocationStreet])
+	locationNeighborhood := utils.GetNullableValue[string](data[query.InternshipLocationNeighborhood])
 	locationCity := utils.GetNullableValue[string](data[query.InternshipLocationCity])
+	locationZipCode := utils.GetNullableValue[string](data[query.InternshipLocationZipCode])
 	var locationLat *float64
 	var locationLong *float64
 	nullableLocationLat := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLat])
@@ -113,17 +116,26 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	if locationName != nil {
 		internshipLocationBuilder.WithName(*locationName)
 	}
-	if locationAddress != nil {
-		internshipLocationBuilder.WithAddress(*locationAddress)
+	if locationNumber != nil {
+		internshipLocationBuilder.WithNumber(*locationNumber)
+	}
+	if locationStreet != nil {
+		internshipLocationBuilder.WithStreet(*locationStreet)
+	}
+	if locationNeighborhood != nil {
+		internshipLocationBuilder.WithNeighborhood(*locationNeighborhood)
 	}
 	if locationCity != nil {
 		internshipLocationBuilder.WithCity(*locationCity)
 	}
+	if locationZipCode != nil {
+		internshipLocationBuilder.WithZipCode(*locationZipCode)
+	}
 	if locationLat != nil {
-		internshipLocationBuilder.WithLat(locationLat)
+		internshipLocationBuilder.WithLat(*locationLat)
 	}
 	if locationLong != nil {
-		internshipLocationBuilder.WithLong(locationLong)
+		internshipLocationBuilder.WithLong(*locationLong)
 	}
 	location, validationError := internshipLocationBuilder.Build()
 	if validationError != nil {
