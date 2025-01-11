@@ -1898,6 +1898,14 @@ paths:
         in: query
         name: studentID
         type: string
+      - description: Data inicial
+        in: query
+        name: startDate
+        type: string
+      - description: Data de término
+        in: query
+        name: endDate
+        type: string
       produces:
       - application/json
       responses:

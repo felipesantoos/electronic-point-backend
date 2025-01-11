@@ -140,6 +140,16 @@ func getUUIDQueryParamValue(ctx echo.Context, paramName string) (*uuid.UUID, err
 	return &parsedValue, nil
 }
 
+func getTimeQueryParamValue(ctx echo.Context, paramName string) (*time.Time, errors.Error) {
+	value := ctx.QueryParam(paramName)
+	parsedValue, err := time.Parse(time.RFC3339, value)
+	if err != nil {
+		return nil, errors.NewFromString(fmt.Sprintf("the provided %s is invalid", paramName))
+	}
+
+	return &parsedValue, nil
+}
+
 func getBoolFormDataValue(ctx echo.Context, fieldName string) (*bool, errors.Error) {
 	value := ctx.FormValue(fieldName)
 	parsedValue, err := strconv.ParseBool(value)

@@ -2316,6 +2316,18 @@ const docTemplate = `{
                         "description": "ID do estudante",
                         "name": "studentID",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Data inicial",
+                        "name": "startDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Data de término",
+                        "name": "endDate",
+                        "in": "query"
                     }
                 ],
                 "responses": {

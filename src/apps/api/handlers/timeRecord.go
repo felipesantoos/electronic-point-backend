@@ -10,6 +10,7 @@ import (
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -174,6 +175,8 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Security BearerAuth
 // @Produce json
 // @Param studentID query string false "ID do estudante"
+// @Param startDate query string false "Data inicial"
+// @Param endDate query string false "Data de término"
 // @Success 200 {array} response.Student "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -194,7 +197,29 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 		}
 		studentID = value
 	}
-	_filters := filters.TimeRecordFilters{StudentID: studentID}
+	var startDate *time.Time
+	if !checkers.IsEmpty(ctx.QueryParam(params.StartDate)) {
+		value, conversionError := getTimeQueryParamValue(ctx, params.StartDate)
+		if conversionError != nil {
+			logger.Error().Msg(conversionError.String())
+			return responseFromError(conversionError)
+		}
+		startDate = value
+	}
+	var endDate *time.Time
+	if !checkers.IsEmpty(ctx.QueryParam(params.EndDate)) {
+		value, conversionError := getTimeQueryParamValue(ctx, params.EndDate)
+		if conversionError != nil {
+			logger.Error().Msg(conversionError.String())
+			return responseFromError(conversionError)
+		}
+		endDate = value
+	}
+	_filters := filters.TimeRecordFilters{
+		StudentID: studentID,
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
 	timeRecords, err := this.services.List(_filters)
 	if err != nil {
 		return responseFromError(err)
