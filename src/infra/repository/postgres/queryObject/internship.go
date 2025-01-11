@@ -45,10 +45,13 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 		return nil, errors.NewUnexpected()
 	}
 	locationName := fmt.Sprint(data[query.InternshipLocationName])
-	locationAddress := fmt.Sprint(data[query.InternshipLocationAddress])
+	locationNumber := fmt.Sprint(data[query.InternshipLocationNumber])
+	locationStreet := fmt.Sprint(data[query.InternshipLocationStreet])
+	locationNeighborhood := fmt.Sprint(data[query.InternshipLocationNeighborhood])
 	locationCity := fmt.Sprint(data[query.InternshipLocationCity])
-	var locationLat *float64
-	var locationLong *float64
+	locationZipCode := fmt.Sprint(data[query.InternshipLocationZipCode])
+	var locationLat float64
+	var locationLong float64
 	nullableLocationLat := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLat])
 	nullableLocationLong := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLong])
 	var locationLatString string
@@ -62,7 +65,7 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 			logger.Error().Msg(err.Error())
 			return nil, errors.NewUnexpected()
 		}
-		locationLat = &aux
+		locationLat = aux
 	}
 	if nullableLocationLong != nil {
 		for _, item := range *nullableLocationLong {
@@ -73,7 +76,7 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 			logger.Error().Msg(err.Error())
 			return nil, errors.NewUnexpected()
 		}
-		locationLong = &aux
+		locationLong = aux
 	}
 	studentID, err := uuid.Parse(string(data[query.StudentID].([]uint8)))
 	if err != nil {
@@ -83,8 +86,11 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}) (int
 	location, validationError := internshipLocation.NewBuilder().
 		WithID(locationID).
 		WithName(locationName).
-		WithAddress(locationAddress).
+		WithNumber(locationNumber).
+		WithStreet(locationStreet).
+		WithNeighborhood(locationNeighborhood).
 		WithCity(locationCity).
+		WithZipCode(locationZipCode).
 		WithLat(locationLat).
 		WithLong(locationLong).
 		Build()

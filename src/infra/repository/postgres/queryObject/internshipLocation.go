@@ -30,14 +30,17 @@ func (i *internshipLocationQueryObjectBuilder) FromMap(data map[string]interface
 		return nil, errors.NewUnexpected()
 	}
 	name := fmt.Sprint(data[query.InternshipLocationName])
-	address := fmt.Sprint(data[query.InternshipLocationAddress])
+	number := fmt.Sprint(data[query.InternshipLocationNumber])
+	street := fmt.Sprint(data[query.InternshipLocationStreet])
+	neighborhood := fmt.Sprint(data[query.InternshipLocationNeighborhood])
 	city := fmt.Sprint(data[query.InternshipLocationCity])
+	zipCode := fmt.Sprint(data[query.InternshipLocationZipCode])
 	nullableLat := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLat])
 	nullableLong := utils.GetNullableValue[[]uint8](data[query.InternshipLocationLong])
 	var latString string
 	var longString string
-	var lat *float64
-	var long *float64
+	var lat float64
+	var long float64
 	if nullableLat != nil {
 		for _, item := range *nullableLat {
 			latString += string(item)
@@ -47,7 +50,7 @@ func (i *internshipLocationQueryObjectBuilder) FromMap(data map[string]interface
 			logger.Error().Msg(err.Error())
 			return nil, errors.NewUnexpected()
 		}
-		lat = &aux
+		lat = aux
 	}
 	if nullableLong != nil {
 		for _, item := range *nullableLong {
@@ -58,13 +61,16 @@ func (i *internshipLocationQueryObjectBuilder) FromMap(data map[string]interface
 			logger.Error().Msg(err.Error())
 			return nil, errors.NewUnexpected()
 		}
-		long = &aux
+		long = aux
 	}
 	_internshipLocation, validationError := internshipLocation.NewBuilder().
 		WithID(id).
 		WithName(name).
-		WithAddress(address).
+		WithNumber(number).
+		WithStreet(street).
+		WithNeighborhood(neighborhood).
 		WithCity(city).
+		WithZipCode(zipCode).
 		WithLat(lat).
 		WithLong(long).
 		Build()
