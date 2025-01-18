@@ -1,7 +1,9 @@
 package queryObject
 
 import (
+	"eletronic_point/src/core/domain/campus"
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/internshipLocation"
 	"eletronic_point/src/core/domain/person"
@@ -40,7 +42,28 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	phone := fmt.Sprint(data[query.PersonPhone])
 	registration := fmt.Sprint(data[query.StudentRegistration])
 	profilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
-	institution := fmt.Sprint(data[query.StudentInstitution])
+	campusID, err := uuid.Parse(string(data[query.CampusID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	campusName := fmt.Sprint(data[query.CampusName])
+	_campus, validationError := campus.NewBuilder().WithID(campusID).WithName(campusName).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
+	institutionID, err := uuid.Parse(string(data[query.InstitutionID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	institutionName := fmt.Sprint(data[query.InstitutionName])
+	_institution, validationError := institution.NewBuilder().WithID(institutionID).WithName(institutionName).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
 	course := fmt.Sprint(data[query.StudentCourse])
 	totalWorkload, err := strconv.Atoi(fmt.Sprint(data[query.StudentTotalWorkload]))
 	if err != nil {
@@ -165,7 +188,8 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	studentBuilder.WithPerson(_person).
 		WithRegistration(registration).
 		WithProfilePicture(profilePicture).
-		WithInstitution(institution).
+		WithCampus(_campus).
+		WithInstitution(_institution).
 		WithCourse(course).
 		WithTotalWorkload(totalWorkload)
 	if internshipStartedIn != nil {

@@ -8,7 +8,8 @@ type StudentList struct {
 	Person
 	Registration      string      `json:"registration"`
 	ProfilePicture    *string     `json:"profile_picture"`
-	Institution       string      `json:"institution"`
+	Institution       Institution `json:"institution"`
+	Campus            Campus      `json:"campus"`
 	Course            string      `json:"course"`
 	TotalWorkload     int         `json:"total_workload"`
 	WorkloadCompleted int         `json:"workload_completed"`
@@ -40,7 +41,8 @@ func (*studentListBuilder) BuildFromDomain(data student.Student) StudentList {
 		Person:            _person,
 		Registration:      data.Registration(),
 		ProfilePicture:    data.ProfilePicture(),
-		Institution:       data.Institution(),
+		Institution:       InstitutionBuilder().BuildFromDomain(data.Institution()),
+		Campus:            CampusBuilder().BuildFromDomain(data.Campus()),
 		Course:            data.Course(),
 		TotalWorkload:     data.TotalWorkload(),
 		WorkloadCompleted: data.WorkloadCompleted(),

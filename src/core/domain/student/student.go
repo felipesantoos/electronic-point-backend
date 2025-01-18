@@ -1,7 +1,9 @@
 package student
 
 import (
+	"eletronic_point/src/core/domain/campus"
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
@@ -15,7 +17,8 @@ type student struct {
 	name              string
 	registration      string
 	profilePicture    *string
-	institution       string
+	_institution      institution.Institution
+	_campus           campus.Campus
 	course            string
 	totalWorkload     int
 	workloadCompleted int
@@ -33,8 +36,12 @@ func (s *student) ProfilePicture() *string {
 	return s.profilePicture
 }
 
-func (s *student) Institution() string {
-	return s.institution
+func (s *student) Institution() institution.Institution {
+	return s._institution
+}
+
+func (s *student) Campus() campus.Campus {
+	return s._campus
 }
 
 func (s *student) Course() string {
@@ -86,11 +93,19 @@ func (s *student) SetProfilePicture(profilePicture *string) errors.Error {
 	return nil
 }
 
-func (s *student) SetInstitution(institution string) errors.Error {
-	if institution == "" {
+func (s *student) SetInstitution(_institution institution.Institution) errors.Error {
+	if _institution == nil {
 		return errors.NewFromString(messages.StudentInstitutionErrorMessage)
 	}
-	s.institution = institution
+	s._institution = _institution
+	return nil
+}
+
+func (s *student) SetCampus(_campus campus.Campus) errors.Error {
+	if _campus == nil {
+		return errors.NewFromString(messages.StudentCampusErrorMessage)
+	}
+	s._campus = _campus
 	return nil
 }
 
