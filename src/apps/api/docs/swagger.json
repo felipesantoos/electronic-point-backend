@@ -410,7 +410,7 @@
         },
         "/auth/login": {
             "post": {
-                "description": "| E-mail         | Senha  | Função    |\n|----------------|--------|-----------|\n| jose@gmail.com | 123456 | Professor |\n| ana@gmail.com  | 123456 | Esudante  |",
+                "description": "| E-mail          | Senha  | Função    |\n|-----------------|--------|-----------|\n| jose@gmail.com  | 123456 | Professor |\n| lucia@gmail.com | 123456 | Professor |\n| ana@gmail.com   | 123456 | Esudante  |",
                 "consumes": [
                     "application/json"
                 ],

@@ -5,7 +5,9 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/formData"
 	"eletronic_point/src/apps/api/handlers/params"
+	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/services/filters"
 	"io"
 	"net/http"
 	"os"
@@ -282,7 +284,13 @@ func (this *studentHandlers) Delete(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students [get]
 func (this *studentHandlers) List(ctx RichContext) error {
-	result, err := this.services.List()
+	_filters := filters.StudentFilters{}
+	if ctx.RoleName() == role.TEACHER_ROLE_CODE {
+		_filters.TeacherID = ctx.ProfileID()
+	} else {
+		return forbiddenError
+	}
+	result, err := this.services.List(_filters)
 	if err != nil {
 		return responseFromError(err)
 	}
@@ -307,15 +315,21 @@ func (this *studentHandlers) List(ctx RichContext) error {
 // @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students/{id} [get]
-func (this *studentHandlers) Get(context RichContext) error {
-	id, conversionError := uuid.Parse(context.Param(params.ID))
+func (this *studentHandlers) Get(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	result, err := this.services.Get(id)
+	_filters := filters.StudentFilters{}
+	if ctx.RoleName() == role.TEACHER_ROLE_CODE {
+		_filters.TeacherID = ctx.ProfileID()
+	} else {
+		return forbiddenError
+	}
+	result, err := this.services.Get(id, _filters)
 	if err != nil {
 		return responseFromError(err)
 	}
-	return context.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomain(result))
+	return ctx.JSON(http.StatusOK, response.StudentBuilder().BuildFromDomain(result))
 }

@@ -99,6 +99,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			INNER JOIN campus ON campus.id = student.campus_id
 			INNER JOIN institution ON institution.id = campus.institution_id
 			INNER JOIN course ON course.id = student.course_id
+			INNER JOIN student_linked_to_teacher ON student_linked_to_teacher.student_id = student.id
+			INNER JOIN person teacher ON teacher.id = student_linked_to_teacher.teacher_id
 			LEFT JOIN LATERAL (
 				SELECT 
 					internship.id, 
@@ -112,6 +114,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			) internship ON true
 			LEFT JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE student.deleted_at IS NULL
+			AND teacher.id = COALESCE($1, teacher.id)
 		ORDER BY person.name ASC
 	`
 }
@@ -151,6 +154,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			INNER JOIN campus ON campus.id = student.campus_id
 			INNER JOIN institution ON institution.id = campus.institution_id
 			INNER JOIN course ON course.id = student.course_id
+			INNER JOIN student_linked_to_teacher ON student_linked_to_teacher.student_id = student.id
+			INNER JOIN person teacher ON teacher.id = student_linked_to_teacher.teacher_id
 			LEFT JOIN LATERAL (
 				SELECT 
 					internship.id, 
@@ -163,6 +168,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 				LIMIT 1
 			) internship ON true
 			LEFT JOIN internship_location ON internship_location.id = internship.internship_location_id
-		WHERE person.id = $1 AND student.deleted_at IS NULL
+		WHERE person.id = $1
+			AND student.deleted_at IS NULL
+			AND teacher.id = COALESCE($2, teacher.id)
 	`
 }

@@ -32,10 +32,11 @@ func NewAuthHandler(service primary.AuthPort) AuthHandler {
 // Login
 // @ID Auth.Login
 // @Summary Adquirir autorização de acesso aos recursos da API através de credenciais de uma conta.
-// @Description | E-mail         | Senha  | Função    |
-// @Description |----------------|--------|-----------|
-// @Description | jose@gmail.com | 123456 | Professor |
-// @Description | ana@gmail.com  | 123456 | Esudante  |
+// @Description | E-mail          | Senha  | Função    |
+// @Description |-----------------|--------|-----------|
+// @Description | jose@gmail.com  | 123456 | Professor |
+// @Description | lucia@gmail.com | 123456 | Professor |
+// @Description | ana@gmail.com   | 123456 | Esudante  |
 // @Accept json
 // @Param json body request.Credentials true "JSON com todos os dados necessários para o processo de autenticação."
 // @Tags Anônimo

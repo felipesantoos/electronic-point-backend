@@ -87,7 +87,19 @@ CREATE TABLE time_record (
     updated_at TIMESTAMP DEFAULT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT time_record_pk PRIMARY KEY (id),
-    CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES student (id)
+    CONSTRAINT time_record_student_fk FOREIGN KEY (student_id) REFERENCES person (id)
+);
+
+CREATE TABLE student_linked_to_teacher (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    student_id UUID NOT NULL,
+    teacher_id UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
+    CONSTRAINT student_linked_to_teacher_pk PRIMARY KEY (id),
+    CONSTRAINT student_linked_to_teacher_student_fk FOREIGN KEY (student_id) REFERENCES person (id),
+    CONSTRAINT student_linked_to_teacher_teacher_fk FOREIGN KEY (teacher_id) REFERENCES person (id)
 );
 
 COPY internship_location (id, name, number, street, neighborhood, city, zip_code, lat, long, created_at, updated_at, deleted_at)
@@ -116,4 +128,8 @@ COPY internship (id, student_id, internship_location_id, started_in, ended_in, c
 
 COPY time_record (id, date, entry_time, exit_time, location, is_off_site, justification, student_id, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/time_record.csv'
+    DELIMITER ';' CSV HEADER;
+
+COPY student_linked_to_teacher (id, student_id, teacher_id, created_at, updated_at, deleted_at)
+    FROM '/fixtures/000002/student_linked_to_teacher.csv'
     DELIMITER ';' CSV HEADER;

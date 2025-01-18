@@ -15,6 +15,7 @@ import (
 	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/infra/repository/postgres/queryObject"
+	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
@@ -141,8 +142,9 @@ func (this studentRepository) Delete(id uuid.UUID) errors.Error {
 	return nil
 }
 
-func (this studentRepository) List() ([]student.Student, errors.Error) {
-	rows, err := repository.Queryx(query.Student().Select().All())
+func (this studentRepository) List(_filters filters.StudentFilters) ([]student.Student, errors.Error) {
+	fmt.Println(_filters.TeacherID)
+	rows, err := repository.Queryx(query.Student().Select().All(), _filters.TeacherID)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
@@ -174,8 +176,8 @@ func (this studentRepository) List() ([]student.Student, errors.Error) {
 	return students, nil
 }
 
-func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) {
-	rows, err := repository.Queryx(query.Student().Select().ByID(), id)
+func (this studentRepository) Get(id uuid.UUID, _filters filters.StudentFilters) (student.Student, errors.Error) {
+	rows, err := repository.Queryx(query.Student().Select().ByID(), id, _filters.TeacherID)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
@@ -197,8 +199,8 @@ func (this studentRepository) Get(id uuid.UUID) (student.Student, errors.Error) 
 	}
 	timeRecordRepository := NewTimeRecordRepository()
 	studentID := _student.ID()
-	_filters := filters.TimeRecordFilters{StudentID: studentID}
-	timeRecords, err := timeRecordRepository.List(_filters)
+	timeRecordFilters := filters.TimeRecordFilters{StudentID: studentID}
+	timeRecords, err := timeRecordRepository.List(timeRecordFilters)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, err
