@@ -2,6 +2,7 @@ package queryObject
 
 import (
 	"eletronic_point/src/core/domain/campus"
+	"eletronic_point/src/core/domain/course"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
@@ -64,7 +65,17 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		logger.Error().Msg(validationError.String())
 		return nil, validationError
 	}
-	course := fmt.Sprint(data[query.StudentCourse])
+	courseID, err := uuid.Parse(string(data[query.CourseID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	courseName := fmt.Sprint(data[query.CourseName])
+	_course, validationError := course.NewBuilder().WithID(courseID).WithName(courseName).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
 	totalWorkload, err := strconv.Atoi(fmt.Sprint(data[query.StudentTotalWorkload]))
 	if err != nil {
 		logger.Error().Msg(err.Error())
@@ -190,7 +201,7 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		WithProfilePicture(profilePicture).
 		WithCampus(_campus).
 		WithInstitution(_institution).
-		WithCourse(course).
+		WithCourse(_course).
 		WithTotalWorkload(totalWorkload)
 	if internshipStartedIn != nil {
 		studentBuilder.WithCurrentInternship(currentInternship)

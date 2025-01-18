@@ -10,7 +10,7 @@ type Student struct {
 	ProfilePicture    *string      `json:"profile_picture"`
 	Institution       Institution  `json:"institution"`
 	Campus            Campus       `json:"campus"`
-	Course            string       `json:"course"`
+	Course            Course       `json:"course"`
 	TotalWorkload     int          `json:"total_workload"`
 	WorkloadCompleted int          `json:"workload_completed"`
 	PendingWorkload   int          `json:"pending_workload"`
@@ -45,7 +45,7 @@ func (*studentBuilder) BuildFromDomain(data student.Student) Student {
 		ProfilePicture:    data.ProfilePicture(),
 		Institution:       InstitutionBuilder().BuildFromDomain(data.Institution()),
 		Campus:            CampusBuilder().BuildFromDomain(data.Campus()),
-		Course:            data.Course(),
+		Course:            CourseBuilder().BuildFromDomain(data.Course()),
 		TotalWorkload:     data.TotalWorkload(),
 		WorkloadCompleted: data.WorkloadCompleted(),
 		PendingWorkload:   data.PendingWorkload(),
