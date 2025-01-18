@@ -140,6 +140,13 @@ definitions:
       name:
         type: string
     type: object
+  response.Course:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   response.ErrorMessage:
     properties:
       error: {}
@@ -245,7 +252,7 @@ definitions:
       campus:
         $ref: '#/definitions/response.Campus'
       course:
-        type: string
+        $ref: '#/definitions/response.Course'
       cpf:
         type: string
       created_at:
@@ -290,7 +297,7 @@ definitions:
       campus:
         $ref: '#/definitions/response.Campus'
       course:
-        type: string
+        $ref: '#/definitions/response.Course'
       cpf:
         type: string
       created_at:
@@ -1639,10 +1646,10 @@ paths:
         name: campus_id
         required: true
         type: string
-      - default: Curso 1
-        description: Curso do estudante
+      - default: 9e29482b-408e-49df-84fa-1543af68e036
+        description: ID do curso do estudante
         in: formData
-        name: course
+        name: course_id
         required: true
         type: string
       - default: 100
@@ -1868,10 +1875,10 @@ paths:
         name: campus_id
         required: true
         type: string
-      - default: Curso 1
-        description: Curso do estudante
+      - default: 9e29482b-408e-49df-84fa-1543af68e036
+        description: ID do curso do estudante
         in: formData
-        name: course
+        name: course_id
         required: true
         type: string
       - default: 100

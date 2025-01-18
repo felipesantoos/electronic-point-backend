@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/campus"
+	"eletronic_point/src/core/domain/course"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
@@ -19,7 +20,7 @@ type student struct {
 	profilePicture    *string
 	_institution      institution.Institution
 	_campus           campus.Campus
-	course            string
+	_course           course.Course
 	totalWorkload     int
 	workloadCompleted int
 	pendingWorkload   int
@@ -44,8 +45,8 @@ func (s *student) Campus() campus.Campus {
 	return s._campus
 }
 
-func (s *student) Course() string {
-	return s.course
+func (s *student) Course() course.Course {
+	return s._course
 }
 
 func (s *student) CurrentInternship() internship.Internship {
@@ -109,11 +110,11 @@ func (s *student) SetCampus(_campus campus.Campus) errors.Error {
 	return nil
 }
 
-func (s *student) SetCourse(course string) errors.Error {
-	if course == "" {
+func (s *student) SetCourse(_course course.Course) errors.Error {
+	if _course == nil {
 		return errors.NewFromString(messages.StudentCourseErrorMessage)
 	}
-	s.course = course
+	s._course = _course
 	return nil
 }
 

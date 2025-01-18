@@ -1888,9 +1888,9 @@
                     },
                     {
                         "type": "string",
-                        "default": "Curso 1",
-                        "description": "Curso do estudante",
-                        "name": "course",
+                        "default": "9e29482b-408e-49df-84fa-1543af68e036",
+                        "description": "ID do curso do estudante",
+                        "name": "course_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2138,9 +2138,9 @@
                     },
                     {
                         "type": "string",
-                        "default": "Curso 1",
-                        "description": "Curso do estudante",
-                        "name": "course",
+                        "default": "9e29482b-408e-49df-84fa-1543af68e036",
+                        "description": "ID do curso do estudante",
+                        "name": "course_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2935,6 +2935,17 @@
                 }
             }
         },
+        "response.Course": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ErrorMessage": {
             "type": "object",
             "properties": {
@@ -3096,7 +3107,7 @@
                     "$ref": "#/definitions/response.Campus"
                 },
                 "course": {
-                    "type": "string"
+                    "$ref": "#/definitions/response.Course"
                 },
                 "cpf": {
                     "type": "string"
@@ -3164,7 +3175,7 @@
                     "$ref": "#/definitions/response.Campus"
                 },
                 "course": {
-                    "type": "string"
+                    "$ref": "#/definitions/response.Course"
                 },
                 "cpf": {
                     "type": "string"

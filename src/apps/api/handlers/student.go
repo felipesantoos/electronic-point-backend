@@ -46,7 +46,7 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // @Param registration formData string true "Matrícula do estudante" default(0000000001)
 // @Param profile_picture formData file false "Foto de perfil do estudante (arquivo de imagem)"
 // @Param campus_id formData string true "ID do campus do estudante" default(6de43e83-6bdf-4637-83d0-bcb8611082be)
-// @Param course formData string true "Curso do estudante" default(Curso 1)
+// @Param course_id formData string true "ID do curso do estudante" default(9e29482b-408e-49df-84fa-1543af68e036)
 // @Param total_workload formData int true "Carga horária total do estágio" default(100)
 // @Success 201 {object} response.ID "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -74,7 +74,11 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		logger.Error().Msg(err.String())
 		return unprocessableEntityErrorWithMessage(err.String())
 	}
-	course := ctx.FormValue(formData.StudentCourse)
+	courseID, err := getUUIDFormDataValue(ctx, formData.StudentCourseID)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return unprocessableEntityErrorWithMessage(err.String())
+	}
 	totalWorkload, conversionError := strconv.Atoi(ctx.FormValue(formData.StudentTotalWorkload))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
@@ -109,7 +113,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		Registration:   registration,
 		ProfilePicture: filePath,
 		CampusID:       *campusID,
-		Course:         course,
+		CourseID:       *courseID,
 		TotalWorkload:  totalWorkload,
 	}
 	_student, validationError := studentDTO.ToDomain()
@@ -141,7 +145,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 // @Param registration formData string true "Matrícula do estudante" default(0000000001)
 // @Param profile_picture formData file false "Foto de perfil do estudante (arquivo de imagem)"
 // @Param campus_id formData string true "ID do campus do estudante" default(6de43e83-6bdf-4637-83d0-bcb8611082be)
-// @Param course formData string true "Curso do estudante" default(Curso 1)
+// @Param course_id formData string true "ID do curso do estudante" default(9e29482b-408e-49df-84fa-1543af68e036)
 // @Param total_workload formData int true "Carga horária total do estágio" default(100)
 // @Success 204 {object} nil "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
@@ -174,7 +178,11 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 		logger.Error().Msg(err.String())
 		return unprocessableEntityErrorWithMessage(err.String())
 	}
-	course := ctx.FormValue(formData.StudentCourse)
+	courseID, err := getUUIDFormDataValue(ctx, formData.StudentCourseID)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return unprocessableEntityErrorWithMessage(err.String())
+	}
 	totalWorkload, conversionError := strconv.Atoi(ctx.FormValue(formData.StudentTotalWorkload))
 	if conversionError != nil {
 		logger.Error().Msg(conversionError.Error())
@@ -209,7 +217,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 		Registration:   registration,
 		ProfilePicture: filePath,
 		CampusID:       *campusID,
-		Course:         course,
+		CourseID:       *courseID,
 		TotalWorkload:  totalWorkload,
 	}
 	_student, validationError := studentDTO.ToDomain()

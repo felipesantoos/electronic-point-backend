@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/campus"
+	"eletronic_point/src/core/domain/course"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
@@ -66,14 +67,13 @@ func (builder *builder) WithCampus(_campus campus.Campus) *builder {
 	return builder
 }
 
-func (builder *builder) WithCourse(course string) *builder {
-	course = strings.TrimSpace(course)
-	if len(course) == 0 {
+func (builder *builder) WithCourse(_course course.Course) *builder {
+	if _course == nil {
 		builder.fields = append(builder.fields, messages.StudentCourse)
 		builder.errorMessages = append(builder.errorMessages, messages.StudentCourseErrorMessage)
 		return builder
 	}
-	builder.student.course = course
+	builder.student._course = _course
 	return builder
 }
 

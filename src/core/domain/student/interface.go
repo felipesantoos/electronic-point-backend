@@ -2,6 +2,7 @@ package student
 
 import (
 	"eletronic_point/src/core/domain/campus"
+	"eletronic_point/src/core/domain/course"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
@@ -15,7 +16,7 @@ type Student interface {
 	ProfilePicture() *string
 	Institution() institution.Institution
 	Campus() campus.Campus
-	Course() string
+	Course() course.Course
 	TotalWorkload() int
 	WorkloadCompleted() int
 	PendingWorkload() int
@@ -27,7 +28,7 @@ type Student interface {
 	SetProfilePicture(*string) errors.Error
 	SetInstitution(institution.Institution) errors.Error
 	SetCampus(campus.Campus) errors.Error
-	SetCourse(string) errors.Error
+	SetCourse(course.Course) errors.Error
 	SetTotalWorkload(int) errors.Error
 	SetWorkloadCompleted(int) errors.Error
 	SetPendingWorkload(int) errors.Error

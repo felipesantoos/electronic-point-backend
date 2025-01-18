@@ -1895,9 +1895,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "Curso 1",
-                        "description": "Curso do estudante",
-                        "name": "course",
+                        "default": "9e29482b-408e-49df-84fa-1543af68e036",
+                        "description": "ID do curso do estudante",
+                        "name": "course_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2145,9 +2145,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "Curso 1",
-                        "description": "Curso do estudante",
-                        "name": "course",
+                        "default": "9e29482b-408e-49df-84fa-1543af68e036",
+                        "description": "ID do curso do estudante",
+                        "name": "course_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2942,6 +2942,17 @@ const docTemplate = `{
                 }
             }
         },
+        "response.Course": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ErrorMessage": {
             "type": "object",
             "properties": {
@@ -3103,7 +3114,7 @@ const docTemplate = `{
                     "$ref": "#/definitions/response.Campus"
                 },
                 "course": {
-                    "type": "string"
+                    "$ref": "#/definitions/response.Course"
                 },
                 "cpf": {
                     "type": "string"
@@ -3171,7 +3182,7 @@ const docTemplate = `{
                     "$ref": "#/definitions/response.Campus"
                 },
                 "course": {
-                    "type": "string"
+                    "$ref": "#/definitions/response.Course"
                 },
                 "cpf": {
                     "type": "string"

@@ -1,11 +1,11 @@
-id;registration;profile_picture;campus_id;course;total_workload;created_at;updated_at;deleted_at
-"02e62826-bf41-4944-adb2-051b6a30a131";"202310001";"https://example.com/pictures/ana.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"Engenharia Civil";480;2024-12-15 18:42:37.592925+00;;
-"11130b4c-a00e-48cd-aa23-7914e39a5955";"202310002";"https://example.com/pictures/carlos.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"Direito";360;2024-12-15 18:42:37.592925+00;;
-"7e7cc9cb-e4a4-4404-aa99-6793780443f3";"202310003";"https://example.com/pictures/mariana.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"Medicina";720;2024-12-15 18:42:37.592925+00;;
-"1a7b07c1-f839-4caa-ba08-482792d75e25";"202310004";"https://example.com/pictures/joao.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"Ciência da Computação";400;2024-12-15 18:42:37.592925+00;;
-"170fbda4-78a8-4c2e-bd0d-0c682610b4b8";"202310005";"https://example.com/pictures/larissa.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"Arquitetura";300;2024-12-15 18:42:37.592925+00;;
-"74c7beea-e835-4ea0-8d89-bc40d96e9aad";"202310006";"https://example.com/pictures/guilherme.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"Economia";450;2024-12-15 18:42:37.592925+00;;
-"886125d1-4a29-40ac-a0ea-a2370e820ed8";"202310007";"https://example.com/pictures/beatriz.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"Design";360;2024-12-15 18:42:37.592925+00;;
-"fbaedc83-938a-44dc-8a82-c78682905784";"202310008";"https://example.com/pictures/rafael.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"Engenharia de Software";420;2024-12-15 18:42:37.592925+00;;
-"02f3b455-2fbc-4bd1-9efc-848ecbd67fcf";"202310009";"https://example.com/pictures/isabela.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"Administração";500;2024-12-15 18:42:37.592925+00;;
-"3787f99a-66bd-4be3-93ff-78faaa8b54e1";"202310010";"https://example.com/pictures/victor.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"Engenharia Elétrica";600;2024-12-15 18:42:37.592925+00;;
+id;registration;profile_picture;campus_id;course_id;total_workload;created_at;updated_at;deleted_at
+"02e62826-bf41-4944-adb2-051b6a30a131";"202310001";"https://example.com/pictures/ana.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"9e29482b-408e-49df-84fa-1543af68e036";480;2024-12-15 18:42:37.592925+00;;
+"11130b4c-a00e-48cd-aa23-7914e39a5955";"202310002";"https://example.com/pictures/carlos.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"9e29482b-408e-49df-84fa-1543af68e036";360;2024-12-15 18:42:37.592925+00;;
+"7e7cc9cb-e4a4-4404-aa99-6793780443f3";"202310003";"https://example.com/pictures/mariana.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"9e29482b-408e-49df-84fa-1543af68e036";720;2024-12-15 18:42:37.592925+00;;
+"1a7b07c1-f839-4caa-ba08-482792d75e25";"202310004";"https://example.com/pictures/joao.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"9e29482b-408e-49df-84fa-1543af68e036";400;2024-12-15 18:42:37.592925+00;;
+"170fbda4-78a8-4c2e-bd0d-0c682610b4b8";"202310005";"https://example.com/pictures/larissa.jpg";"6de43e83-6bdf-4637-83d0-bcb8611082be";"9e29482b-408e-49df-84fa-1543af68e036";300;2024-12-15 18:42:37.592925+00;;
+"74c7beea-e835-4ea0-8d89-bc40d96e9aad";"202310006";"https://example.com/pictures/guilherme.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"147c3311-eeba-4cd3-a4a1-57b4f36c0334";450;2024-12-15 18:42:37.592925+00;;
+"886125d1-4a29-40ac-a0ea-a2370e820ed8";"202310007";"https://example.com/pictures/beatriz.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"147c3311-eeba-4cd3-a4a1-57b4f36c0334";360;2024-12-15 18:42:37.592925+00;;
+"fbaedc83-938a-44dc-8a82-c78682905784";"202310008";"https://example.com/pictures/rafael.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"147c3311-eeba-4cd3-a4a1-57b4f36c0334";420;2024-12-15 18:42:37.592925+00;;
+"02f3b455-2fbc-4bd1-9efc-848ecbd67fcf";"202310009";"https://example.com/pictures/isabela.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"147c3311-eeba-4cd3-a4a1-57b4f36c0334";500;2024-12-15 18:42:37.592925+00;;
+"3787f99a-66bd-4be3-93ff-78faaa8b54e1";"202310010";"https://example.com/pictures/victor.jpg";"9a7afb83-dc56-4983-b292-231166b5813f";"147c3311-eeba-4cd3-a4a1-57b4f36c0334";600;2024-12-15 18:42:37.592925+00;;

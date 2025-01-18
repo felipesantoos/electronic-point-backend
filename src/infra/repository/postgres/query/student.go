@@ -4,7 +4,6 @@ const (
 	StudentID             = "student_id"
 	StudentRegistration   = "student_registration"
 	StudentProfilePicture = "student_profile_picture"
-	StudentCourse         = "student_course"
 	StudentTotalWorkload  = "student_total_workload"
 )
 
@@ -28,7 +27,7 @@ func (*studentQueryBuilder) Select() StudentQuerySelectBuilder {
 func (*studentQueryBuilder) Insert() string {
 	return `
 		INSERT INTO student (
-			id, registration, profile_picture, campus_id, course, total_workload
+			id, registration, profile_picture, campus_id, course_id, total_workload
 		) VALUES (
 			$1, $2, $3, $4, $5, $6
 		) RETURNING id
@@ -42,7 +41,7 @@ func (*studentQueryBuilder) Update() string {
 			registration = $2,
 			profile_picture = $3,
 			campus_id = $4,
-			course = $5,
+			course_id = $5,
 			total_workload = $6,
 			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $1
@@ -80,7 +79,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			campus.name AS campus_name,
 			institution.id AS institution_id,
 			institution.name AS institution_name,
-			student.course AS student_course,
+			course.id AS course_id,
+			course.name AS course_name,
 			student.total_workload AS student_total_workload,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
@@ -98,6 +98,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			INNER JOIN person ON person.id = student.id
 			INNER JOIN campus ON campus.id = student.campus_id
 			INNER JOIN institution ON institution.id = campus.institution_id
+			INNER JOIN course ON course.id = student.course_id
 			LEFT JOIN LATERAL (
 				SELECT 
 					internship.id, 
@@ -130,7 +131,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			campus.name AS campus_name,
 			institution.id AS institution_id,
 			institution.name AS institution_name,
-			student.course AS student_course,
+			course.id AS course_id,
+			course.name AS course_name,
 			student.total_workload AS student_total_workload,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
@@ -148,6 +150,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			INNER JOIN person ON person.id = student.id
 			INNER JOIN campus ON campus.id = student.campus_id
 			INNER JOIN institution ON institution.id = campus.institution_id
+			INNER JOIN course ON course.id = student.course_id
 			LEFT JOIN LATERAL (
 				SELECT 
 					internship.id, 

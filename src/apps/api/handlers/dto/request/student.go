@@ -2,6 +2,7 @@ package request
 
 import (
 	"eletronic_point/src/core/domain/campus"
+	"eletronic_point/src/core/domain/course"
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/student"
@@ -18,7 +19,7 @@ type Student struct {
 	Registration   string    `form:"registration"`
 	ProfilePicture *string   `form:"profile_picture"`
 	CampusID       uuid.UUID `form:"campus_id"`
-	Course         string    `form:"course"`
+	CourseID       uuid.UUID `form:"course_id"`
 	TotalWorkload  int       `form:"total_workload"`
 }
 
@@ -36,12 +37,16 @@ func (this *Student) ToDomain() (student.Student, errors.Error) {
 	if validationError != nil {
 		return nil, validationError
 	}
+	_course, validationError := course.NewBuilder().WithID(this.CourseID).Build()
+	if validationError != nil {
+		return nil, validationError
+	}
 	builder := student.NewBuilder().
 		WithPerson(_person).
 		WithRegistration(this.Registration).
 		WithProfilePicture(this.ProfilePicture).
 		WithCampus(_campus).
-		WithCourse(this.Course).
+		WithCourse(_course).
 		WithTotalWorkload(this.TotalWorkload)
 	return builder.Build()
 }

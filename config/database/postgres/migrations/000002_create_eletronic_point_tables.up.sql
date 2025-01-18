@@ -34,12 +34,21 @@ CREATE TABLE campus (
     CONSTRAINT campus_institution_fk FOREIGN KEY (institution_id) REFERENCES institution (id)
 );
 
+CREATE TABLE course (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    name VARCHAR(200) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL,
+    CONSTRAINT course_pk PRIMARY KEY (id)
+);
+
 CREATE TABLE student (
     id UUID NOT NULL,
     registration VARCHAR(10) NOT NULL UNIQUE,
     profile_picture TEXT NULL,
     campus_id UUID NOT NULL,
-    course VARCHAR(200) NOT NULL,
+    course_id UUID NOT NULL,
     total_workload INT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
@@ -47,6 +56,7 @@ CREATE TABLE student (
     CONSTRAINT student_pk PRIMARY KEY (id),
     CONSTRAINT student_person_fk FOREIGN KEY (id) REFERENCES person (id),
     CONSTRAINT student_campus_fk FOREIGN KEY (campus_id) REFERENCES campus (id),
+    CONSTRAINT student_course_fk FOREIGN KEY (course_id) REFERENCES course (id),
     CONSTRAINT student_registration_uk UNIQUE (registration)
 );
 
@@ -92,7 +102,11 @@ COPY campus (id, name, institution_id, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/campus.csv'
     DELIMITER ';' CSV HEADER;
 
-COPY student (id, registration, profile_picture, campus_id, course, total_workload, created_at, updated_at, deleted_at)
+COPY course (id, name, created_at, updated_at, deleted_at)
+    FROM '/fixtures/000002/course.csv'
+    DELIMITER ';' CSV HEADER;
+
+COPY student (id, registration, profile_picture, campus_id, course_id, total_workload, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/student.csv'
     DELIMITER ';' CSV HEADER;
 
