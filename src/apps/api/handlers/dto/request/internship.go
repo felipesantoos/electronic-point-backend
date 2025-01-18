@@ -12,7 +12,7 @@ import (
 
 type Internship struct {
 	StudentID  uuid.UUID  `json:"student_id" example:"02e62826-bf41-4944-adb2-051b6a30a131"`
-	LocationID uuid.UUID  `json:"location_id" example:"8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75"`
+	LocationID uuid.UUID  `json:"location_id" example:"0d0518be-bd9d-4ac4-9f95-6c536e00b247"`
 	StartedIn  time.Time  `json:"started_in" example:"2024-06-01T00:00:00Z"`
 	EndedIn    *time.Time `json:"ended_in" example:"null"`
 }

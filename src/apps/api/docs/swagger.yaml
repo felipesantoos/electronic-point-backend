@@ -35,7 +35,7 @@ definitions:
         example: "null"
         type: string
       location_id:
-        example: 8c6b88c0-d123-45f6-9a10-1d8c5f7b9e75
+        example: 0d0518be-bd9d-4ac4-9f95-6c536e00b247
         type: string
       started_in:
         example: "2024-06-01T00:00:00Z"
