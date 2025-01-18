@@ -4,6 +4,7 @@ import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/internshipLocation"
+	"eletronic_point/src/core/domain/simplifiedStudent"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,8 +22,12 @@ func (this *Internship) ToDomain() (internship.Internship, errors.Error) {
 	if validationError != nil {
 		return nil, validationError
 	}
+	_student, validationError := simplifiedStudent.NewBuilder().WithID(this.StudentID).Build()
+	if validationError != nil {
+		return nil, validationError
+	}
 	_internship := internship.NewBuilder().
-		WithStudentID(this.StudentID).
+		WithStudent(_student).
 		WithLocation(location).
 		WithStartedIn(this.StartedIn).
 		WithEndedIn(this.EndedIn)

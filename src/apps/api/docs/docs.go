@@ -3005,8 +3005,8 @@ const docTemplate = `{
                 "started_in": {
                     "type": "string"
                 },
-                "student_id": {
-                    "type": "string"
+                "student": {
+                    "$ref": "#/definitions/response.SimplifiedStudent"
                 }
             }
         },
@@ -3100,6 +3100,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.SimplifiedStudent": {
+            "type": "object",
+            "properties": {
+                "campus": {
+                    "$ref": "#/definitions/response.Campus"
+                },
+                "course": {
+                    "$ref": "#/definitions/response.Course"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution": {
+                    "$ref": "#/definitions/response.Institution"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "profile_picture": {
                     "type": "string"
                 }
             }

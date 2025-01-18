@@ -21,7 +21,7 @@ func NewInternshipRepository() secondary.InternshipPort {
 
 func (this internshipRepository) Create(_internship internship.Internship) (*uuid.UUID, errors.Error) {
 	var id uuid.UUID
-	rows, err := repository.Queryx(query.Internship().Insert(), _internship.StudentID(),
+	rows, err := repository.Queryx(query.Internship().Insert(), _internship.Student().ID(),
 		_internship.Location().ID(), _internship.StartedIn(), _internship.EndedIn())
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -41,7 +41,7 @@ func (this internshipRepository) Create(_internship internship.Internship) (*uui
 
 func (this internshipRepository) Update(_internship internship.Internship) errors.Error {
 	_, err := repository.ExecQuery(query.Internship().Update(), _internship.ID(),
-		_internship.StudentID(), _internship.Location().ID(), _internship.StartedIn(),
+		_internship.Student().ID(), _internship.Location().ID(), _internship.StartedIn(),
 		_internship.EndedIn())
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -66,7 +66,7 @@ func (this internshipRepository) List(_filters filters.InternshipFilters) ([]int
 		return nil, errors.NewUnexpected()
 	}
 	defer rows.Close()
-	internships, err := queryObject.Internship().FromRows(rows)
+	internships, err := queryObject.Internship().FromRows(rows, true)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
@@ -90,7 +90,7 @@ func (this internshipRepository) Get(id uuid.UUID) (internship.Internship, error
 		logger.Error().Msg(nativeError.Error())
 		return nil, errors.NewUnexpected()
 	}
-	_internship, err := queryObject.Internship().FromMap(serializedInternship)
+	_internship, err := queryObject.Internship().FromMap(serializedInternship, true)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

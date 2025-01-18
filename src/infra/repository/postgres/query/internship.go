@@ -78,10 +78,21 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) All() string {
 			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
-			student.id AS student_id
+			person.id AS person_id,
+			person.name AS person_name,
+			student.profile_picture AS student_profile_picture,
+			campus.id AS campus_id,
+			campus.name AS campus_name,
+			institution.id AS institution_id,
+			institution.name AS institution_name,
+			course.id AS course_id,
+			course.name AS course_name
 		FROM internship
 			INNER JOIN student ON student.id = internship.student_id
 			INNER JOIN person ON person.id = student.id
+			INNER JOIN campus ON campus.id = student.campus_id
+			INNER JOIN institution ON institution.id = campus.institution_id
+			INNER JOIN course ON course.id = student.course_id
 			INNER JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE internship.deleted_at IS NULL
 			AND ($1::uuid IS NULL OR internship.student_id = $1)
@@ -104,9 +115,21 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) ByID() string 
 			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
-			student.id AS student_id
+			person.id AS person_id,
+			person.name AS person_name,
+			student.profile_picture AS student_profile_picture,
+			campus.id AS campus_id,
+			campus.name AS campus_name,
+			institution.id AS institution_id,
+			institution.name AS institution_name,
+			course.id AS course_id,
+			course.name AS course_name
 		FROM internship
 			INNER JOIN student ON student.id = internship.student_id
+			INNER JOIN person ON person.id = student.id
+			INNER JOIN campus ON campus.id = student.campus_id
+			INNER JOIN institution ON institution.id = campus.institution_id
+			INNER JOIN course ON course.id = student.course_id
 			INNER JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE internship.id = $1 AND internship.deleted_at IS NULL
 	`
@@ -127,8 +150,21 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) ByStudentID() 
 			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
-			internship.student_id AS student_id
+			person.id AS person_id,
+			person.name AS person_name,
+			student.profile_picture AS student_profile_picture,
+			campus.id AS campus_id,
+			campus.name AS campus_name,
+			institution.id AS institution_id,
+			institution.name AS institution_name,
+			course.id AS course_id,
+			course.name AS course_name
 		FROM internship
+			INNER JOIN student ON student.id = internship.student_id
+			INNER JOIN person ON person.id = student.id
+			INNER JOIN campus ON campus.id = student.campus_id
+			INNER JOIN institution ON institution.id = campus.institution_id
+			INNER JOIN course ON course.id = student.course_id
 			INNER JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE internship.student_id = $1
 		ORDER BY internship.created_at DESC

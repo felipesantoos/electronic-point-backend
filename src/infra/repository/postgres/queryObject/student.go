@@ -43,17 +43,6 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	phone := fmt.Sprint(data[query.PersonPhone])
 	registration := fmt.Sprint(data[query.StudentRegistration])
 	profilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
-	campusID, err := uuid.Parse(string(data[query.CampusID].([]uint8)))
-	if err != nil {
-		logger.Error().Msg(err.Error())
-		return nil, errors.NewUnexpected()
-	}
-	campusName := fmt.Sprint(data[query.CampusName])
-	_campus, validationError := campus.NewBuilder().WithID(campusID).WithName(campusName).Build()
-	if validationError != nil {
-		logger.Error().Msg(validationError.String())
-		return nil, validationError
-	}
 	institutionID, err := uuid.Parse(string(data[query.InstitutionID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())
@@ -61,6 +50,17 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	}
 	institutionName := fmt.Sprint(data[query.InstitutionName])
 	_institution, validationError := institution.NewBuilder().WithID(institutionID).WithName(institutionName).Build()
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
+	campusID, err := uuid.Parse(string(data[query.CampusID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	campusName := fmt.Sprint(data[query.CampusName])
+	_campus, validationError := campus.NewBuilder().WithID(campusID).WithName(campusName).Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return nil, validationError
@@ -179,7 +179,6 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	currentInternshipBuilder := internship.NewBuilder()
 	if internshipID != nil {
 		currentInternshipBuilder.WithID(*internshipID)
-		currentInternshipBuilder.WithStudentID(*_person.ID())
 	}
 	if internshipStartedIn != nil {
 		currentInternshipBuilder.WithStartedIn(*internshipStartedIn)

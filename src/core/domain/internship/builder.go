@@ -3,6 +3,7 @@ package internship
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/internshipLocation"
+	"eletronic_point/src/core/domain/simplifiedStudent"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/utils/validator"
 	"time"
@@ -59,13 +60,13 @@ func (b *Builder) WithLocation(location internshipLocation.InternshipLocation) *
 	return b
 }
 
-func (b *Builder) WithStudentID(studentID uuid.UUID) *Builder {
-	if !validator.IsUUIDValid(studentID) {
-		b.fields = append(b.fields, messages.StudentID)
-		b.errorMessages = append(b.errorMessages, messages.StudentIDErrorMessage)
+func (b *Builder) WithStudent(_student simplifiedStudent.SimplifiedStudent) *Builder {
+	if _student == nil {
+		b.fields = append(b.fields, messages.InternshipStudent)
+		b.errorMessages = append(b.errorMessages, messages.InternshipStudentErrorMessage)
 		return b
 	}
-	b.internship.studentID = studentID
+	b.internship._student = _student
 	return b
 }
 
