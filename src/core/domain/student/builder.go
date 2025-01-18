@@ -1,7 +1,9 @@
 package student
 
 import (
+	"eletronic_point/src/core/domain/campus"
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
@@ -44,14 +46,23 @@ func (builder *builder) WithProfilePicture(profilePicture *string) *builder {
 	return builder
 }
 
-func (builder *builder) WithInstitution(institution string) *builder {
-	institution = strings.TrimSpace(institution)
-	if len(institution) == 0 {
+func (builder *builder) WithInstitution(_institution institution.Institution) *builder {
+	if _institution == nil {
 		builder.fields = append(builder.fields, messages.StudentInstitution)
 		builder.errorMessages = append(builder.errorMessages, messages.StudentInstitutionErrorMessage)
 		return builder
 	}
-	builder.student.institution = institution
+	builder.student._institution = _institution
+	return builder
+}
+
+func (builder *builder) WithCampus(_campus campus.Campus) *builder {
+	if _campus == nil {
+		builder.fields = append(builder.fields, messages.StudentCampus)
+		builder.errorMessages = append(builder.errorMessages, messages.StudentCampusErrorMessage)
+		return builder
+	}
+	builder.student._campus = _campus
 	return builder
 }
 

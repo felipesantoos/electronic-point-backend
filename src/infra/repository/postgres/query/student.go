@@ -4,7 +4,6 @@ const (
 	StudentID             = "student_id"
 	StudentRegistration   = "student_registration"
 	StudentProfilePicture = "student_profile_picture"
-	StudentInstitution    = "student_institution"
 	StudentCourse         = "student_course"
 	StudentTotalWorkload  = "student_total_workload"
 )
@@ -29,7 +28,7 @@ func (*studentQueryBuilder) Select() StudentQuerySelectBuilder {
 func (*studentQueryBuilder) Insert() string {
 	return `
 		INSERT INTO student (
-			id, registration, profile_picture, institution, course, total_workload
+			id, registration, profile_picture, campus_id, course, total_workload
 		) VALUES (
 			$1, $2, $3, $4, $5, $6
 		) RETURNING id
@@ -42,7 +41,7 @@ func (*studentQueryBuilder) Update() string {
 		SET
 			registration = $2,
 			profile_picture = $3,
-			institution = $4,
+			campus_id = $4,
 			course = $5,
 			total_workload = $6,
 			updated_at = CURRENT_TIMESTAMP
@@ -77,13 +76,19 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			person.phone AS person_phone,
 			student.registration AS student_registration,
 			student.profile_picture AS student_profile_picture,
-			student.institution AS student_institution,
+			campus.id AS campus_id,
+			campus.name AS campus_name,
+			institution.id AS institution_id,
+			institution.name AS institution_name,
 			student.course AS student_course,
 			student.total_workload AS student_total_workload,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
-			internship_location.address AS internship_location_address,
+			internship_location.number AS internship_location_number,
+			internship_location.street AS internship_location_street,
+			internship_location.neighborhood AS internship_location_neighborhood,
 			internship_location.city AS internship_location_city,
+			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
 			internship.id AS internship_id,
@@ -91,6 +96,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			internship.ended_in AS internship_ended_in
 		FROM student
 			INNER JOIN person ON person.id = student.id
+			INNER JOIN campus ON campus.id = student.campus_id
+			INNER JOIN institution ON institution.id = campus.institution_id
 			LEFT JOIN LATERAL (
 				SELECT 
 					internship.id, 
@@ -119,13 +126,19 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			person.phone AS person_phone,
 			student.registration AS student_registration,
 			student.profile_picture AS student_profile_picture,
-			student.institution AS student_institution,
+			campus.id AS campus_id,
+			campus.name AS campus_name,
+			institution.id AS institution_id,
+			institution.name AS institution_name,
 			student.course AS student_course,
 			student.total_workload AS student_total_workload,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
-			internship_location.address AS internship_location_address,
+			internship_location.number AS internship_location_number,
+			internship_location.street AS internship_location_street,
+			internship_location.neighborhood AS internship_location_neighborhood,
 			internship_location.city AS internship_location_city,
+			internship_location.zip_code AS internship_location_zip_code,
 			internship_location.lat AS internship_location_lat,
 			internship_location.long AS internship_location_long,
 			internship.id AS internship_id,
@@ -133,6 +146,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 			internship.ended_in AS internship_ended_in
 		FROM student
 			INNER JOIN person ON person.id = student.id
+			INNER JOIN campus ON campus.id = student.campus_id
+			INNER JOIN institution ON institution.id = campus.institution_id
 			LEFT JOIN LATERAL (
 				SELECT 
 					internship.id, 

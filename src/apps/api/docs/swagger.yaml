@@ -131,6 +131,15 @@ definitions:
       access_token:
         type: string
     type: object
+  response.Campus:
+    properties:
+      id:
+        type: string
+      institution_id:
+        type: string
+      name:
+        type: string
+    type: object
   response.ErrorMessage:
     properties:
       error: {}
@@ -146,6 +155,13 @@ definitions:
   response.ID:
     properties:
       id:
+        type: string
+    type: object
+  response.Institution:
+    properties:
+      id:
+        type: string
+      name:
         type: string
     type: object
   response.Internship:
@@ -226,6 +242,8 @@ definitions:
     properties:
       birth_date:
         type: string
+      campus:
+        $ref: '#/definitions/response.Campus'
       course:
         type: string
       cpf:
@@ -243,7 +261,7 @@ definitions:
       id:
         type: string
       institution:
-        type: string
+        $ref: '#/definitions/response.Institution'
       internship_history:
         items:
           $ref: '#/definitions/response.Internship'
@@ -269,6 +287,8 @@ definitions:
     properties:
       birth_date:
         type: string
+      campus:
+        $ref: '#/definitions/response.Campus'
       course:
         type: string
       cpf:
@@ -282,7 +302,7 @@ definitions:
       id:
         type: string
       institution:
-        type: string
+        $ref: '#/definitions/response.Institution'
       name:
         type: string
       pending_workload:
@@ -1613,10 +1633,10 @@ paths:
         in: formData
         name: profile_picture
         type: file
-      - default: IFAL 1
-        description: Instituição do estudante
+      - default: 6de43e83-6bdf-4637-83d0-bcb8611082be
+        description: ID do campus do estudante
         in: formData
-        name: institution
+        name: campus_id
         required: true
         type: string
       - default: Curso 1
@@ -1842,10 +1862,10 @@ paths:
         in: formData
         name: profile_picture
         type: file
-      - default: IFAL 1
-        description: Instituição do estudante
+      - default: 6de43e83-6bdf-4637-83d0-bcb8611082be
+        description: ID do campus do estudante
         in: formData
-        name: institution
+        name: campus_id
         required: true
         type: string
       - default: Curso 1

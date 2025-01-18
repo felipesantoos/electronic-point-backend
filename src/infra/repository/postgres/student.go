@@ -62,7 +62,7 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 		return nil, err
 	}
 	err = defaultTxExecQuery(transaction, query.Student().Insert(), personID, _student.Registration(),
-		_student.ProfilePicture(), _student.Institution(), _student.Course(), _student.TotalWorkload())
+		_student.ProfilePicture(), _student.Campus().ID(), _student.Course(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())
 		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
@@ -115,7 +115,7 @@ func (this studentRepository) Update(_student student.Student) errors.Error {
 		return err
 	}
 	err = defaultTxExecQuery(transaction, query.Student().Update(), _student.ID(),
-		_student.Registration(), _student.ProfilePicture(), _student.Institution(),
+		_student.Registration(), _student.ProfilePicture(), _student.Campus().ID(),
 		_student.Course(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())

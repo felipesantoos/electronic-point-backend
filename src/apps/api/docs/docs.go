@@ -1887,9 +1887,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "IFAL 1",
-                        "description": "Instituição do estudante",
-                        "name": "institution",
+                        "default": "6de43e83-6bdf-4637-83d0-bcb8611082be",
+                        "description": "ID do campus do estudante",
+                        "name": "campus_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2137,9 +2137,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "IFAL 1",
-                        "description": "Instituição do estudante",
-                        "name": "institution",
+                        "default": "6de43e83-6bdf-4637-83d0-bcb8611082be",
+                        "description": "ID do campus do estudante",
+                        "name": "campus_id",
                         "in": "formData",
                         "required": true
                     },
@@ -2928,6 +2928,20 @@ const docTemplate = `{
                 }
             }
         },
+        "response.Campus": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "institution_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "response.ErrorMessage": {
             "type": "object",
             "properties": {
@@ -2950,6 +2964,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Institution": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -3074,6 +3099,9 @@ const docTemplate = `{
                 "birth_date": {
                     "type": "string"
                 },
+                "campus": {
+                    "$ref": "#/definitions/response.Campus"
+                },
                 "course": {
                     "type": "string"
                 },
@@ -3099,7 +3127,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "institution": {
-                    "type": "string"
+                    "$ref": "#/definitions/response.Institution"
                 },
                 "internship_history": {
                     "type": "array",
@@ -3139,6 +3167,9 @@ const docTemplate = `{
                 "birth_date": {
                     "type": "string"
                 },
+                "campus": {
+                    "$ref": "#/definitions/response.Campus"
+                },
                 "course": {
                     "type": "string"
                 },
@@ -3158,7 +3189,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "institution": {
-                    "type": "string"
+                    "$ref": "#/definitions/response.Institution"
                 },
                 "name": {
                     "type": "string"

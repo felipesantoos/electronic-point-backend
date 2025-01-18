@@ -7,7 +7,7 @@ const (
 	StudentEmail                  = "email"
 	StudentPhone                  = "phone"
 	StudentRegistration           = "registration"
-	StudentInstitution            = "institution"
+	StudentCampusID               = "campus_id"
 	StudentCourse                 = "course"
 	StudentInternshipLocationName = "internship_location_name"
 	StudentInternshipAddress      = "internship_address"
