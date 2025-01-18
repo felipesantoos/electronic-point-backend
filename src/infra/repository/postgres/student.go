@@ -230,7 +230,7 @@ func (this studentRepository) listInternshipsByStudent(studentID uuid.UUID) ([]i
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
-	internships, err := queryObject.Internship().FromRows(rows)
+	internships, err := queryObject.Internship().FromRows(rows, false)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

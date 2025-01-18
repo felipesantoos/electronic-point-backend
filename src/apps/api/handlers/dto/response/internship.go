@@ -12,7 +12,7 @@ type Internship struct {
 	StartedIn time.Time          `json:"started_in"`
 	EndedIn   *time.Time         `json:"ended_in"`
 	Location  InternshipLocation `json:"location"`
-	StudentID uuid.UUID          `json:"student_id"`
+	Student   *SimplifiedStudent `json:"student,omitempty"`
 }
 
 type internshipBuilder struct{}
@@ -26,12 +26,19 @@ func (*internshipBuilder) BuildFromDomain(data internship.Internship) Internship
 	if data.Location() != nil {
 		location = InternshipLocationBuilder().BuildFromDomain(data.Location())
 	}
+	var _student *SimplifiedStudent
+	if data.Student() != nil {
+		if data.Student().ID() != nil {
+			aux := SimplifiedStudentBuilder().BuildFromDomain(data.Student())
+			_student = &aux
+		}
+	}
 	return Internship{
 		ID:        data.ID(),
 		StartedIn: data.StartedIn(),
 		EndedIn:   data.EndedIn(),
 		Location:  location,
-		StudentID: data.StudentID(),
+		Student:   _student,
 	}
 }
 

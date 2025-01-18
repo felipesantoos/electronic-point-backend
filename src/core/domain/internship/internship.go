@@ -3,6 +3,7 @@ package internship
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/internshipLocation"
+	"eletronic_point/src/core/domain/simplifiedStudent"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/utils/validator"
 	"time"
@@ -17,7 +18,7 @@ type internship struct {
 	startedIn time.Time
 	endedIn   *time.Time
 	location  internshipLocation.InternshipLocation
-	studentID uuid.UUID
+	_student  simplifiedStudent.SimplifiedStudent
 }
 
 func (i *internship) ID() uuid.UUID {
@@ -36,8 +37,8 @@ func (i *internship) Location() internshipLocation.InternshipLocation {
 	return i.location
 }
 
-func (i *internship) StudentID() uuid.UUID {
-	return i.studentID
+func (i *internship) Student() simplifiedStudent.SimplifiedStudent {
+	return i._student
 }
 
 func (i *internship) SetID(id uuid.UUID) errors.Error {
@@ -69,10 +70,10 @@ func (i *internship) SetLocation(location internshipLocation.InternshipLocation)
 	return nil
 }
 
-func (i *internship) SetStudentID(studentID uuid.UUID) errors.Error {
-	if !validator.IsUUIDValid(studentID) {
-		return errors.NewValidationFromString(messages.StudentIDErrorMessage)
+func (i *internship) SetStudent(_student simplifiedStudent.SimplifiedStudent) errors.Error {
+	if _student == nil {
+		return errors.NewValidationFromString(messages.InternshipStudentErrorMessage)
 	}
-	i.studentID = studentID
+	i._student = _student
 	return nil
 }
