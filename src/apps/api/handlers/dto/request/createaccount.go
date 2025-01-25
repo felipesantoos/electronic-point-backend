@@ -34,5 +34,6 @@ func (c *CreateAccount) ToDomain() (account.Account, errors.Error) {
 		role,
 		person,
 		nil,
+		nil,
 	)
 }

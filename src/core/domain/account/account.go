@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/professional"
 	"eletronic_point/src/core/domain/role"
+	"eletronic_point/src/core/domain/student"
 	"net/mail"
 
 	"github.com/google/uuid"
@@ -17,10 +18,11 @@ type account struct {
 	role         role.Role
 	person       person.Person
 	professional professional.Professional
+	_student     student.Student
 }
 
-func New(id *uuid.UUID, email, password string, role role.Role, person person.Person, professional professional.Professional) (Account, errors.Error) {
-	data := &account{id, email, password, role, person, professional}
+func New(id *uuid.UUID, email, password string, role role.Role, person person.Person, professional professional.Professional, _student student.Student) (Account, errors.Error) {
+	data := &account{id, email, password, role, person, professional, _student}
 	return data, data.IsValid()
 }
 
@@ -48,6 +50,10 @@ func (acc *account) Professional() professional.Professional {
 	return acc.professional
 }
 
+func (acc *account) Student() student.Student {
+	return acc._student
+}
+
 func (acc *account) SetID(id uuid.UUID) {
 	acc.id = &id
 }
@@ -72,6 +78,10 @@ func (acc *account) SetProfessional(professional professional.Professional) {
 	acc.professional = professional
 }
 
+func (acc *account) SetStudent(_student student.Student) {
+	acc._student = _student
+}
+
 func (acc *account) IsValid() errors.Error {
 	var errorMessages = []string{}
 	var metadata = map[string]interface{}{"fields": []string{}}
@@ -84,6 +94,9 @@ func (acc *account) IsValid() errors.Error {
 	}
 	if acc.professional != nil && acc.professional.IsValid() != nil {
 		return acc.professional.IsValid()
+	}
+	if acc._student != nil && acc._student.IsValid() != nil {
+		return acc._student.IsValid()
 	}
 	if len(errorMessages) != 0 {
 		return errors.NewValidationWithMetadata(errorMessages, metadata)

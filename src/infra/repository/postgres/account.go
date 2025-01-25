@@ -10,6 +10,7 @@ import (
 	"eletronic_point/src/core/domain/role"
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
 	"eletronic_point/src/core/interfaces/secondary"
+	"eletronic_point/src/core/services/filters"
 	mail "eletronic_point/src/infra/mail"
 	"eletronic_point/src/infra/repository"
 	"eletronic_point/src/infra/repository/postgres/query"
@@ -60,6 +61,15 @@ func (r *accountRepository) FindByID(uID *uuid.UUID) (account.Account, errors.Er
 	account, err := newAccountFromMapRows(serializedAccount)
 	if err != nil {
 		return nil, err
+	}
+	if strings.EqualFold(account.Role().Code(), role.STUDENT_ROLE_CODE) {
+		studentID := account.Person().ID()
+		_student, err := NewStudentRepository().Get(*studentID, filters.StudentFilters{})
+		if err != nil {
+			logger.Error().Msg(err.String())
+			return nil, err
+		}
+		account.SetStudent(_student)
 	}
 	return account, nil
 }
@@ -234,7 +244,7 @@ func newAccountFromMapRows(data map[string]interface{}) (account.Account, errors
 	if err != nil {
 		return nil, err
 	}
-	account, err := account.New(&id, email, "", role, person, nil)
+	account, err := account.New(&id, email, "", role, person, nil, nil)
 	if err != nil {
 		return nil, err
 	}

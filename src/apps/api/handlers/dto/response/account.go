@@ -2,6 +2,7 @@ package response
 
 import (
 	"eletronic_point/src/core/domain/account"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -12,6 +13,7 @@ type Account struct {
 	Role         Role          `json:"role"`
 	Person       Person        `json:"profile"`
 	Professional *Professional `json:"professional,omitempty"`
+	Student      *Student      `json:"student,omitempty"`
 }
 
 type accountBuilder struct{}
@@ -21,9 +23,15 @@ func AccountBuilder() *accountBuilder {
 }
 
 func (*accountBuilder) BuildFromDomain(data account.Account) Account {
+	fmt.Println(">>>", data.Student())
 	var professional *Professional
 	if data.Professional() != nil {
 		professional = ProfessionalBuilder().BuildFromDomain(data.Professional())
+	}
+	var _student *Student
+	if data.Student() != nil {
+		aux := StudentBuilder().BuildFromDomain(data.Student())
+		_student = &aux
 	}
 	return Account{
 		data.ID(),
@@ -31,5 +39,6 @@ func (*accountBuilder) BuildFromDomain(data account.Account) Account {
 		AccountRoleBuilder().BuildFromDomain(data.Role()),
 		PersonBuilder().BuildFromDomain(data.Person()),
 		professional,
+		_student,
 	}
 }

@@ -3012,6 +3012,9 @@ const docTemplate = `{
                 },
                 "role": {
                     "$ref": "#/definitions/response.Role"
+                },
+                "student": {
+                    "$ref": "#/definitions/response.Student"
                 }
             }
         },

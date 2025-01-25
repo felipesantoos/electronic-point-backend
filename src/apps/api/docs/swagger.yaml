@@ -125,6 +125,8 @@ definitions:
         $ref: '#/definitions/response.Person'
       role:
         $ref: '#/definitions/response.Role'
+      student:
+        $ref: '#/definitions/response.Student'
     type: object
   response.Authorization:
     properties:
