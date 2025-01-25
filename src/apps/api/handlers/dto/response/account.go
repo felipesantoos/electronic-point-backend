@@ -2,7 +2,6 @@ package response
 
 import (
 	"eletronic_point/src/core/domain/account"
-	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -23,7 +22,6 @@ func AccountBuilder() *accountBuilder {
 }
 
 func (*accountBuilder) BuildFromDomain(data account.Account) Account {
-	fmt.Println(">>>", data.Student())
 	var professional *Professional
 	if data.Professional() != nil {
 		professional = ProfessionalBuilder().BuildFromDomain(data.Professional())
