@@ -102,6 +102,12 @@ CREATE TABLE student_linked_to_teacher (
     CONSTRAINT student_linked_to_teacher_teacher_fk FOREIGN KEY (teacher_id) REFERENCES person (id)
 );
 
+CREATE TABLE time_record_status (
+    id UUID DEFAULT uuid_generate_v4(),
+    name VARCHAR(50) NOT NULL UNIQUE,
+    CONSTRAINT time_record_status_pk PRIMARY KEY (id)
+);
+
 COPY internship_location (id, name, number, street, neighborhood, city, zip_code, lat, long, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/internship_location.csv'
     DELIMITER ';' CSV HEADER;
@@ -133,3 +139,8 @@ COPY time_record (id, date, entry_time, exit_time, location, is_off_site, justif
 COPY student_linked_to_teacher (id, student_id, teacher_id, created_at, updated_at, deleted_at)
     FROM '/fixtures/000002/student_linked_to_teacher.csv'
     DELIMITER ';' CSV HEADER;
+
+COPY time_record_status (id, name)
+    FROM '/fixtures/000002/time_record_status.csv'
+    DELIMITER ';'
+    CSV HEADER;

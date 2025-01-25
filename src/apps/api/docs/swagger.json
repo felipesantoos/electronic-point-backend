@@ -2287,6 +2287,101 @@
                 }
             }
         },
+        "/time-record-status": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recupera uma lista de todos os status ou filtra por nome.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Status de Registro de Tempo"
+                ],
+                "summary": "Listar status de registro de tempo.",
+                "operationId": "TimeRecordStatus.List",
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.TimeRecordStatus"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/time-record-status/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recupera os detalhes de um status de registro de tempo específico por ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Status de Registro de Tempo"
+                ],
+                "summary": "Obtenha um status de registro de tempo por ID.",
+                "operationId": "TimeRecordStatus.Get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "52613242-6b50-490a-9b4c-90cc3f263e9a",
+                        "description": "ID do status de registro de tempo",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "$ref": "#/definitions/response.TimeRecordStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/time-records": {
             "get": {
                 "security": [
@@ -3269,6 +3364,17 @@
                     "type": "string"
                 },
                 "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.TimeRecordStatus": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

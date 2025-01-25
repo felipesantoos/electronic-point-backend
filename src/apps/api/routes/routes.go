@@ -30,6 +30,7 @@ func (r *router) Load(rootEndpoint *echo.Group) {
 	NewTimeRecordRouter().Load(rootEndpoint)
 	NewInternshipLocationRouter().Load(rootEndpoint)
 	NewInternshipRouter().Load(rootEndpoint)
+	NewTimeRecordStatusRouter().Load(rootEndpoint)
 }
 
 func (r *router) LoadDocs(group *echo.Group) {

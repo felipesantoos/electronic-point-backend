@@ -5,4 +5,5 @@ const (
 	StudentID = "studentID"
 	StartDate = "startDate"
 	EndDate   = "endDate"
+	Name      = "name"
 )
