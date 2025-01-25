@@ -51,7 +51,7 @@ func NewInternshipHandlers(services primary.InternshipPort) InternshipHandlers {
 // @Router /internships [post]
 func (this *internshipHandlers) Create(ctx RichContext) error {
 	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
-		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	var internshipDTO request.Internship
 	if err := ctx.Bind(&internshipDTO); err != nil {
@@ -92,7 +92,7 @@ func (this *internshipHandlers) Create(ctx RichContext) error {
 // @Router /internships/{id} [put]
 func (this *internshipHandlers) Update(ctx RichContext) error {
 	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
-		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {

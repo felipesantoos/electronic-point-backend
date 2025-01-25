@@ -71,6 +71,12 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 		}
 		return nil, errors.NewUnexpected()
 	}
+	err = defaultTxExecQuery(transaction, query.StudentLinkedToTeacher().Insert(), personID,
+		_student.ResponsibleTeacherID())
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return nil, errors.NewUnexpected()
+	}
 	commitError := transaction.Commit()
 	if commitError != nil {
 		logger.Error().Msg(commitError.String())

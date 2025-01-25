@@ -9,24 +9,28 @@ import (
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
+	"eletronic_point/src/utils/validator"
+
+	"github.com/google/uuid"
 )
 
 var _ Student = &student{}
 
 type student struct {
 	person.Person
-	name              string
-	registration      string
-	profilePicture    *string
-	_institution      institution.Institution
-	_campus           campus.Campus
-	_course           course.Course
-	totalWorkload     int
-	workloadCompleted int
-	pendingWorkload   int
-	currentInternship internship.Internship
-	internshipHistory []internship.Internship
-	frequencyHistory  []timeRecord.TimeRecord
+	name                 string
+	registration         string
+	profilePicture       *string
+	_institution         institution.Institution
+	_campus              campus.Campus
+	_course              course.Course
+	totalWorkload        int
+	workloadCompleted    int
+	pendingWorkload      int
+	responsibleTeacherID uuid.UUID
+	currentInternship    internship.Internship
+	internshipHistory    []internship.Internship
+	frequencyHistory     []timeRecord.TimeRecord
 }
 
 func (s *student) Registration() string {
@@ -67,6 +71,10 @@ func (s *student) WorkloadCompleted() int {
 
 func (s *student) PendingWorkload() int {
 	return s.pendingWorkload
+}
+
+func (s *student) ResponsibleTeacherID() uuid.UUID {
+	return s.responsibleTeacherID
 }
 
 func (s *student) FrequencyHistory() []timeRecord.TimeRecord {
@@ -152,6 +160,14 @@ func (s *student) SetPendingWorkload(pendingWorkload int) errors.Error {
 		return errors.NewFromString(messages.StudentPendingWorkloadErrorMessage)
 	}
 	s.pendingWorkload = pendingWorkload
+	return nil
+}
+
+func (s *student) SetResponsibleTeacherID(responsibleTeacherID uuid.UUID) errors.Error {
+	if !validator.IsUUIDValid(responsibleTeacherID) {
+		return errors.NewFromString(messages.StudentResponsibleTeacherIDErrorMessage)
+	}
+	s.responsibleTeacherID = responsibleTeacherID
 	return nil
 }
 

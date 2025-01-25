@@ -56,6 +56,12 @@ func unauthorizedErrorWithMessage(message string) *echo.HTTPError {
 	return err
 }
 
+func forbiddenErrorWithMessage(message string) *echo.HTTPError {
+	err := forbiddenError
+	err.Message = message
+	return err
+}
+
 func badRequestErrorWithMessage(message string) *echo.HTTPError {
 	err := badRequestError
 	err.Message = message

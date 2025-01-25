@@ -52,7 +52,7 @@ func NewTimeRecordHandlers(services primary.TimeRecordPort) TimeRecordHandlers {
 // @Router /time-records [post]
 func (this *timeRecordHandlers) Create(ctx RichContext) error {
 	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
-		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	var timeRecordDTO request.TimeRecord
 	if err := ctx.Bind(&timeRecordDTO); err != nil {
@@ -102,7 +102,7 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 // @Router /time-records/{id} [put]
 func (this *timeRecordHandlers) Update(ctx RichContext) error {
 	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
-		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {

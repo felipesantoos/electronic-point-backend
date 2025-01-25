@@ -8,6 +8,8 @@ import (
 	"eletronic_point/src/core/domain/internship"
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
+
+	"github.com/google/uuid"
 )
 
 type Student interface {
@@ -20,6 +22,7 @@ type Student interface {
 	TotalWorkload() int
 	WorkloadCompleted() int
 	PendingWorkload() int
+	ResponsibleTeacherID() uuid.UUID
 	CurrentInternship() internship.Internship
 	InternshipHistory() []internship.Internship
 	FrequencyHistory() []timeRecord.TimeRecord
@@ -32,6 +35,7 @@ type Student interface {
 	SetTotalWorkload(int) errors.Error
 	SetWorkloadCompleted(int) errors.Error
 	SetPendingWorkload(int) errors.Error
+	SetResponsibleTeacherID(uuid.UUID) errors.Error
 	SetCurrentInternship(internship.Internship) errors.Error
 	SetInternshipHistory([]internship.Internship) errors.Error
 	SetFrequencyHistory([]timeRecord.TimeRecord) errors.Error

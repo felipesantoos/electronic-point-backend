@@ -61,6 +61,7 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students [post]
 func (this *studentHandlers) Create(ctx RichContext) error {
+	personID := ctx.ProfileID()
 	if formDataError := ctx.Request().ParseMultipartForm(10 << 20); formDataError != nil {
 		logger.Error().Msg(formDataError.Error())
 		return badRequestErrorWithMessage(formDataError.Error())
@@ -122,6 +123,11 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
+	}
+	err = _student.SetResponsibleTeacherID(*personID)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return unprocessableEntityErrorWithMessage(err.String())
 	}
 	id, err := this.services.Create(_student)
 	if err != nil {

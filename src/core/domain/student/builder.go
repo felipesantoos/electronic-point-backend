@@ -9,7 +9,10 @@ import (
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/timeRecord"
 	"eletronic_point/src/core/messages"
+	"eletronic_point/src/utils/validator"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type builder struct {
@@ -104,6 +107,16 @@ func (builder *builder) WithPendingWorkload(pendingWorkload int) *builder {
 		return builder
 	}
 	builder.student.pendingWorkload = pendingWorkload
+	return builder
+}
+
+func (builder *builder) WithResponsibleTeacherID(responsibleTeacherID uuid.UUID) *builder {
+	if !validator.IsUUIDValid(responsibleTeacherID) {
+		builder.fields = append(builder.fields, messages.StudentResponsibleTeacherID)
+		builder.errorMessages = append(builder.errorMessages, messages.StudentResponsibleTeacherIDErrorMessage)
+		return builder
+	}
+	builder.student.responsibleTeacherID = responsibleTeacherID
 	return builder
 }
 

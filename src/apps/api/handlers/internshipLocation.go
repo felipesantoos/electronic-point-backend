@@ -51,7 +51,7 @@ func NewInternshipLocationHandlers(services primary.InternshipLocationPort) Inte
 // @Router /internship-locations [post]
 func (this *internshipLocationHandlers) Create(ctx RichContext) error {
 	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
-		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	var internshipLocationDTO request.InternshipLocation
 	if err := ctx.Bind(&internshipLocationDTO); err != nil {
@@ -92,7 +92,7 @@ func (this *internshipLocationHandlers) Create(ctx RichContext) error {
 // @Router /internship-locations/{id} [put]
 func (this *internshipLocationHandlers) Update(ctx RichContext) error {
 	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
-		return unauthorizedErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
 	if conversionError != nil {
