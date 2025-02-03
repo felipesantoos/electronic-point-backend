@@ -115,6 +115,8 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			LEFT JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE student.deleted_at IS NULL
 			AND teacher.id = COALESCE($1, teacher.id)
+			AND institution.id = COALESCE($2, institution.id)
+			AND campus.id = COALESCE($3, campus.id)
 		ORDER BY person.name ASC
 	`
 }

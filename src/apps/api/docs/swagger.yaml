@@ -1570,6 +1570,15 @@ paths:
     get:
       description: Recupera todos os estudantes registrados no sistema.
       operationId: Student.List
+      parameters:
+      - description: ID da instituição
+        in: query
+        name: institutionID
+        type: string
+      - description: ID do campus
+        in: query
+        name: campusID
+        type: string
       produces:
       - application/json
       responses:

@@ -15,7 +15,6 @@ import (
 	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/infra/repository/postgres/queryObject"
-	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
@@ -149,8 +148,8 @@ func (this studentRepository) Delete(id uuid.UUID) errors.Error {
 }
 
 func (this studentRepository) List(_filters filters.StudentFilters) ([]student.Student, errors.Error) {
-	fmt.Println(_filters.TeacherID)
-	rows, err := repository.Queryx(query.Student().Select().All(), _filters.TeacherID)
+	rows, err := repository.Queryx(query.Student().Select().All(), _filters.TeacherID, _filters.InstitutionID,
+		_filters.CampusID)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

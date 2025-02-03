@@ -5,5 +5,7 @@ import (
 )
 
 type StudentFilters struct {
-	TeacherID *uuid.UUID
+	TeacherID     *uuid.UUID
+	InstitutionID *uuid.UUID
+	CampusID      *uuid.UUID
 }

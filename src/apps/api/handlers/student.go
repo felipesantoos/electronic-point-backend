@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"eletronic_point/src/apps/api/handlers/checkers"
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/formData"
@@ -279,6 +280,8 @@ func (this *studentHandlers) Delete(ctx RichContext) error {
 // @Tags Estudantes
 // @Security BearerAuth
 // @Produce json
+// @Param institutionID query string false "ID da instituição"
+// @Param campusID query string false "ID do campus"
 // @Success 200 {array} response.StudentList "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -295,6 +298,22 @@ func (this *studentHandlers) List(ctx RichContext) error {
 		_filters.TeacherID = ctx.ProfileID()
 	} else {
 		return forbiddenError
+	}
+	if !checkers.IsEmpty(ctx.QueryParam(params.InstitutionID)) {
+		value, conversionError := getUUIDQueryParamValue(ctx, params.InstitutionID)
+		if conversionError != nil {
+			logger.Error().Msg(conversionError.String())
+			return responseFromError(conversionError)
+		}
+		_filters.InstitutionID = value
+	}
+	if !checkers.IsEmpty(ctx.QueryParam(params.CampusID)) {
+		value, conversionError := getUUIDQueryParamValue(ctx, params.CampusID)
+		if conversionError != nil {
+			logger.Error().Msg(conversionError.String())
+			return responseFromError(conversionError)
+		}
+		_filters.CampusID = value
 	}
 	result, err := this.services.List(_filters)
 	if err != nil {

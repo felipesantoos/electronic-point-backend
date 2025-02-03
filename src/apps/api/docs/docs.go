@@ -1752,6 +1752,20 @@ const docTemplate = `{
                 ],
                 "summary": "Listar todos os estudantes.",
                 "operationId": "Student.List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID da instituição",
+                        "name": "institutionID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID do campus",
+                        "name": "campusID",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Requisição realizada com sucesso.",
