@@ -82,9 +82,13 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) All() string {
 			time_record.justification AS time_record_justification,
 			time_record.student_id AS time_record_student_id
 		FROM time_record
+			INNER JOIN student ON student.id = time_record.student_id
+			INNER JOIN student_linked_to_teacher ON student_linked_to_teacher.student_id = student.id
+			INNER JOIN person teacher ON teacher.id = student_linked_to_teacher.teacher_id
 		WHERE time_record.deleted_at IS NULL
 			AND time_record.student_id = COALESCE($1, time_record.student_id)
 			AND time_record.date BETWEEN COALESCE($2, time_record.date) AND COALESCE($3, time_record.date)
+			AND teacher.id = COALESCE($4, teacher.id)
 		ORDER BY time_record.date ASC
 	`
 }
@@ -101,6 +105,11 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) ByID() string 
 			time_record.justification AS time_record_justification,
 			time_record.student_id AS time_record_student_id
 		FROM time_record
-		WHERE id = $1 AND deleted_at IS NULL
+			INNER JOIN student ON student.id = time_record.student_id
+			INNER JOIN student_linked_to_teacher ON student_linked_to_teacher.student_id = student.id
+			INNER JOIN person teacher ON teacher.id = student_linked_to_teacher.teacher_id
+		WHERE time_record.id = $1 AND time_record.deleted_at IS NULL
+			AND student.id = COALESCE($2, student.id)
+			AND teacher.id = COALESCE($3, teacher.id)
 	`
 }

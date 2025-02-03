@@ -34,6 +34,6 @@ func (this *timeRecordServices) List(_filters filters.TimeRecordFilters) ([]time
 	return this.repository.List(_filters)
 }
 
-func (this *timeRecordServices) Get(id uuid.UUID) (timeRecord.TimeRecord, errors.Error) {
-	return this.repository.Get(id)
+func (this *timeRecordServices) Get(id uuid.UUID, _filters filters.TimeRecordFilters) (timeRecord.TimeRecord, errors.Error) {
+	return this.repository.Get(id, _filters)
 }

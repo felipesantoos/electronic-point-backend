@@ -215,10 +215,18 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 		}
 		endDate = value
 	}
+	if ctx.RoleName() == role.STUDENT_ROLE_CODE {
+		studentID = ctx.ProfileID()
+	}
+	var teacherID *uuid.UUID
+	if ctx.RoleName() == role.TEACHER_ROLE_CODE {
+		teacherID = ctx.ProfileID()
+	}
 	_filters := filters.TimeRecordFilters{
 		StudentID: studentID,
 		StartDate: startDate,
 		EndDate:   endDate,
+		TeacherID: teacherID,
 	}
 	timeRecords, err := this.services.List(_filters)
 	if err != nil {
@@ -251,7 +259,19 @@ func (this *timeRecordHandlers) Get(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	_timeRecord, err := this.services.Get(id)
+	var studentID *uuid.UUID
+	if ctx.RoleName() == role.STUDENT_ROLE_CODE {
+		studentID = ctx.ProfileID()
+	}
+	var teacherID *uuid.UUID
+	if ctx.RoleName() == role.TEACHER_ROLE_CODE {
+		teacherID = ctx.ProfileID()
+	}
+	_filters := filters.TimeRecordFilters{
+		StudentID: studentID,
+		TeacherID: teacherID,
+	}
+	_timeRecord, err := this.services.Get(id, _filters)
 	if err != nil {
 		return responseFromError(err)
 	}

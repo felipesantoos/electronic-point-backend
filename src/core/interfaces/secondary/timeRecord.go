@@ -13,5 +13,5 @@ type TimeRecordPort interface {
 	Update(timeRecord timeRecord.TimeRecord) errors.Error
 	Delete(id uuid.UUID) errors.Error
 	List(_filters filters.TimeRecordFilters) ([]timeRecord.TimeRecord, errors.Error)
-	Get(id uuid.UUID) (timeRecord.TimeRecord, errors.Error)
+	Get(id uuid.UUID, _filters filters.TimeRecordFilters) (timeRecord.TimeRecord, errors.Error)
 }
