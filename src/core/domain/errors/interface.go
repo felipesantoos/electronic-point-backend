@@ -8,6 +8,7 @@ type Error interface {
 	CausedByClient() bool
 	CausedByForbiddenAccess() bool
 	CausedByConflict() bool
+	CausedByUnauthorization() bool
 	Metadata() map[string]interface{}
 	ValidationMessagesByMetadataFields(field []string) []string
 }

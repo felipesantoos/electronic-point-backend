@@ -56,6 +56,8 @@ func (e *errorBuilder) NewFromDomain(err errors.Error) *echo.HTTPError {
 		return e.unprocessableEntityErrorWithMessage(err.String())
 	} else if err.CausedInternally() {
 		return internalServerError
+	} else if err.CausedByUnauthorization() {
+		return ErrorBuilder().NewUnauthorizedErrorWithMessage(err.String())
 	}
 	return &echo.HTTPError{
 		Code:    badRequestError.Code,
@@ -69,6 +71,13 @@ func (*errorBuilder) NewForbiddenError() *echo.HTTPError {
 
 func (*errorBuilder) NewUnauthorizedError() *echo.HTTPError {
 	return unauthorizedError
+}
+
+func (*errorBuilder) NewUnauthorizedErrorWithMessage(message string) *echo.HTTPError {
+	return &echo.HTTPError{
+		Code:    http.StatusUnauthorized,
+		Message: message,
+	}
 }
 
 func (*errorBuilder) NewUnsupportedMediaTypeError() *echo.HTTPError {

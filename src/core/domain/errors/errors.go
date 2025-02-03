@@ -15,6 +15,7 @@ const (
 	CLIENT
 	FORBIDDEN
 	CONFLICT
+	UNAUTHORIZED
 )
 
 type errorImpl struct {
@@ -59,6 +60,10 @@ func NewConflict(messages ...string) Error {
 	return new(messages, CONFLICT, nil)
 }
 
+func NewUnauthorized(messages ...string) Error {
+	return new(messages, UNAUTHORIZED, nil)
+}
+
 func NewValidationWithMetadata(messages []string, metadata map[string]interface{}) Error {
 	return new(messages, VALIDATION, metadata)
 }
@@ -101,6 +106,10 @@ func (e *errorImpl) CausedByForbiddenAccess() bool {
 
 func (e *errorImpl) CausedByConflict() bool {
 	return e.origin == CONFLICT
+}
+
+func (e *errorImpl) CausedByUnauthorization() bool {
+	return e.origin == UNAUTHORIZED
 }
 
 func (e *errorImpl) Metadata() map[string]interface{} {

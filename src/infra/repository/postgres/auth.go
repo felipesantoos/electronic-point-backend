@@ -28,13 +28,13 @@ func (r *authPostgresRepository) Login(credentials credentials.Credentials) (acc
 		return nil, err
 	}
 	if !rows.Next() {
-		return nil, errors.NewFromString("email and/or password are incorrect")
+		return nil, errors.NewUnauthorized("email and/or password are incorrect")
 	}
 	var id, password string
 	scanErr := rows.Scan(&id, &password)
 	if scanErr != nil {
 		if scanErr == sql.ErrNoRows {
-			return nil, errors.NewFromString("email and/or password are incorrect")
+			return nil, errors.NewUnauthorized("email and/or password are incorrect")
 		}
 		logger.Error().Msg(scanErr.Error())
 		return nil, errors.NewUnexpected()
