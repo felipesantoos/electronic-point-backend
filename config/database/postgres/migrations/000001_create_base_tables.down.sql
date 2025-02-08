@@ -1,16 +1,23 @@
---- Dropping Triggers
+-- Remove inserted data from all tables
+DELETE FROM professional;
+DELETE FROM password_reset;
+DELETE FROM account;
+DELETE FROM person;
+DELETE FROM account_role;
+
+-- Drop triggers in reverse order of their creation to avoid dependency issues
 DROP TRIGGER IF EXISTS update_entry_updated_at ON account;
 DROP TRIGGER IF EXISTS update_entry_updated_at ON person;
 
---- Dropping Tables
+-- Drop tables in reverse order of their creation to avoid dependency issues
 DROP TABLE IF EXISTS professional;
 DROP TABLE IF EXISTS password_reset;
 DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS person;
 DROP TABLE IF EXISTS account_role;
 
---- Dropping Function
-DROP FUNCTION IF EXISTS update_updated_at_prop;
+-- Drop functions
+DROP FUNCTION IF EXISTS update_updated_at_prop();
 
---- Dropping Extension
+-- Drop extensions
 DROP EXTENSION IF EXISTS "uuid-ossp";
