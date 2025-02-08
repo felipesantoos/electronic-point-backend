@@ -2438,7 +2438,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.Student"
+                                "$ref": "#/definitions/response.TimeRecord"
                             }
                         }
                     },
@@ -2611,7 +2611,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.Student"
+                                "$ref": "#/definitions/response.TimeRecord"
                             }
                         }
                     },
@@ -3382,6 +3382,9 @@
                 },
                 "student_id": {
                     "type": "string"
+                },
+                "time_record_status": {
+                    "$ref": "#/definitions/response.TimeRecordStatus"
                 }
             }
         },

@@ -80,11 +80,17 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) All() string {
 			time_record.location AS time_record_location,
 			time_record.is_off_site AS time_record_is_off_site,
 			time_record.justification AS time_record_justification,
-			time_record.student_id AS time_record_student_id
+			time_record.student_id AS time_record_student_id,
+			time_record_status.id AS time_record_status_id,
+			time_record_status.name AS time_record_status_name
 		FROM time_record
 			INNER JOIN student ON student.id = time_record.student_id
 			INNER JOIN student_linked_to_teacher ON student_linked_to_teacher.student_id = student.id
 			INNER JOIN person teacher ON teacher.id = student_linked_to_teacher.teacher_id
+			INNER JOIN time_record_status_movement 
+				ON time_record_status_movement.time_record_id = time_record.id
+				AND time_record_status_movement.terminated_at IS NULL
+			INNER JOIN time_record_status ON time_record_status.id = time_record_status_movement.status_id
 		WHERE time_record.deleted_at IS NULL
 			AND time_record.student_id = COALESCE($1, time_record.student_id)
 			AND time_record.date BETWEEN COALESCE($2, time_record.date) AND COALESCE($3, time_record.date)
@@ -103,12 +109,19 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) ByID() string 
 			time_record.location AS time_record_location,
 			time_record.is_off_site AS time_record_is_off_site,
 			time_record.justification AS time_record_justification,
-			time_record.student_id AS time_record_student_id
+			time_record.student_id AS time_record_student_id,
+			time_record_status.id AS time_record_status_id,
+			time_record_status.name AS time_record_status_name
 		FROM time_record
 			INNER JOIN student ON student.id = time_record.student_id
 			INNER JOIN student_linked_to_teacher ON student_linked_to_teacher.student_id = student.id
 			INNER JOIN person teacher ON teacher.id = student_linked_to_teacher.teacher_id
-		WHERE time_record.id = $1 AND time_record.deleted_at IS NULL
+			INNER JOIN time_record_status_movement 
+				ON time_record_status_movement.time_record_id = time_record.id
+				AND time_record_status_movement.terminated_at IS NULL
+			INNER JOIN time_record_status ON time_record_status.id = time_record_status_movement.status_id
+		WHERE time_record.id = $1 
+			AND time_record.deleted_at IS NULL
 			AND student.id = COALESCE($2, student.id)
 			AND teacher.id = COALESCE($3, teacher.id)
 	`

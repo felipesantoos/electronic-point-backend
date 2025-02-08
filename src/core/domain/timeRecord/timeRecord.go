@@ -2,6 +2,7 @@ package timeRecord
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/timeRecordStatus"
 	"eletronic_point/src/core/messages"
 	"time"
 
@@ -11,14 +12,15 @@ import (
 var _ TimeRecord = &timeRecord{}
 
 type timeRecord struct {
-	id            uuid.UUID
-	date          time.Time
-	entryTime     time.Time
-	exitTime      *time.Time
-	location      string
-	isOffSite     bool
-	justification *string
-	studentID     uuid.UUID
+	id                uuid.UUID
+	date              time.Time
+	entryTime         time.Time
+	exitTime          *time.Time
+	location          string
+	isOffSite         bool
+	justification     *string
+	studentID         uuid.UUID
+	_timeRecordStatus timeRecordStatus.TimeRecordStatus
 }
 
 func (t *timeRecord) ID() uuid.UUID {
@@ -51,6 +53,10 @@ func (t *timeRecord) Justification() *string {
 
 func (t *timeRecord) StudentID() uuid.UUID {
 	return t.studentID
+}
+
+func (t *timeRecord) TimeRecordStatus() timeRecordStatus.TimeRecordStatus {
+	return t._timeRecordStatus
 }
 
 func (t *timeRecord) SetID(id uuid.UUID) errors.Error {
@@ -105,5 +111,13 @@ func (t *timeRecord) SetStudentID(studentID uuid.UUID) errors.Error {
 		return errors.NewFromString(messages.TimeRecordStudentIDErrorMessage)
 	}
 	t.studentID = studentID
+	return nil
+}
+
+func (t *timeRecord) SetTimeRecordStatus(_timeRecordStatus timeRecordStatus.TimeRecordStatus) errors.Error {
+	if _timeRecordStatus == nil {
+		return errors.NewFromString(messages.TimeRecordStatusErrorMessage)
+	}
+	t._timeRecordStatus = _timeRecordStatus
 	return nil
 }

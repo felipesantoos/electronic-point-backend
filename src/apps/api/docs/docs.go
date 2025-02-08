@@ -2445,7 +2445,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.Student"
+                                "$ref": "#/definitions/response.TimeRecord"
                             }
                         }
                     },
@@ -2618,7 +2618,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/response.Student"
+                                "$ref": "#/definitions/response.TimeRecord"
                             }
                         }
                     },
@@ -3389,6 +3389,9 @@ const docTemplate = `{
                 },
                 "student_id": {
                     "type": "string"
+                },
+                "time_record_status": {
+                    "$ref": "#/definitions/response.TimeRecordStatus"
                 }
             }
         },

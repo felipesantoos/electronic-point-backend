@@ -362,6 +362,8 @@ definitions:
         type: string
       student_id:
         type: string
+      time_record_status:
+        $ref: '#/definitions/response.TimeRecordStatus'
     type: object
   response.TimeRecordStatus:
     properties:
@@ -2051,7 +2053,7 @@ paths:
           description: Requisição realizada com sucesso.
           schema:
             items:
-              $ref: '#/definitions/response.Student'
+              $ref: '#/definitions/response.TimeRecord'
             type: array
         "400":
           description: Requisição mal formulada.
@@ -2222,7 +2224,7 @@ paths:
           description: Requisição realizada com sucesso.
           schema:
             items:
-              $ref: '#/definitions/response.Student'
+              $ref: '#/definitions/response.TimeRecord'
             type: array
         "400":
           description: Requisição mal formulada.

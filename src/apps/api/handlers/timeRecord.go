@@ -177,7 +177,7 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Param studentID query string false "ID do estudante"
 // @Param startDate query string false "Data inicial"
 // @Param endDate query string false "Data de término"
-// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Success 200 {array} response.TimeRecord "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."
@@ -243,7 +243,7 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 // @Security BearerAuth
 // @Produce json
 // @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
-// @Success 200 {array} response.Student "Requisição realizada com sucesso."
+// @Success 200 {array} response.TimeRecord "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
 // @Failure 403 {object} response.ErrorMessage "Acesso negado."

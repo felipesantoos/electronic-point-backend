@@ -56,6 +56,11 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 		logger.Error().Msg(err.Error())
 		return nil, errors.NewUnexpected()
 	}
+	_timeRecordStatus, validationError := TimeRecordStatus().FromMap(data)
+	if validationError != nil {
+		logger.Error().Msg(validationError.String())
+		return nil, validationError
+	}
 	_timeRecord, validationError := timeRecord.NewBuilder().
 		WithID(id).
 		WithDate(date).
@@ -65,6 +70,7 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 		WithIsOffSite(isOffSite).
 		WithJustification(justification).
 		WithStudentID(studentID).
+		WithTimeRecord(_timeRecordStatus).
 		Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
