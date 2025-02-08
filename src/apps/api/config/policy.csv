@@ -10,6 +10,7 @@ p, teacher, /api/accounts/update-password, PUT
 p, teacher, /api/auth/logout, POST
 p, teacher, /api/students/*, *
 p, teacher, /api/time-records/*, GET
+p, teacher, /api/time-records/*, PATCH
 p, teacher, /api/internship-locations/*, *
 p, teacher, /api/internships/*, *
 p, teacher, /api/time-record-status/*, *

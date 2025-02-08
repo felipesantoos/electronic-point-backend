@@ -37,3 +37,7 @@ func (this *timeRecordServices) List(_filters filters.TimeRecordFilters) ([]time
 func (this *timeRecordServices) Get(id uuid.UUID, _filters filters.TimeRecordFilters) (timeRecord.TimeRecord, errors.Error) {
 	return this.repository.Get(id, _filters)
 }
+
+func (this *timeRecordServices) Approve(timeRecordID uuid.UUID, approvedBy uuid.UUID) errors.Error {
+	return this.repository.Approve(timeRecordID, approvedBy)
+}

@@ -25,4 +25,5 @@ func (this *timeRecordRouter) Load(rootEndpoint *echo.Group) {
 	router.POST("", middlewares.EnhanceContext(this._handlers.Create))
 	router.PUT("/:id", middlewares.EnhanceContext(this._handlers.Update))
 	router.DELETE("/:id", middlewares.EnhanceContext(this._handlers.Delete))
+	router.PATCH("/:id/approve", middlewares.EnhanceContext(this._handlers.Approve))
 }

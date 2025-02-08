@@ -131,3 +131,33 @@ func (this timeRecordRepository) Get(id uuid.UUID, _filters filters.TimeRecordFi
 	}
 	return _timeRecord, nil
 }
+
+func (this timeRecordRepository) Approve(timeRecordID uuid.UUID, approvedBy uuid.UUID) errors.Error {
+	transaction, err := repository.BeginTransaction()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	defer transaction.CloseConn()
+	terminateErr := defaultTxExecQuery(transaction, query.TimeRecordStatusMovement().Terminate(), timeRecordID)
+	if terminateErr != nil {
+		logger.Error().Msg(terminateErr.String())
+		return errors.NewUnexpected()
+	}
+	_, insertErr := txQueryRowReturningID(transaction, query.TimeRecordStatusMovement().Insert(),
+		timeRecordID,
+		timeRecordStatus.Approved.ID(),
+		approvedBy,
+		nil,
+	)
+	if insertErr != nil {
+		logger.Error().Msg(insertErr.String())
+		return errors.NewUnexpected()
+	}
+	err = transaction.Commit()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return errors.NewUnexpected()
+	}
+	return nil
+}
