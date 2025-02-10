@@ -2437,6 +2437,12 @@ const docTemplate = `{
                         "description": "Data de término",
                         "name": "endDate",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID do status",
+                        "name": "statusID",
+                        "in": "query"
                     }
                 ],
                 "responses": {

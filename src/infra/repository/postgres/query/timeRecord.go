@@ -95,6 +95,7 @@ func (timeRecordQuerySelectBuilder *timeRecordQuerySelectBuilder) All() string {
 			AND time_record.student_id = COALESCE($1, time_record.student_id)
 			AND time_record.date BETWEEN COALESCE($2, time_record.date) AND COALESCE($3, time_record.date)
 			AND teacher.id = COALESCE($4, teacher.id)
+			AND time_record_status.id = COALESCE($5, time_record_status.id)
 		ORDER BY time_record.date ASC
 	`
 }

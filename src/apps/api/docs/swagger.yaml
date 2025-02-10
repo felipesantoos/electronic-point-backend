@@ -2046,6 +2046,10 @@ paths:
         in: query
         name: endDate
         type: string
+      - description: ID do status
+        in: query
+        name: statusID
+        type: string
       produces:
       - application/json
       responses:

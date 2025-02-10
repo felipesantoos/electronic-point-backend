@@ -179,6 +179,7 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 // @Param studentID query string false "ID do estudante"
 // @Param startDate query string false "Data inicial"
 // @Param endDate query string false "Data de término"
+// @Param statusID query string false "ID do status"
 // @Success 200 {array} response.TimeRecord "Requisição realizada com sucesso."
 // @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
 // @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
@@ -217,6 +218,15 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 		}
 		endDate = value
 	}
+	var statusID *uuid.UUID
+	if !checkers.IsEmpty(ctx.QueryParam(params.StatusID)) {
+		value, conversionError := getUUIDQueryParamValue(ctx, params.StatusID)
+		if conversionError != nil {
+			logger.Error().Msg(conversionError.String())
+			return responseFromError(conversionError)
+		}
+		statusID = value
+	}
 	if ctx.RoleName() == role.STUDENT_ROLE_CODE {
 		studentID = ctx.ProfileID()
 	}
@@ -229,6 +239,7 @@ func (this *timeRecordHandlers) List(ctx RichContext) error {
 		StartDate: startDate,
 		EndDate:   endDate,
 		TeacherID: teacherID,
+		StatusID:  statusID,
 	}
 	timeRecords, err := this.services.List(_filters)
 	if err != nil {
