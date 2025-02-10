@@ -15,4 +15,5 @@ type TimeRecordPort interface {
 	List(_filters filters.TimeRecordFilters) ([]timeRecord.TimeRecord, errors.Error)
 	Get(id uuid.UUID, _filters filters.TimeRecordFilters) (timeRecord.TimeRecord, errors.Error)
 	Approve(timeRecordID uuid.UUID, approvedBy uuid.UUID) errors.Error
+	Disapprove(timeRecordID uuid.UUID, disapprovedBy uuid.UUID) errors.Error
 }

@@ -2923,6 +2923,87 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/time-records/{id}/disapprove": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Atualiza o status de um registro de tempo para \"Desaprovado\".",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Registros de tempo"
+                ],
+                "summary": "Desaprovar um registro de tempo.",
+                "operationId": "TimeRecord.Disapprove",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "ea11bb4b-9aed-4444-9c00-f80bde564063",
+                        "description": "ID do registro de tempo",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Requisição realizada com sucesso."
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

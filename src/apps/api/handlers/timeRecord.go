@@ -22,6 +22,7 @@ type TimeRecordHandlers interface {
 	List(RichContext) error
 	Get(RichContext) error
 	Approve(RichContext) error
+	Disapprove(RichContext) error
 }
 
 type timeRecordHandlers struct {
@@ -308,6 +309,41 @@ func (this *timeRecordHandlers) Approve(ctx RichContext) error {
 	}
 	approvedBy := ctx.ProfileID()
 	err := this.services.Approve(id, *approvedBy)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return ctx.NoContent(http.StatusNoContent)
+}
+
+// Disapprove
+// @ID TimeRecord.Disapprove
+// @Summary Desaprovar um registro de tempo.
+// @Description Atualiza o status de um registro de tempo para "Desaprovado".
+// @Tags Registros de tempo
+// @Security BearerAuth
+// @Produce json
+// @Param id path string true "ID do registro de tempo" default(ea11bb4b-9aed-4444-9c00-f80bde564063)
+// @Success 204 {object} nil "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Usuário não autorizado."
+// @Failure 403 {object} response.ErrorMessage "Acesso negado."
+// @Failure 404 {object} response.ErrorMessage "Recurso não encontrado."
+// @Failure 409 {object} response.ErrorMessage "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino."
+// @Failure 422 {object} response.ErrorMessage "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados."
+// @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado. Por favor, contate o suporte."
+// @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
+// @Router /time-records/{id}/disapprove [patch]
+func (this *timeRecordHandlers) Disapprove(ctx RichContext) error {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
+		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
+	}
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		logger.Error().Msg(conversionError.Error())
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	approvedBy := ctx.ProfileID()
+	err := this.services.Disapprove(id, *approvedBy)
 	if err != nil {
 		return responseFromError(err)
 	}

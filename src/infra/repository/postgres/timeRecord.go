@@ -132,7 +132,7 @@ func (this timeRecordRepository) Get(id uuid.UUID, _filters filters.TimeRecordFi
 	return _timeRecord, nil
 }
 
-func (this timeRecordRepository) Approve(timeRecordID uuid.UUID, approvedBy uuid.UUID) errors.Error {
+func (this timeRecordRepository) UpdateStatus(timeRecordID uuid.UUID, updatedBy uuid.UUID, statusID uuid.UUID) errors.Error {
 	transaction, err := repository.BeginTransaction()
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -146,8 +146,8 @@ func (this timeRecordRepository) Approve(timeRecordID uuid.UUID, approvedBy uuid
 	}
 	_, insertErr := txQueryRowReturningID(transaction, query.TimeRecordStatusMovement().Insert(),
 		timeRecordID,
-		timeRecordStatus.Approved.ID(),
-		approvedBy,
+		statusID,
+		updatedBy,
 		nil,
 	)
 	if insertErr != nil {

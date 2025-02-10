@@ -3,6 +3,7 @@ package services
 import (
 	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/timeRecord"
+	"eletronic_point/src/core/domain/timeRecordStatus"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/services/filters"
@@ -39,5 +40,9 @@ func (this *timeRecordServices) Get(id uuid.UUID, _filters filters.TimeRecordFil
 }
 
 func (this *timeRecordServices) Approve(timeRecordID uuid.UUID, approvedBy uuid.UUID) errors.Error {
-	return this.repository.Approve(timeRecordID, approvedBy)
+	return this.repository.UpdateStatus(timeRecordID, approvedBy, timeRecordStatus.Approved.ID())
+}
+
+func (this *timeRecordServices) Disapprove(timeRecordID uuid.UUID, disapprovedBy uuid.UUID) errors.Error {
+	return this.repository.UpdateStatus(timeRecordID, disapprovedBy, timeRecordStatus.Disapproved.ID())
 }
