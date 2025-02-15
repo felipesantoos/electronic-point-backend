@@ -32,6 +32,7 @@ func (r *router) Load(rootEndpoint *echo.Group) {
 	NewInternshipRouter().Load(rootEndpoint)
 	NewTimeRecordStatusRouter().Load(rootEndpoint)
 	NewCourseRouter().Load(rootEndpoint)
+	NewCampusRouter().Load(rootEndpoint)
 }
 
 func (r *router) LoadDocs(group *echo.Group) {
