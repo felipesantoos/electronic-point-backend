@@ -17,6 +17,7 @@ p, teacher, /api/time-record-status/*, *
 p, teacher, /api/courses/*, GET
 p, teacher, /api/campus/*, GET
 p, teacher, /api/institutions/*, GET
+p, teacher, /api/files/*, GET
 p, student, /api/docs/*, GET
 p, student, /api/accounts/profile, GET
 p, student, /api/accounts/profile, PUT
@@ -28,3 +29,4 @@ p, student, /api/time-record-status/*, *
 p, student, /api/courses/*, GET
 p, student, /api/campus/*, GET
 p, student, /api/institutions/*, GET
+p, student, /api/files/*, GET

@@ -9,6 +9,8 @@ import (
 	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
+	"eletronic_point/src/utils"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -88,11 +90,12 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	var filePath *string
+	var fileName *string
 	file, header, formFileError := ctx.Request().FormFile(formData.StudentProfilePicture)
 	if formFileError == nil {
 		defer file.Close()
-		path := "uploads/" + header.Filename
+		name := fmt.Sprintf("%s%s", uuid.NewString(), utils.ExtractFileExtension(header.Filename))
+		path := fmt.Sprintf("%s/%s", os.Getenv("FILE_STORAGE_FOLDER"), name)
 		out, err := os.Create(path)
 		if err != nil {
 			logger.Error().Msg(err.Error())
@@ -103,7 +106,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 			logger.Error().Msg(err.Error())
 			return unprocessableEntityErrorWithMessage(err.Error())
 		}
-		filePath = &path
+		fileName = &name
 	} else if formFileError != http.ErrMissingFile {
 		logger.Error().Msg(formFileError.Error())
 		return badRequestErrorWithMessage(formFileError.Error())
@@ -115,7 +118,7 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		Email:          email,
 		Phone:          phone,
 		Registration:   registration,
-		ProfilePicture: filePath,
+		ProfilePicture: fileName,
 		CampusID:       *campusID,
 		CourseID:       *courseID,
 		TotalWorkload:  totalWorkload,
