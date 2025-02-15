@@ -48,3 +48,8 @@ func TimeRecordStatusServices() primary.TimeRecordStatusPort {
 	repository := postgres.NewTimeRecordStatusRepository()
 	return services.NewTimeRecordStatusServices(repository)
 }
+
+func CourseServices() primary.CoursePort {
+	repository := postgres.NewCourseRepository()
+	return services.NewCourseServices(repository)
+}
