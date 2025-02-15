@@ -58,3 +58,8 @@ func CampusServices() primary.CampusPort {
 	repository := postgres.NewCampusRepository()
 	return services.NewCampusServices(repository)
 }
+
+func InstitutionServices() primary.InstitutionPort {
+	repository := postgres.NewInstitutionRepository()
+	return services.NewInstitutionServices(repository)
+}
