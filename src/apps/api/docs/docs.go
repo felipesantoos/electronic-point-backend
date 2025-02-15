@@ -979,6 +979,77 @@ const docTemplate = `{
                 }
             }
         },
+        "/files/{name}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Esta rota permite que arquivos salvos no servidor sejam recuperados.",
+                "tags": [
+                    "Arquivos"
+                ],
+                "summary": "Recuperar arquivo salvo no servidor",
+                "operationId": "File.Get",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nome do arquivo",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso."
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/institutions": {
             "get": {
                 "security": [

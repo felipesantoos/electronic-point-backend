@@ -3,6 +3,7 @@ package dicontainer
 import (
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services"
+	"eletronic_point/src/infra/file"
 	"eletronic_point/src/infra/redis"
 	"eletronic_point/src/infra/repository/postgres"
 )
@@ -62,4 +63,9 @@ func CampusServices() primary.CampusPort {
 func InstitutionServices() primary.InstitutionPort {
 	repository := postgres.NewInstitutionRepository()
 	return services.NewInstitutionServices(repository)
+}
+
+func FileServices() primary.FilePort {
+	repository := file.NewFileRepository()
+	return services.NewFileService(repository)
 }
