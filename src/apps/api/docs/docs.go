@@ -979,6 +979,91 @@ const docTemplate = `{
                 }
             }
         },
+        "/institutions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recupera uma lista de todos as instituições no sistema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Instituições"
+                ],
+                "summary": "Listar todos as instituições.",
+                "operationId": "Institution.List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nome da instituição",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.Institution"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/internship-locations": {
             "get": {
                 "security": [
