@@ -65,4 +65,3 @@ jobs:
             docker pull fss30/electronic_point_database:${{ env.commit_hash }}
             echo "DOCKER_IMAGE_TAG=${{ env.commit_hash }}" > .env
             docker-compose up -d --build
-
