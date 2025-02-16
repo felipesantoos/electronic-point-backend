@@ -1,41 +1,57 @@
-# Use Go 1.22 as the base image
-FROM golang:1.22-bullseye
+# Stage 1: Build stage
+FROM golang:1.22-alpine AS builder
 
-# Set the working directory
-WORKDIR /api
+# Install required build tools and dependencies
+RUN apk add --no-cache bash git gcc musl-dev curl
 
 # Set environment variables
 ENV GOPATH /go
 ENV PATH $PATH:$GOPATH/bin
 ENV DATABASE_SSL_MODE=disable
 
-# Install third-party binary dependencies
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /opt/bin/
-RUN chmod +x /opt/bin/wait-for-it.sh \
-    && go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.18.2 \
-    && go install github.com/swaggo/swag/cmd/swag@v1.16.2
+# Set the working directory
+WORKDIR /api
 
 # Copy go.mod and go.sum first to cache dependencies
-COPY go.mod go.mod
-COPY go.sum go.sum
+COPY go.mod go.sum ./
 
-# Download dependencies (cache layer)
+# Download dependencies
 RUN go mod download
 
-# Copy application source code
+# Copy the application source code and config directory
 COPY src src
+COPY config config
 
 # Generate Swagger documentation
-RUN bash -c "cd src/apps/api && swag init -g ../main.go --output ./docs --dir ./handlers"
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.2 \
+    && bash -c "cd src/apps/api && swag init -g ../main.go --output ./docs --dir ./handlers"
 
-# Build the application
+# Build the application binary
 RUN go build -o ./main ./src/apps/api/main.go
+
+# Stage 2: Production stage
+FROM alpine:3.18
+
+# Install minimal runtime dependencies
+RUN apk add --no-cache bash curl \
+    && curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz \
+    && mv migrate /usr/local/bin/
+
+# Set working directory
+WORKDIR /api
+
+# Copy the compiled binary and other necessary files from the builder stage
+COPY --from=builder /api/main ./main
+COPY --from=builder /api/src/apps/api/start.sh ./src/apps/api/start.sh
+COPY --from=builder /api/src/apps/api/docs ./src/apps/api/docs
+COPY --from=builder /api/config/database ./config/database
 
 # Ensure the start script is executable
 RUN chmod +x ./src/apps/api/start.sh
 
-# Copy database migration files
-COPY config/database ./config/database
+# Add wait-for-it.sh script
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /opt/bin/
+RUN chmod +x /opt/bin/wait-for-it.sh
 
 # Command to start the application
-CMD ["/opt/bin/wait-for-it.sh", "--timeout=20", "$DATABASE_HOST:$DATABASE_PORT", "--", "./src/apps/api/start.sh"]
+CMD bash -c "/opt/bin/wait-for-it.sh --timeout=20 ${DATABASE_HOST}:${DATABASE_PORT} -- ./src/apps/api/start.sh"
