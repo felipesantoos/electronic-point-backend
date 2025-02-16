@@ -61,11 +61,14 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
 
+          # Ensure the .ssh directory exists
+          mkdir -p ~/.ssh
+
           # Add the DigitalOcean Droplet to known_hosts
           ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
           # Execute commands on the DigitalOcean Droplet
-          doctl compute ssh <your-droplet-name> \
+          doctl compute ssh ${{ secrets.DROPLET_NAME }} \
             --access-token ${{ secrets.DIGITALOCEAN_TOKEN }} \
             --ssh-user root \
             --ssh-key-path ./private_key.pem \
