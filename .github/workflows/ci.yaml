@@ -48,6 +48,10 @@ jobs:
         run: |
           docker push fss30/electronic_point_api:${{ env.commit_hash }}
 
+      - name: Push Database image to DockerHub
+        run: |
+          docker push fss30/eletronic_point_database:${{ env.commit_hash }}
+
       - name: Install DigitalOcean CLI
         run: |
           curl -sL https://github.com/digitalocean/doctl/releases/download/v1.90.0/doctl-1.90.0-linux-amd64.tar.gz | tar -xz
