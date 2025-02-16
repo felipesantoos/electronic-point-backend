@@ -50,7 +50,7 @@ jobs:
 
       - name: Push Database image to DockerHub
         run: |
-          docker push fss30/eletronic_point_database:${{ env.commit_hash }}
+          docker push fss30/electronic_point_database:${{ env.commit_hash }}
 
       - name: Install DigitalOcean CLI
         run: |
