@@ -1,36 +1,53 @@
-version: "3"
-
 services:
   api:
-    image: fss30/electronic_point_api:${DOCKER_IMAGE_TAG}
     container_name: eletronic_point_api
-    restart: always
-    ports:
-      - "8000:8000"
+    image: fss30/electronic_point_api:${DOCKER_IMAGE_TAG}
+    env_file: .env
     environment:
-      - DATABASE_HOST=eletronic_point_database
-      - DATABASE_PORT=5432
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     depends_on:
       - database
       - redis
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - eletronic_point_network
 
   database:
-    image: fss30/electronic_point_database:${DOCKER_IMAGE_TAG}
     container_name: eletronic_point_database
-    restart: always
+    image: fss30/electronic_point_database:${DOCKER_IMAGE_TAG}
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    env_file: .env
+    restart: always
+    volumes:
+      - database_data:/var/lib/postgresql/data
+      - ./config/database/postgres/init-database.sql:/docker-entrypoint-initdb.d/init-database.sql:ro
+    networks:
+      - eletronic_point_network
 
   redis:
     image: redis:latest
     container_name: eletronic_point_redis
-    restart: always
+    command: >
+      sh -c 'redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"'
     ports:
       - "6379:6379"
-    command: sh -c 'redis-server --requirepass "$${REDIS_PASSWORD}"'
+    env_file: .env
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - eletronic_point_network
+
+volumes:
+  database_data:
+  redis_data:
+
+networks:
+  eletronic_point_network:
+    driver: bridge

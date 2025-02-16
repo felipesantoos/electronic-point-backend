@@ -42,8 +42,7 @@ WORKDIR /api
 
 # Copy the compiled binary and other necessary files from the builder stage
 COPY --from=builder /api/main ./main
-COPY --from=builder /api/src/apps/api/start.sh ./src/apps/api/start.sh
-COPY --from=builder /api/src/apps/api/docs ./src/apps/api/docs
+COPY --from=builder /api/src ./src/
 COPY --from=builder /api/config/database ./config/database
 
 # Ensure the start script is executable
