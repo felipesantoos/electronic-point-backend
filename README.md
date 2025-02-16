@@ -1,40 +1,63 @@
-# GO Backend Template
+# API de Ponto Eletrônico
 
 ## O que é o projeto?
 
-Esse é um projeto que utiliza a arquitetura hexagonal e até o momento tem uma única porta de entrada: um projeto BackEnd que utiliza o Framework [Echo](https://echo.labstack.com/).
+Esse é um projeto que utiliza a arquitetura hexagonal e, até o momento, tem uma única porta de entrada: um projeto BackEnd que utiliza o Framework [Echo](https://echo.labstack.com/).
+
+---
 
 ## Como executar?
 
 Os passos abaixo assumem que você já fez/tem:
-1. O clone (`git clone`) do projeto no seu computador e tem um terminal aberto na pasta baixada;
-
-Caso você seja desenvolvedor:
-
-2. A ferramenta para CLI do `go` instalada (caso não tenha, clique [aqui](https://go.dev/learn/) para ir para a documentação de instalação)
-
-Caso você seja do time de QA:
-
-3. A ferramenta docker instalada (caso não tenha, clique [aqui](https://www.docker.com/) para ir para a página de instalação)
-
+1. O clone (`git clone`) do projeto no seu computador e um terminal aberto na pasta baixada.
+   
 ### **Para Desenvolvimento**
-
 Se você é um membro do time de desenvolvimento desse projeto, siga os passos abaixo para executar as configurações apropriadas:
 
-1. Execute o comando `go mod tidy` para baixar as dependências do projeto;
-2. Copie todo o conteúdo do arquivo [src/ui/api/app/.env.example](src/ui/api/app/.env.example) e cole em um novo arquivo chamado `.env` na mesma pasta ([src/ui/api/app/](src/ui/api/app/));
-3. Execute o banco de dados e instância redis com o seguinte comando: `docker compose -f docker-compose.dev.yml up database redis --build -d`
+1. Certifique-se de que você possui a ferramenta CLI do Go instalada ([instruções de instalação](https://go.dev/learn/));
+2. Certifique-se de que o Docker esteja instalado no seu computador ([instruções de instalação](https://www.docker.com/));
+3. Copie todo o conteúdo do arquivo `.env.example` e cole em um novo arquivo chamado `.env` na raiz do projeto;
+4. Execute o seguinte script para configurar e iniciar o projeto automaticamente ou apenas execute os comandos `chmod +x execute.sh` e `./execute.sh -environment -development` (o script `execute.sh` irá executar todos os comandos abaixo):
 
-Pronto! O projeto está configurado. A partir de agora, toda vez que quiser iniciar o projeto basta executar o comando `go run main.go` dentro da pasta `src/ui/api/app`. Assim, o projeto estará disponível no endereço `http://localhost:8000`.
+```bash
+#!/bin/bash
+
+# Load the environment variables
+source .env
+schema=$(echo $DATABASE_SCHEMA | sed "s/\r//")
+user=$(echo $DATABASE_USER | sed "s/\r//")
+password=$(echo $DATABASE_PASSWORD | sed "s/\r//")
+host=$(echo $DATABASE_HOST | sed "s/\r//")
+port=$(echo $DATABASE_PORT | sed "s/\r//")
+name=$(echo $DATABASE_NAME | sed "s/\r//")
+ssl_mode=$(echo $DATABASE_SSL_MODE | sed "s/\r//")
+migrations_path=$(echo $DATABASE_MIGRATIONS_PATH | sed "s/\r//")
+uri="$schema://$user:$password@$host:$port/$name?sslmode=$ssl_mode"
+
+# Start the databases
+docker compose -f docker-compose.dev.yml up database redis --build -d
+
+# Download the project dependencies
+go mod tidy
+
+# Generate the API documentation
+bash -c "cd src/apps/api && swag init -g ../main.go --output ./docs --dir ./handlers"
+
+# Wait 5 seconds so that the database can initiate and then load the migrations
+migrate -path $migrations_path -database $uri up
+
+# Start the server
+go run src/apps/api/main.go
+```
 
 ### **Para Testes de Qualidade (QA)**
-
 Se você é um membro do time de qualidade (QA), siga os passos abaixo para executar as configurações apropriadas:
 
-1. Copie todo o conteúdo do arquivo [src/ui/api/app/.env.example](src/ui/api/app/.env.example) e cole em um novo arquivo chamado `env-file` na mesma pasta ([src/ui/api/app/](src/ui/api/app/));
+1. Copie todo o conteúdo do arquivo `.env.example` e cole em um novo arquivo chamado `.env` na raiz do projeto;
+2. Execute o seguinte comando para iniciar os serviços necessários:
 
-Pronto! O projeto está configurado. A partir de agora, toda vez que quiser iniciar o projeto basta executar o comando `docker compose up`. Assim, o projeto estará disponível no endereço `http://localhost:8000`.
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
 
-Observações:
-1. caso houve uma atualização no projeto e você não consegue ver essa atualização mesmo após executar `git pull`, execute o comando `docker compose up --build`.
-2. sempre que for realizar os testes de qualidade para testar a aplicação, por favor, tenha certeza que você está no ramo `stage` do repositório.
+O projeto estará disponível no endereço [http://localhost:8000](http://localhost:8000).

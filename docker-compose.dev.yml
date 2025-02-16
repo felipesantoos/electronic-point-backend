@@ -1,4 +1,3 @@
-version: "3"
 services:
   api:
     container_name: eletronic_point_api
@@ -8,25 +7,47 @@ services:
     env_file: .env
     depends_on:
       - database
+      - redis
     ports:
       - "8000:8000"
+    restart: always
+    volumes:
+      - ./src:/api/src
+    networks:
+      - eletronic_point_network
+
   database:
     container_name: eletronic_point_database
     build:
       context: .
       dockerfile: .docker/development/Dockerfile.postgres
-    environment:
-      - POSTGRES_USER=eletronic_point
-      - POSTGRES_PASSWORD=12345678
     ports:
       - "5432:5432"
+    env_file: .env
+    restart: always
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - eletronic_point_network
+
   redis:
-    image: redis
+    image: redis:latest
     container_name: eletronic_point_redis
-    command:
-      - /bin/sh
-      - -c
-      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+    command: >
+      sh -c 'redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"'
     ports:
       - "6379:6379"
     env_file: .env
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - eletronic_point_network
+
+volumes:
+  database_data:
+  redis_data:
+
+networks:
+  eletronic_point_network:
+    driver: bridge

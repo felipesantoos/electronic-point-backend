@@ -1,30 +1,41 @@
-FROM golang:1.19-bullseye
+# Use Go 1.22 as the base image
+FROM golang:1.22-bullseye
 
+# Set the working directory
 WORKDIR /api
 
-# Setup default ENV
+# Set environment variables
 ENV GOPATH /go
 ENV PATH $PATH:$GOPATH/bin
 ENV DATABASE_SSL_MODE=disable
 
 # Install third-party binary dependencies
 ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /opt/bin/
-RUN chmod +x /opt/bin/wait-for-it.sh
-RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-RUN go install github.com/swaggo/swag/cmd/swag@v1.16.2
+RUN chmod +x /opt/bin/wait-for-it.sh \
+    && go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.18.2 \
+    && go install github.com/swaggo/swag/cmd/swag@v1.16.2
 
-# Copy application files
-COPY src src
+# Copy go.mod and go.sum first to cache dependencies
 COPY go.mod go.mod
-RUN mkdir tools
+COPY go.sum go.sum
 
-# Install dependencies and Build application
-RUN go mod tidy
+# Download dependencies (cache layer)
+RUN go mod download
+
+# Copy application source code
+COPY src src
+
+# Generate Swagger documentation
 RUN bash -c "cd src/apps/api && swag init -g ../main.go --output ./docs --dir ./handlers"
+
+# Build the application
 RUN go build -o ./main ./src/apps/api/main.go
+
+# Ensure the start script is executable
 RUN chmod +x ./src/apps/api/start.sh
 
-# Copy application database migrations
+# Copy database migration files
 COPY config/database ./config/database
 
-CMD /opt/bin/wait-for-it.sh --timeout=20 $DATABASE_HOST:$DATABASE_PORT -- ./src/apps/api/start.sh
+# Command to start the application
+CMD ["/opt/bin/wait-for-it.sh", "--timeout=20", "$DATABASE_HOST:$DATABASE_PORT", "--", "./src/apps/api/start.sh"]
