@@ -1,3 +1,5 @@
+# Use the official PostgreSQL 14 image as the base
 FROM postgres:14
 
+# Copy database fixture files to the container
 COPY config/database/postgres/migrations/fixtures /fixtures
