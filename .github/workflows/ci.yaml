@@ -58,10 +58,16 @@ jobs:
 
       - name: Deploy Docker Compose App
         run: |
-          doctl compute ssh ${{ secrets.DROPLET_NAME }} --access-token ${{ secrets.DIGITALOCEAN_TOKEN }} --ssh-command "
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            docker pull fss30/electronic_point_api:${{ env.commit_hash }}
-            docker pull fss30/electronic_point_database:${{ env.commit_hash }}
-            echo 'DOCKER_IMAGE_TAG=${{ env.commit_hash }}' > .env
-            docker-compose up -d --build
-          "
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          doctl compute ssh ${{ secrets.DROPLET_NAME }} \
+            --access-token ${{ secrets.DIGITALOCEAN_TOKEN }} \
+            --ssh-user root \
+            --ssh-key-path ./private_key.pem \
+            --ssh-command "
+              docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }};
+              docker pull fss30/electronic_point_api:${{ env.commit_hash }};
+              docker pull fss30/electronic_point_database:${{ env.commit_hash }};
+              echo 'DOCKER_IMAGE_TAG=${{ env.commit_hash }}' > .env;
+              docker-compose up -d --build;
+            "
