@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get short commit hash
+        id: get_commit_hash
+        run: echo "commit_hash=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
+
+      - name: Build and tag API image
+        run: |
+          docker build -t fss30/electronic_point_api:${{ env.commit_hash }} -f .docker/development/Dockerfile.api .
+
+      - name: Build and tag Database image
+        run: |
+          docker build -t fss30/electronic_point_database:${{ env.commit_hash }} -f .docker/development/Dockerfile.postgres .
+
+      - name: Push API image to DockerHub
+        run: |
+          docker push fss30/electronic_point_api:${{ env.commit_hash }}
+
+      - name: Push Database image to DockerHub
+        run: |
+          docker push fss30/electronic_point_database:${{ env.commit_hash }}
