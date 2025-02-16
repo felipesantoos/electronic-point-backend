@@ -1,6 +1,3 @@
-# Project files
-go.sum
-
 # Misc
 .env
 env-file
