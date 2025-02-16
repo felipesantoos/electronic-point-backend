@@ -57,11 +57,20 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          password: ${{ secrets.PASSWORD }}
           script: |
+            # Login to Docker
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+            # Pull the latest images
             docker pull fss30/electronic_point_api:${{ env.commit_hash }}
             docker pull fss30/electronic_point_database:${{ env.commit_hash }}
+
+            # Create or update .env file
             echo "DOCKER_IMAGE_TAG=${{ env.commit_hash }}" > .env
+            echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
+            echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+
+            # Deploy using Docker Compose
             docker-compose up -d --build
