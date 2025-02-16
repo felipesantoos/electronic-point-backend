@@ -60,6 +60,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
+          export SSH_OPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
           doctl compute ssh ${{ secrets.DROPLET_NAME }} \
             --access-token ${{ secrets.DIGITALOCEAN_TOKEN }} \
             --ssh-user root \
@@ -70,4 +71,4 @@ jobs:
               docker pull fss30/electronic_point_database:${{ env.commit_hash }};
               echo 'DOCKER_IMAGE_TAG=${{ env.commit_hash }}' > .env;
               docker-compose up -d --build;
-            "
+            " $SSH_OPTIONS
