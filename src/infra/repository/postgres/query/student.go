@@ -117,6 +117,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			AND teacher.id = COALESCE($1, teacher.id)
 			AND institution.id = COALESCE($2, institution.id)
 			AND campus.id = COALESCE($3, campus.id)
+			AND student.id = COALESCE($4, student.id)
 		ORDER BY person.name ASC
 	`
 }

@@ -372,6 +372,47 @@ definitions:
       name:
         type: string
     type: object
+  response.TimeRecordsByStudent:
+    properties:
+      birth_date:
+        type: string
+      campus:
+        $ref: '#/definitions/response.Campus'
+      course:
+        $ref: '#/definitions/response.Course'
+      cpf:
+        type: string
+      created_at:
+        type: string
+      current_internship:
+        $ref: '#/definitions/response.Internship'
+      email:
+        type: string
+      id:
+        type: string
+      institution:
+        $ref: '#/definitions/response.Institution'
+      name:
+        type: string
+      pending_workload:
+        type: integer
+      phone:
+        type: string
+      profile_picture:
+        type: string
+      registration:
+        type: string
+      time_records:
+        items:
+          $ref: '#/definitions/response.TimeRecord'
+        type: array
+      total_workload:
+        type: integer
+      updated_at:
+        type: string
+      workload_completed:
+        type: integer
+    type: object
 info:
   contact:
     email: wmrn1@aluno.ifal.edu.br
@@ -1732,6 +1773,84 @@ paths:
       summary: Atualizar um estágio existente.
       tags:
       - Estágios
+  /reports/time-records-by-student:
+    get:
+      description: Recupera uma lista de todos os registros de tempo agrupados por
+        estudante no sistema.
+      operationId: Reports.GetTimeRecordsByStudent
+      parameters:
+      - description: ID da instituição
+        in: query
+        name: institutionID
+        type: string
+      - description: ID do campus
+        in: query
+        name: campusID
+        type: string
+      - description: ID do estudante
+        in: query
+        name: studentID
+        type: string
+      - description: Data inicial
+        in: query
+        name: startDate
+        type: string
+      - description: Data de término
+        in: query
+        name: endDate
+        type: string
+      - description: ID do status
+        in: query
+        name: statusID
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Requisição realizada com sucesso.
+          schema:
+            items:
+              $ref: '#/definitions/response.TimeRecordsByStudent'
+            type: array
+        "400":
+          description: Requisição mal formulada.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "401":
+          description: Usuário não autorizado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "403":
+          description: Acesso negado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "404":
+          description: Recurso não encontrado.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "409":
+          description: A solicitação não pôde ser concluída devido a um conflito com
+            o estado atual do recurso de destino.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "422":
+          description: Ocorreu um erro de validação de dados. Verifique os valores,
+            tipos e formatos de dados enviados.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "500":
+          description: Ocorreu um erro inesperado. Por favor, contate o suporte.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+        "503":
+          description: A base de dados está temporariamente indisponível.
+          schema:
+            $ref: '#/definitions/response.ErrorMessage'
+      security:
+      - BearerAuth: []
+      summary: Listar todos os registros de tempo agrupados por estudante.
+      tags:
+      - Relatórios
   /res/account-roles:
     get:
       description: |-

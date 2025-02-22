@@ -1985,6 +1985,121 @@ const docTemplate = `{
                 }
             }
         },
+        "/reports/time-records-by-student": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recupera uma lista de todos os registros de tempo agrupados por estudante no sistema.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Relatórios"
+                ],
+                "summary": "Listar todos os registros de tempo agrupados por estudante.",
+                "operationId": "Reports.GetTimeRecordsByStudent",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID da instituição",
+                        "name": "institutionID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID do campus",
+                        "name": "campusID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID do estudante",
+                        "name": "studentID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Data inicial",
+                        "name": "startDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Data de término",
+                        "name": "endDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID do status",
+                        "name": "statusID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Requisição realizada com sucesso.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/response.TimeRecordsByStudent"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição mal formulada.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Usuário não autorizado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso não encontrado.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "409": {
+                        "description": "A solicitação não pôde ser concluída devido a um conflito com o estado atual do recurso de destino.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Ocorreu um erro de validação de dados. Verifique os valores, tipos e formatos de dados enviados.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Ocorreu um erro inesperado. Por favor, contate o suporte.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    },
+                    "503": {
+                        "description": "A base de dados está temporariamente indisponível.",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/res/account-roles": {
             "get": {
                 "security": [
@@ -3897,6 +4012,68 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "response.TimeRecordsByStudent": {
+            "type": "object",
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "campus": {
+                    "$ref": "#/definitions/response.Campus"
+                },
+                "course": {
+                    "$ref": "#/definitions/response.Course"
+                },
+                "cpf": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_internship": {
+                    "$ref": "#/definitions/response.Internship"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution": {
+                    "$ref": "#/definitions/response.Institution"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pending_workload": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "time_records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.TimeRecord"
+                    }
+                },
+                "total_workload": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "workload_completed": {
+                    "type": "integer"
                 }
             }
         }

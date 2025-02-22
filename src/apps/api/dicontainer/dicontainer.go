@@ -69,3 +69,8 @@ func FileServices() primary.FilePort {
 	repository := file.NewFileRepository()
 	return services.NewFileService(repository)
 }
+
+func ReportsServices() primary.ReportsPort {
+	repository := postgres.NewReportsRepository()
+	return services.NewReportsServices(repository)
+}
