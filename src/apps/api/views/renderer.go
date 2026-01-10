@@ -1,6 +1,7 @@
 package views
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -37,6 +38,11 @@ func NewRenderer(root string) *TemplateRenderer {
 		"default_val":       defaultVal,
 		"is_selected":       isSelected,
 		"image_url":         imageUrl,
+		"add":               func(a, b int) int { return a + b },
+		"marshal": func(v interface{}) template.JS {
+			a, _ := json.Marshal(v)
+			return template.JS(a)
+		},
 	}
 
 	// 1. Find all shared templates (layouts and components)

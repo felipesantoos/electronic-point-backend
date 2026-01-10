@@ -55,7 +55,8 @@ func (h *internshipViewHandlers) List(ctx handlers.RichContext) error {
 		Filters:     f,
 	}
 
-	return ctx.Render(http.StatusOK, "internships/list.html", helpers.NewPageData(ctx, "Estágios", "internships", data))
+	return ctx.Render(http.StatusOK, "internships/list.html", helpers.NewPageData(ctx, "Estágios", "internships", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Estágios", URL: "/internships"}))
 }
 
 func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
@@ -74,7 +75,11 @@ func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		SelectedStudentID: selectedStudentID,
 	}
 
-	return ctx.Render(http.StatusOK, "internships/create.html", helpers.NewPageData(ctx, "Vincular Estágio", "internships", data))
+	return ctx.Render(http.StatusOK, "internships/create.html", helpers.NewPageData(ctx, "Vincular Estágio", "internships", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Estágios", URL: "/internships"},
+			helpers.Breadcrumb{Label: "Novo", URL: "/internships/new"},
+		))
 }
 
 func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
@@ -132,7 +137,11 @@ func (h *internshipViewHandlers) Show(ctx handlers.RichContext) error {
 		Internship: response.InternshipBuilder().BuildFromDomain(intern),
 	}
 
-	return ctx.Render(http.StatusOK, "internships/show.html", helpers.NewPageData(ctx, "Detalhes do Estágio", "internships", data))
+	return ctx.Render(http.StatusOK, "internships/show.html", helpers.NewPageData(ctx, "Detalhes do Estágio", "internships", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Estágios", URL: "/internships"},
+			helpers.Breadcrumb{Label: "Detalhes", URL: "/internships/" + id.String()},
+		))
 }
 
 // Helpers

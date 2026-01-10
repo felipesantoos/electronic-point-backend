@@ -7,6 +7,12 @@ import (
 	"github.com/google/uuid"
 )
 
+// Breadcrumb represents a single step in the navigation path
+type Breadcrumb struct {
+	Label string
+	URL   string
+}
+
 // PageData is the common structure for all view templates
 type PageData struct {
 	Title         string
@@ -15,6 +21,7 @@ type PageData struct {
 	Data          interface{}
 	FlashMessages []FlashMessage
 	Errors        []string
+	Breadcrumbs   []Breadcrumb
 }
 
 // UserInfo contains basic information about the logged-in user for templates
@@ -44,7 +51,19 @@ func NewPageData(ctx handlers.RichContext, title string, activeMenu string, data
 		ActiveMenu:    activeMenu,
 		Data:          data,
 		FlashMessages: GetFlashMessages(ctx),
+		Breadcrumbs:   []Breadcrumb{{Label: "Dashboard", URL: "/"}},
 	}
+}
+
+// WithBreadcrumbs adds custom breadcrumbs to the PageData
+func (p PageData) WithBreadcrumbs(breadcrumbs ...Breadcrumb) PageData {
+	// Only add Dashboard if not already there and if there are other breadcrumbs
+	if len(breadcrumbs) > 0 && breadcrumbs[0].URL != "/" {
+		p.Breadcrumbs = append([]Breadcrumb{{Label: "Dashboard", URL: "/"}}, breadcrumbs...)
+	} else {
+		p.Breadcrumbs = breadcrumbs
+	}
+	return p
 }
 
 // ErrorResponse attempts to convert an API error response to a string list

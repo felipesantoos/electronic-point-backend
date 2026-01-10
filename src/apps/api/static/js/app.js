@@ -31,6 +31,44 @@ document.addEventListener('DOMContentLoaded', () => {
         // But since we use Alpine.js, it's better to handle it there if needed
     });
 
+    // HTMX Progress Bar logic
+    const progressBar = document.querySelector('#htmx-progress div');
+    let progressInterval;
+
+    document.body.addEventListener('htmx:configRequest', () => {
+        if (!progressBar) return;
+        
+        // Reset and show progress bar
+        progressBar.style.width = '0%';
+        progressBar.style.opacity = '1';
+        
+        // Animate to 90% over some time
+        let width = 0;
+        progressInterval = setInterval(() => {
+            if (width < 90) {
+                width += Math.random() * 2; // Slower progress
+                progressBar.style.width = `${width}%`;
+            }
+        }, 100);
+    });
+
+    document.body.addEventListener('htmx:afterRequest', () => {
+        if (!progressBar) return;
+        
+        clearInterval(progressInterval);
+        
+        // Complete the bar
+        progressBar.style.width = '100%';
+        
+        // Hide after a small delay
+        setTimeout(() => {
+            progressBar.style.opacity = '0';
+            setTimeout(() => {
+                progressBar.style.width = '0%';
+            }, 300);
+        }, 500);
+    });
+
     // Global HTMX headers (e.g. CSRF token if needed)
     document.body.addEventListener('htmx:configRequest', (event) => {
         // Example: event.detail.headers['X-CSRF-Token'] = '...';
@@ -42,10 +80,8 @@ function showToast(type, message) {
     const container = document.getElementById('toast-container');
     if (!container) return;
 
-    // This is a simple implementation. In a real app, you might want to 
-    // fetch the toast template from the server or use a client-side template.
     const toast = document.createElement('div');
-    toast.className = `p-4 rounded-md shadow-lg border-l-4 flex items-center justify-between mb-2 fade-in ${
+    toast.className = `p-4 rounded-md shadow-lg border-l-4 flex items-center justify-between mb-2 transition-all duration-500 ease-in-out transform translate-x-full opacity-0 ${
         type === 'success' ? 'bg-white border-green-500 text-green-800' : 
         type === 'error' ? 'bg-white border-red-500 text-red-800' : 
         'bg-white border-blue-500 text-blue-800'
@@ -55,15 +91,35 @@ function showToast(type, message) {
         <div class="flex items-center">
             <span class="font-medium">${message}</span>
         </div>
-        <button onclick="this.parentElement.remove()" class="ml-4 text-gray-400 hover:text-gray-600 focus:outline-none">
+        <button onclick="removeToast(this.parentElement)" class="ml-4 text-gray-400 hover:text-gray-600 focus:outline-none">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12"></path></svg>
         </button>
     `;
 
     container.appendChild(toast);
+
+    // Animate in
+    requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-full', 'opacity-0');
+    });
+
+    // Auto-hide
+    const duration = type === 'error' ? 8000 : 4000;
+    setTimeout(() => {
+        removeToast(toast);
+    }, duration);
+}
+
+function removeToast(toast) {
+    if (!toast || !toast.parentElement) return;
+    
+    // Animate out
+    toast.classList.add('translate-x-full', 'opacity-0');
+    
+    // Remove from DOM after animation
     setTimeout(() => {
         if (toast.parentElement) toast.remove();
-    }, 5000);
+    }, 500);
 }
 
 // Preview image before upload

@@ -9,6 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Alpine.js (optional, for simple UI interactions) -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Custom CSS -->
@@ -18,6 +20,11 @@
     </style>
 </head>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal" hx-boost="true">
+    <!-- HTMX Progress Bar -->
+    <div id="htmx-progress" class="fixed top-0 left-0 w-full h-1 z-50 pointer-events-none">
+        <div class="h-full bg-blue-600 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(37,99,235,0.5)]" style="width: 0%; opacity: 0;"></div>
+    </div>
+
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar -->
         {{template "sidebar" .}}
@@ -62,7 +69,29 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
-        <h1 class="text-xl font-semibold text-gray-800">{{.Title}}</h1>
+        <div class="flex flex-col">
+            <h1 class="text-xl font-semibold text-gray-800">{{.Title}}</h1>
+            {{if .Breadcrumbs}}
+            <nav class="flex text-xs text-gray-500 mt-1" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                    {{range $index, $bc := .Breadcrumbs}}
+                    <li class="inline-flex items-center">
+                        {{if $index}}
+                        <svg class="w-3 h-3 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        {{end}}
+                        {{if eq (add $index 1) (len $.Breadcrumbs)}}
+                        <span class="text-gray-700 font-medium">{{$bc.Label}}</span>
+                        {{else}}
+                        <a href="{{$bc.URL}}" class="hover:text-blue-600 transition-colors">{{$bc.Label}}</a>
+                        {{end}}
+                    </li>
+                    {{end}}
+                </ol>
+            </nav>
+            {{end}}
+        </div>
     </div>
     <div class="flex items-center space-x-4" x-data="{ open: false }">
         <div class="relative">
@@ -89,7 +118,7 @@
        :class="sidebarOpen ? 'w-64 fixed inset-y-0 left-0' : 'w-0 md:w-64 overflow-hidden md:overflow-visible fixed md:relative inset-y-0 left-0'">
     <div class="p-4 flex items-center justify-between border-b border-gray-700 whitespace-nowrap">
         <a href="/" class="flex items-center">
-            <span class="text-xl font-bold tracking-wider">PONTO DIT</span>
+            <span class="text-xl font-bold tracking-wider">Ponto Eletrônico</span>
         </a>
         <button @click="sidebarOpen = false" class="md:hidden text-gray-100 focus:outline-none">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -69,11 +69,16 @@ func (h *resourceViewHandlers) Institutions(ctx handlers.RichContext) error {
 		Filters:      map[string]string{"name": name},
 	}
 
-	return ctx.Render(http.StatusOK, "institutions/list.html", helpers.NewPageData(ctx, "Instituições", "institutions", data))
+	return ctx.Render(http.StatusOK, "institutions/list.html", helpers.NewPageData(ctx, "Instituições", "institutions", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Instituições", URL: "/institutions"}))
 }
 
 func (h *resourceViewHandlers) CreateInstitutionPage(ctx handlers.RichContext) error {
-	return ctx.Render(http.StatusOK, "institutions/create.html", helpers.NewPageData(ctx, "Nova Instituição", "institutions", nil))
+	return ctx.Render(http.StatusOK, "institutions/create.html", helpers.NewPageData(ctx, "Nova Instituição", "institutions", nil).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Instituições", URL: "/institutions"},
+			helpers.Breadcrumb{Label: "Nova", URL: "/institutions/new"},
+		))
 }
 
 func (h *resourceViewHandlers) CreateInstitution(ctx handlers.RichContext) error {
@@ -109,7 +114,11 @@ func (h *resourceViewHandlers) EditInstitutionPage(ctx handlers.RichContext) err
 		Institution: response.InstitutionBuilder().BuildFromDomain(inst),
 	}
 
-	return ctx.Render(http.StatusOK, "institutions/edit.html", helpers.NewPageData(ctx, "Editar Instituição", "institutions", data))
+	return ctx.Render(http.StatusOK, "institutions/edit.html", helpers.NewPageData(ctx, "Editar Instituição", "institutions", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Instituições", URL: "/institutions"},
+			helpers.Breadcrumb{Label: "Editar", URL: "/institutions/" + id.String() + "/edit"},
+		))
 }
 
 func (h *resourceViewHandlers) UpdateInstitution(ctx handlers.RichContext) error {
@@ -147,7 +156,8 @@ func (h *resourceViewHandlers) Campus(ctx handlers.RichContext) error {
 		Filters: map[string]string{"name": name},
 	}
 
-	return ctx.Render(http.StatusOK, "campus/list.html", helpers.NewPageData(ctx, "Campus", "campus", data))
+	return ctx.Render(http.StatusOK, "campus/list.html", helpers.NewPageData(ctx, "Campus", "campus", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Campus", URL: "/campus"}))
 }
 
 func (h *resourceViewHandlers) CreateCampusPage(ctx handlers.RichContext) error {
@@ -164,7 +174,11 @@ func (h *resourceViewHandlers) CreateCampusPage(ctx handlers.RichContext) error 
 		Institutions: options,
 	}
 
-	return ctx.Render(http.StatusOK, "campus/create.html", helpers.NewPageData(ctx, "Novo Campus", "campus", data))
+	return ctx.Render(http.StatusOK, "campus/create.html", helpers.NewPageData(ctx, "Novo Campus", "campus", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Campus", URL: "/campus"},
+			helpers.Breadcrumb{Label: "Novo", URL: "/campus/new"},
+		))
 }
 
 func (h *resourceViewHandlers) CreateCampus(ctx handlers.RichContext) error {
@@ -206,7 +220,11 @@ func (h *resourceViewHandlers) EditCampusPage(ctx handlers.RichContext) error {
 		Institutions: options,
 	}
 
-	return ctx.Render(http.StatusOK, "campus/edit.html", helpers.NewPageData(ctx, "Editar Campus", "campus", data))
+	return ctx.Render(http.StatusOK, "campus/edit.html", helpers.NewPageData(ctx, "Editar Campus", "campus", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Campus", URL: "/campus"},
+			helpers.Breadcrumb{Label: "Editar", URL: "/campus/" + id.String() + "/edit"},
+		))
 }
 
 func (h *resourceViewHandlers) UpdateCampus(ctx handlers.RichContext) error {
@@ -245,11 +263,16 @@ func (h *resourceViewHandlers) Courses(ctx handlers.RichContext) error {
 		Filters: map[string]string{"name": name},
 	}
 
-	return ctx.Render(http.StatusOK, "courses/list.html", helpers.NewPageData(ctx, "Cursos", "courses", data))
+	return ctx.Render(http.StatusOK, "courses/list.html", helpers.NewPageData(ctx, "Cursos", "courses", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Cursos", URL: "/courses"}))
 }
 
 func (h *resourceViewHandlers) CreateCoursePage(ctx handlers.RichContext) error {
-	return ctx.Render(http.StatusOK, "courses/create.html", helpers.NewPageData(ctx, "Novo Curso", "courses", nil))
+	return ctx.Render(http.StatusOK, "courses/create.html", helpers.NewPageData(ctx, "Novo Curso", "courses", nil).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Cursos", URL: "/courses"},
+			helpers.Breadcrumb{Label: "Novo", URL: "/courses/new"},
+		))
 }
 
 func (h *resourceViewHandlers) CreateCourse(ctx handlers.RichContext) error {
@@ -285,7 +308,11 @@ func (h *resourceViewHandlers) EditCoursePage(ctx handlers.RichContext) error {
 		Course: response.CourseBuilder().BuildFromDomain(c),
 	}
 
-	return ctx.Render(http.StatusOK, "courses/edit.html", helpers.NewPageData(ctx, "Editar Curso", "courses", data))
+	return ctx.Render(http.StatusOK, "courses/edit.html", helpers.NewPageData(ctx, "Editar Curso", "courses", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Cursos", URL: "/courses"},
+			helpers.Breadcrumb{Label: "Editar", URL: "/courses/" + id.String() + "/edit"},
+		))
 }
 
 func (h *resourceViewHandlers) UpdateCourse(ctx handlers.RichContext) error {

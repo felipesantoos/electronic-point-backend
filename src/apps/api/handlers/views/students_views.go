@@ -64,7 +64,8 @@ func (h *studentViewHandlers) List(ctx handlers.RichContext) error {
 		Filters:      f,
 	}
 
-	return ctx.Render(http.StatusOK, "students/list.html", helpers.NewPageData(ctx, "Estudantes", "students", data))
+	return ctx.Render(http.StatusOK, "students/list.html", helpers.NewPageData(ctx, "Estudantes", "students", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Estudantes", URL: "/students"}))
 }
 
 func (h *studentViewHandlers) CreatePage(ctx handlers.RichContext) error {
@@ -79,7 +80,11 @@ func (h *studentViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		Courses: h.toOptions(courses),
 	}
 
-	return ctx.Render(http.StatusOK, "students/create.html", helpers.NewPageData(ctx, "Novo Estudante", "students", data))
+	return ctx.Render(http.StatusOK, "students/create.html", helpers.NewPageData(ctx, "Novo Estudante", "students", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Estudantes", URL: "/students"},
+			helpers.Breadcrumb{Label: "Novo", URL: "/students/new"},
+		))
 }
 
 func (h *studentViewHandlers) Create(ctx handlers.RichContext) error {
@@ -142,7 +147,12 @@ func (h *studentViewHandlers) EditPage(ctx handlers.RichContext) error {
 		Courses: h.toOptions(courses),
 	}
 
-	return ctx.Render(http.StatusOK, "students/edit.html", helpers.NewPageData(ctx, "Editar Estudante", "students", data))
+	return ctx.Render(http.StatusOK, "students/edit.html", helpers.NewPageData(ctx, "Editar Estudante", "students", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Estudantes", URL: "/students"},
+			helpers.Breadcrumb{Label: s.Name(), URL: "/students/" + id.String()},
+			helpers.Breadcrumb{Label: "Editar", URL: "/students/" + id.String() + "/edit"},
+		))
 }
 
 func (h *studentViewHandlers) Update(ctx handlers.RichContext) error {
@@ -198,7 +208,11 @@ func (h *studentViewHandlers) Show(ctx handlers.RichContext) error {
 		Student: response.StudentBuilder().BuildFromDomain(s),
 	}
 
-	return ctx.Render(http.StatusOK, "students/show.html", helpers.NewPageData(ctx, s.Name(), "students", data))
+	return ctx.Render(http.StatusOK, "students/show.html", helpers.NewPageData(ctx, s.Name(), "students", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Estudantes", URL: "/students"},
+			helpers.Breadcrumb{Label: s.Name(), URL: "/students/" + id.String()},
+		))
 }
 
 // Helper to convert list to options
