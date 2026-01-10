@@ -1,0 +1,52 @@
+{{define "content"}}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-gray-800">Instituições</h2>
+        <a href="/institutions/new" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Nova Instituição
+        </a>
+    </div>
+    <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <form hx-get="/institutions" hx-target="#page-content" hx-push-url="true" class="flex gap-4">
+            <div class="flex-1">
+                <input type="text" name="name" value="{{index .Data.Filters "name"}}" 
+                       placeholder="Buscar por nome..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                Filtrar
+            </button>
+            <a href="/institutions" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Limpar
+            </a>
+        </form>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    {{template "table-header" "Nome"}}
+                    {{template "table-header" "Ações"}}
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {{range .Data.Institutions}}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{.Name}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        {{template "table-action-button" dict "URL" (printf "/institutions/%s/edit" (formatUUID .ID)) "Label" "Editar"}}
+                        {{template "table-delete-button" dict "URL" (printf "/api/institutions/%s" (formatUUID .ID))}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500">Nenhuma instituição encontrada.</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}
+
+{{template "base" .}}

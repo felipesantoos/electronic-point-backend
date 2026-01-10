@@ -2,6 +2,8 @@ package timeRecord
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/internship"
+	"eletronic_point/src/core/domain/simplifiedStudent"
 	"eletronic_point/src/core/domain/timeRecordStatus"
 	"eletronic_point/src/core/messages"
 	"time"
@@ -20,6 +22,9 @@ type timeRecord struct {
 	isOffSite         bool
 	justification     *string
 	studentID         uuid.UUID
+	internshipID      uuid.UUID
+	student           simplifiedStudent.SimplifiedStudent
+	internship        internship.Internship
 	_timeRecordStatus timeRecordStatus.TimeRecordStatus
 }
 
@@ -53,6 +58,18 @@ func (t *timeRecord) Justification() *string {
 
 func (t *timeRecord) StudentID() uuid.UUID {
 	return t.studentID
+}
+
+func (t *timeRecord) InternshipID() uuid.UUID {
+	return t.internshipID
+}
+
+func (t *timeRecord) Student() simplifiedStudent.SimplifiedStudent {
+	return t.student
+}
+
+func (t *timeRecord) Internship() internship.Internship {
+	return t.internship
 }
 
 func (t *timeRecord) TimeRecordStatus() timeRecordStatus.TimeRecordStatus {
@@ -111,6 +128,24 @@ func (t *timeRecord) SetStudentID(studentID uuid.UUID) errors.Error {
 		return errors.NewFromString(messages.TimeRecordStudentIDErrorMessage)
 	}
 	t.studentID = studentID
+	return nil
+}
+
+func (t *timeRecord) SetInternshipID(internshipID uuid.UUID) errors.Error {
+	if internshipID == uuid.Nil {
+		return errors.NewFromString(messages.InternshipIDErrorMessage)
+	}
+	t.internshipID = internshipID
+	return nil
+}
+
+func (t *timeRecord) SetStudent(student simplifiedStudent.SimplifiedStudent) errors.Error {
+	t.student = student
+	return nil
+}
+
+func (t *timeRecord) SetInternship(internship internship.Internship) errors.Error {
+	t.internship = internship
 	return nil
 }
 

@@ -2,17 +2,17 @@
 
 Como sabemos, testes desempenham um papel fundamental no desenvolvimento de software, pois garantem a qualidade, confiabilidade e desempenho do produto final.
 
-Logo abaixo, segue o passo a passo de como configurar o ambiente de testes no `Pedagoga Backend`.
+Logo abaixo, segue o passo a passo de como configurar o ambiente de testes no `Electronic Point Backend`.
 
 ## Passo 1° - Subir o contêiner com o banco de dados de teste
 
-1. Antes de tudo, utilizaremos o comando `source ./src/utils/tests/envs/.env.test` para definir as variáveis de ambiente de testes.
+1. Antes de tudo, utilizaremos o comando `source .env.test` para definir as variáveis de ambiente de testes.
 
-2. E para subir o contêiner com o banco de dados postgres, use o comando: `docker compose -f ./src/utils/tests/docker/docker-compose.test.yml up database_test --build -d`
+2. E para subir o contêiner com o banco de dados postgres, use o comando: `docker compose -f ./docker-compose.test.yml up database_test --build -d`
 
 Logo após, para garantirmos que está tudo funcionando, utilize o comando: `docker ps` para listar todos os contêineres em execução. Haverá uma coluna com o nome `CONTAINER ID`. Copie o ID e utilize o comando: `docker exec -it <CONTAINER ID> bash`, para acessar o terminal shell do contêiner.
 
-Com o terminal do contêiner disponível, use: `psql -U pedagoga_test -p 5432` para acessar o terminal do PostgreSQL e logo após utilize: `\dt` para listar as tabelas da base de dados. Provavelmente, você receberá uma mensagem como esta: `Did not find any relations.` Resolveremos isso no próximo passo.
+Com o terminal do contêiner disponível, use: `psql -U eletronic_point_test -p 5432` para acessar o terminal do PostgreSQL e logo após utilize: `\dt` para listar as tabelas da base de dados. Provavelmente, você receberá uma mensagem como esta: `Did not find any relations.` Resolveremos isso no próximo passo.
 
 Para sair dos terminais: `\q` para o PostgreSQL e `exit` para o contêiner
 
@@ -22,7 +22,7 @@ Uma possível solução é utilizar o `sudo netstat -pan | grep 5432` para lista
 
 ## Passo 2° - Rodar as migrations
 
-1. Para carregar os dados das fixtures: `migrate -source file://config/database/postgres/migrations -database postgres://pedagoga_test:12345678_test@localhost:5433/pedagoga_test?sslmode=disable up`
+1. Para carregar os dados das fixtures: `migrate -source file://config/database/postgres/migrations -database postgres://eletronic_point_test:12345678_test@localhost:5433/eletronic_point_test?sslmode=disable up`
 
 Caso tenha problemas como este: `Dirty database version 1. Fix and force version`. Repita o mesmo comando acima, substituindo o `up` por `force 1`
 

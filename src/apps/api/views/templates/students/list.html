@@ -1,0 +1,80 @@
+{{define "content"}}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-gray-800">Estudantes</h2>
+        <a href="/students/new" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Novo Estudante
+        </a>
+    </div>
+    <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <form hx-get="/students" hx-target="#page-content" hx-push-url="true" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="md:col-span-2">
+                {{template "form-select" dict "ID" "institutionID" "Name" "institutionID" "Label" "Instituição" "Placeholder" "Todas as instituições" "Options" .Data.Institutions "Selected" .Data.Filters.InstitutionID}}
+            </div>
+            <div>
+                {{template "form-select" dict "ID" "campusID" "Name" "campusID" "Label" "Campus" "Placeholder" "Todos os campus" "Options" .Data.Campus "Selected" .Data.Filters.CampusID}}
+            </div>
+            <div class="flex items-end pb-4 space-x-2">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    Filtrar
+                </button>
+                <a href="/students" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    {{template "table-header" "Nome"}}
+                    {{template "table-header" "Matrícula"}}
+                    {{template "table-header" "CPF"}}
+                    {{template "table-header" "Curso"}}
+                    {{template "table-header" "Ações"}}
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {{range .Data.Students}}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                {{if .ProfilePicture}}
+                                <img class="h-10 w-10 rounded-full object-cover" 
+                                     src="{{image_url .ProfilePicture}}" 
+                                     onerror="handleImageError(this)" alt="">
+                                {{else}}
+                                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                                    {{slice .Name 0 1 | toUpper}}
+                                </div>
+                                {{end}}
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">{{.Name}}</div>
+                                <div class="text-sm text-gray-500">{{.Email}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{.Registration}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{.CPF}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{.Course.Name}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        {{template "table-action-button" dict "URL" (printf "/students/%s" (formatUUID .ID)) "Label" "Ver"}}
+                        {{template "table-action-button" dict "URL" (printf "/students/%s/edit" (formatUUID .ID)) "Label" "Editar"}}
+                        {{template "table-delete-button" dict "URL" (printf "/api/students/%s" (formatUUID .ID))}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Nenhum estudante encontrado.</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}
+
+{{template "base" .}}

@@ -28,7 +28,7 @@ type student struct {
 	workloadCompleted    int
 	pendingWorkload      int
 	responsibleTeacherID uuid.UUID
-	currentInternship    internship.Internship
+	currentInternships   []internship.Internship
 	internshipHistory    []internship.Internship
 	frequencyHistory     []timeRecord.TimeRecord
 }
@@ -53,8 +53,8 @@ func (s *student) Course() course.Course {
 	return s._course
 }
 
-func (s *student) CurrentInternship() internship.Internship {
-	return s.currentInternship
+func (s *student) CurrentInternships() []internship.Internship {
+	return s.currentInternships
 }
 
 func (s *student) InternshipHistory() []internship.Internship {
@@ -126,11 +126,8 @@ func (s *student) SetCourse(_course course.Course) errors.Error {
 	return nil
 }
 
-func (s *student) SetCurrentInternship(currentInternship internship.Internship) errors.Error {
-	if currentInternship == nil {
-		return errors.NewFromString(messages.InternshipErrorMessage)
-	}
-	s.currentInternship = currentInternship
+func (s *student) SetCurrentInternships(currentInternships []internship.Internship) errors.Error {
+	s.currentInternships = currentInternships
 	return nil
 }
 

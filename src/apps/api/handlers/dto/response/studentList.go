@@ -12,9 +12,9 @@ type StudentList struct {
 	Campus            Campus      `json:"campus"`
 	Course            Course      `json:"course"`
 	TotalWorkload     int         `json:"total_workload"`
-	WorkloadCompleted int         `json:"workload_completed"`
-	PendingWorkload   int         `json:"pending_workload"`
-	CurrentInternship *Internship `json:"current_internship"`
+	WorkloadCompleted int          `json:"workload_completed"`
+	PendingWorkload   int          `json:"pending_workload"`
+	CurrentInternships []Internship `json:"current_internships"`
 }
 
 type studentListBuilder struct{}
@@ -32,11 +32,7 @@ func (*studentListBuilder) BuildFromDomain(data student.Student) StudentList {
 		CPF:       data.CPF(),
 		Phone:     data.Phone(),
 	}
-	var currentInternship *Internship
-	if data.CurrentInternship() != nil {
-		aux := InternshipBuilder().BuildFromDomain(data.CurrentInternship())
-		currentInternship = &aux
-	}
+	currentInternships := InternshipBuilder().BuildFromDomainList(data.CurrentInternships())
 	return StudentList{
 		Person:            _person,
 		Registration:      data.Registration(),
@@ -47,7 +43,7 @@ func (*studentListBuilder) BuildFromDomain(data student.Student) StudentList {
 		TotalWorkload:     data.TotalWorkload(),
 		WorkloadCompleted: data.WorkloadCompleted(),
 		PendingWorkload:   data.PendingWorkload(),
-		CurrentInternship: currentInternship,
+		CurrentInternships: currentInternships,
 	}
 }
 

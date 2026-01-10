@@ -20,4 +20,6 @@ const (
 	TimeRecordStudentIDErrorMessage     = "time record student id is invalid"
 
 	TimeRecordNotFoundErrorMessage = "time record not found"
+	TimeRecordToleranceErrorMessage = "time record entry time exceeds the 30-minute tolerance"
+	TimeRecordDailyLimitErrorMessage = "time record daily limit of 5 hours has been reached"
 )

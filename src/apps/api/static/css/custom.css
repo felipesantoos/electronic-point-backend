@@ -1,0 +1,34 @@
+/* Custom CSS for Ponto Eletrônico */
+
+/* HTMX Loading Indicator */
+.htmx-indicator {
+    display: none;
+}
+.htmx-request .htmx-indicator {
+    display: inline-block;
+}
+.htmx-request.htmx-indicator {
+    display: inline-block;
+}
+
+/* Transitions */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 10px;
+}

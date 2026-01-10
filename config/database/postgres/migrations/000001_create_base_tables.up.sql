@@ -41,6 +41,7 @@ CREATE TABLE account (
 );
 
 CREATE TABLE password_reset (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   account_id uuid NOT NULL,
   token TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),

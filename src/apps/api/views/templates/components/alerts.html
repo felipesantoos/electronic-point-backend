@@ -1,0 +1,58 @@
+{{define "alerts"}}
+    {{range .FlashMessages}}
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+             class="mb-4 p-4 rounded-md flex items-center justify-between {{if eq .Type "success"}}bg-green-100 text-green-800{{else if eq .Type "error"}}bg-red-100 text-red-800{{else if eq .Type "warning"}}bg-yellow-100 text-yellow-800{{else}}bg-blue-100 text-blue-800{{end}}">
+            <div class="flex items-center">
+                <span class="mr-2">
+                    {{if eq .Type "success"}}
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    {{else if eq .Type "error"}}
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    {{else}}
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    {{end}}
+                </span>
+                <span>{{.Content}}</span>
+            </div>
+            <button @click="show = false" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    {{end}}
+
+    {{range .Errors}}
+        <div x-data="{ show: true }" x-show="show"
+             class="mb-4 p-4 rounded-md flex items-center justify-between bg-red-100 text-red-800">
+            <div class="flex items-center">
+                <span class="mr-2">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </span>
+                <span>{{.}}</span>
+            </div>
+            <button @click="show = false" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    {{end}}
+{{end}}
+
+{{define "toast"}}
+<div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+     class="p-4 rounded-md shadow-lg border-l-4 flex items-center justify-between {{if eq .Type "success"}}bg-white border-green-500 text-green-800{{else if eq .Type "error"}}bg-white border-red-500 text-red-800{{else if eq .Type "warning"}}bg-white border-yellow-500 text-yellow-800{{else}}bg-white border-blue-500 text-blue-800{{end}}">
+    <div class="flex items-center">
+        <span class="mr-3">
+            {{if eq .Type "success"}}
+                <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            {{else if eq .Type "error"}}
+                <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            {{else}}
+                <svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            {{end}}
+        </span>
+        <span class="font-medium">{{.Content}}</span>
+    </div>
+    <button @click="show = false" class="ml-4 text-gray-400 hover:text-gray-600 focus:outline-none">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+</div>
+{{end}}

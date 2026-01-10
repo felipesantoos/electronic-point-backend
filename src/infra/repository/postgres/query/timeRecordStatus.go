@@ -7,6 +7,9 @@ const (
 
 type TimeRecordStatusQueryBuilder interface {
 	Select() TimeRecordStatusQuerySelectBuilder
+	Insert() string
+	Update() string
+	Delete() string
 }
 
 type TimeRecordStatusQuerySelectBuilder interface {
@@ -22,6 +25,29 @@ func TimeRecordStatus() TimeRecordStatusQueryBuilder {
 
 func (*timeRecordStatusQueryBuilder) Select() TimeRecordStatusQuerySelectBuilder {
 	return &timeRecordStatusQuerySelectBuilder{}
+}
+
+func (*timeRecordStatusQueryBuilder) Insert() string {
+	return `
+		INSERT INTO time_record_status (name)
+		VALUES ($1)
+		RETURNING id
+	`
+}
+
+func (*timeRecordStatusQueryBuilder) Update() string {
+	return `
+		UPDATE time_record_status
+		SET name = $2
+		WHERE id = $1
+	`
+}
+
+func (*timeRecordStatusQueryBuilder) Delete() string {
+	return `
+		DELETE FROM time_record_status
+		WHERE id = $1
+	`
 }
 
 type timeRecordStatusQuerySelectBuilder struct{}

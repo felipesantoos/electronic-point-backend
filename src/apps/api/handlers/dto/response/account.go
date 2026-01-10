@@ -40,3 +40,11 @@ func (*accountBuilder) BuildFromDomain(data account.Account) Account {
 		_student,
 	}
 }
+
+func (*accountBuilder) BuildFromDomainList(data []account.Account) []Account {
+	accounts := make([]Account, 0)
+	for _, acc := range data {
+		accounts = append(accounts, AccountBuilder().BuildFromDomain(acc))
+	}
+	return accounts
+}

@@ -37,6 +37,7 @@ func (this timeRecordRepository) Create(_timeRecord timeRecord.TimeRecord) (*uui
 		_timeRecord.IsOffSite(),
 		_timeRecord.Justification(),
 		_timeRecord.StudentID(),
+		_timeRecord.InternshipID(),
 	)
 	if err != nil {
 		logger.Error().Msg(err.String())
@@ -71,7 +72,7 @@ func (this timeRecordRepository) Create(_timeRecord timeRecord.TimeRecord) (*uui
 func (this timeRecordRepository) Update(_timeRecord timeRecord.TimeRecord) errors.Error {
 	_, err := repository.ExecQuery(query.TimeRecord().Update(), _timeRecord.ID(),
 		_timeRecord.Date(), _timeRecord.EntryTime(), _timeRecord.ExitTime(), _timeRecord.Location(),
-		_timeRecord.IsOffSite(), _timeRecord.Justification(), _timeRecord.StudentID(),
+		_timeRecord.IsOffSite(), _timeRecord.Justification(), _timeRecord.StudentID(), _timeRecord.InternshipID(),
 	)
 	if err != nil {
 		logger.Error().Msg(err.String())

@@ -22,7 +22,8 @@ func NewInternshipRepository() secondary.InternshipPort {
 func (this internshipRepository) Create(_internship internship.Internship) (*uuid.UUID, errors.Error) {
 	var id uuid.UUID
 	rows, err := repository.Queryx(query.Internship().Insert(), _internship.Student().ID(),
-		_internship.Location().ID(), _internship.StartedIn(), _internship.EndedIn())
+		_internship.Location().ID(), _internship.StartedIn(), _internship.EndedIn(),
+		_internship.ScheduleEntryTime(), _internship.ScheduleExitTime())
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
@@ -42,7 +43,7 @@ func (this internshipRepository) Create(_internship internship.Internship) (*uui
 func (this internshipRepository) Update(_internship internship.Internship) errors.Error {
 	_, err := repository.ExecQuery(query.Internship().Update(), _internship.ID(),
 		_internship.Student().ID(), _internship.Location().ID(), _internship.StartedIn(),
-		_internship.EndedIn())
+		_internship.EndedIn(), _internship.ScheduleEntryTime(), _internship.ScheduleExitTime())
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return errors.NewUnexpected()

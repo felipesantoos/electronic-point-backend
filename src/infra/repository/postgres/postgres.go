@@ -5,6 +5,8 @@ import (
 	"eletronic_point/src/infra"
 	"eletronic_point/src/infra/repository"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 var logger = infra.Logger().With().Str("port", "postgres").Logger()
@@ -75,4 +77,29 @@ func txQueryRowReturningID(tx *repository.SQLTransaction, sqlQuery string, args 
 		return "", repository.TranslateError(scanErr)
 	}
 	return strUUID, nil
+}
+
+func execQueryReturningID(sqlQuery string, args ...interface{}) (*uuid.UUID, errors.Error) {
+	transaction, err := repository.BeginTransaction()
+	if err != nil {
+		return nil, err
+	}
+	defer transaction.CloseConn()
+
+	id, err := txQueryRowReturningID(transaction, sqlQuery, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	commitErr := transaction.Commit()
+	if commitErr != nil {
+		return nil, commitErr
+	}
+
+	parsedID, convErr := uuid.Parse(id)
+	if convErr != nil {
+		return nil, errors.NewUnexpected()
+	}
+
+	return &parsedID, nil
 }

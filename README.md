@@ -16,8 +16,10 @@ Se você é um membro do time de desenvolvimento desse projeto, siga os passos a
 
 1. Certifique-se de que você possui a ferramenta CLI do Go instalada ([instruções de instalação](https://go.dev/learn/));
 2. Certifique-se de que o Docker esteja instalado no seu computador ([instruções de instalação](https://www.docker.com/));
-3. Copie todo o conteúdo do arquivo `.env.example` e cole em um novo arquivo chamado `.env` na raiz do projeto;
-4. Execute o seguinte script para configurar e iniciar o projeto automaticamente ou apenas execute os comandos `chmod +x execute.sh` e `./execute.sh -environment -development` (o script `execute.sh` irá executar todos os comandos abaixo):
+3. Certifique-se de que você possui a ferramenta CLI `swag` instalada para geração de documentação ([instruções de instalação](https://github.com/swaggo/swag));
+4. Certifique-se de que você possui a ferramenta CLI `migrate` instalada para execução de migrations ([instruções de instalação](https://github.com/golang-migrate/migrate));
+5. Copie todo o conteúdo do arquivo `.env.example` e cole em um novo arquivo chamado `.env` na raiz do projeto e configure as variáveis de acordo com seu ambiente;
+6. Execute o seguinte script para configurar e iniciar o projeto automaticamente ou apenas execute os comandos `chmod +x execute.sh` e `./execute.sh -environment -development` (o script `execute.sh` irá executar todos os comandos abaixo):
 
 ```bash
 #!/bin/bash
@@ -41,7 +43,7 @@ docker compose -f docker-compose.dev.yml up database redis --build -d
 go mod tidy
 
 # Generate the API documentation
-bash -c "cd src/apps/api && swag init -g ../main.go --output ./docs --dir ./handlers"
+bash -c "cd src/apps/api && swag init -g main.go --output ./docs --dir ./handlers"
 
 # Wait 5 seconds so that the database can initiate and then load the migrations
 migrate -path $migrations_path -database $uri up
@@ -50,14 +52,33 @@ migrate -path $migrations_path -database $uri up
 go run src/apps/api/main.go
 ```
 
+Após o servidor iniciar, o **FrontEnd** (interface administrativa) estará disponível em [http://localhost:8000](http://localhost:8000) e a documentação Swagger em [http://localhost:8000/api/docs](http://localhost:8000/api/docs).
+
+> **Nota:** Para acessar o sistema, você pode utilizar as seguintes credenciais de teste:
+> - **Usuário:** `admin@test.com`
+> - **Senha:** `123456`
+
 ### **Para Testes de Qualidade (QA)**
 Se você é um membro do time de qualidade (QA), siga os passos abaixo para executar as configurações apropriadas:
 
 1. Copie todo o conteúdo do arquivo `.env.example` e cole em um novo arquivo chamado `.env` na raiz do projeto;
-2. Execute o seguinte comando para iniciar os serviços necessários:
+2. Certifique-se de configurar as variáveis de ambiente necessárias (como as credenciais do banco de dados e Redis);
+3. Execute o seguinte comando para iniciar os serviços necessários utilizando o ambiente de desenvolvimento (com build local):
 
 ```bash
 docker compose -f docker-compose.dev.yml up --build
 ```
 
+Caso deseje utilizar as imagens pré-construídas do DockerHub (ambiente de produção/homologação), utilize:
+
+```bash
+docker compose up --build
+```
+
 O projeto estará disponível no endereço [http://localhost:8000](http://localhost:8000).
+
+---
+
+## Documentação Adicional
+
+Para mais detalhes sobre os scripts utilitários e ambiente de testes, consulte o [Guia de Executáveis](docs/executables-guide.md).

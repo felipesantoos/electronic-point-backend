@@ -187,21 +187,15 @@ func (this studentRepository) Get(id uuid.UUID, _filters filters.StudentFilters)
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
-	defer rows.Close()
-	if !rows.Next() {
-		return nil, errors.NewFromString(messages.StudentNotFoundErrorMessage)
-	}
-	var serializedStudent = map[string]interface{}{}
-	nativeError := rows.MapScan(serializedStudent)
-	if nativeError != nil {
-		logger.Error().Msg(nativeError.Error())
-		return nil, errors.NewUnexpected()
-	}
-	_student, err := queryObject.Student().FromMap(serializedStudent)
+	students, err := queryObject.Student().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
 	}
+	if len(students) == 0 {
+		return nil, errors.NewFromString(messages.StudentNotFoundErrorMessage)
+	}
+	_student := students[0]
 	timeRecordRepository := NewTimeRecordRepository()
 	studentID := _student.ID()
 	timeRecordFilters := filters.TimeRecordFilters{StudentID: studentID}

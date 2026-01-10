@@ -1,0 +1,42 @@
+{{define "content"}}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-gray-800">Status de Registro de Ponto</h2>
+        <a href="/time-record-status/new" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Novo Status
+        </a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    {{template "table-header" "Nome"}}
+                    {{template "table-header" "Código"}}
+                    {{template "table-header" "Ações"}}
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {{range .Data.Statuses}}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{.Name}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span class="px-2 py-1 rounded-md bg-gray-100 font-mono text-xs">{{.Code}}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        {{template "table-action-button" dict "URL" (printf "/time-record-status/%s" (formatUUID .ID)) "Label" "Ver"}}
+                        {{template "table-action-button" dict "URL" (printf "/time-record-status/%s/edit" (formatUUID .ID)) "Label" "Editar"}}
+                        {{template "table-delete-button" dict "URL" (printf "/api/time-record-status/%s" (formatUUID .ID))}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Nenhum status encontrado.</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}
+
+{{template "base" .}}

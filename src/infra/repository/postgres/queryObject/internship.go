@@ -43,6 +43,8 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}, shou
 		return nil, errors.NewUnexpected()
 	}
 	internshipEndedIn := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
+	scheduleEntryTime := utils.GetNullableValue[time.Time](data[query.InternshipScheduleEntryTime])
+	scheduleExitTime := utils.GetNullableValue[time.Time](data[query.InternshipScheduleExitTime])
 	locationID, err := uuid.Parse(string(data[query.InternshipLocationID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())
@@ -148,6 +150,8 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}, shou
 		WithID(internshipID).
 		WithStartedIn(internshipStartedIn).
 		WithEndedIn(internshipEndedIn).
+		WithScheduleEntryTime(scheduleEntryTime).
+		WithScheduleExitTime(scheduleExitTime).
 		WithLocation(location)
 	if shouldReturnStudentInfo {
 		internshipBuilder.WithStudent(_student)

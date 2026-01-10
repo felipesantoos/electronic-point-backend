@@ -3,6 +3,7 @@ p, anonymous, /api/auth/login, POST
 p, anonymous, /api/auth/reset-password, POST
 p, anonymous, /api/auth/reset-password/*, GET
 p, anonymous, /api/auth/reset-password/*, PUT
+p, admin, /api/*, *
 p, teacher, /api/docs/*, GET
 p, teacher, /api/accounts/profile, GET
 p, teacher, /api/accounts/profile, PUT

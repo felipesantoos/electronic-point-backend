@@ -1,0 +1,177 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} - Ponto Eletrônico</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Alpine.js (optional, for simple UI interactions) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal" hx-boost="true">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        {{template "sidebar" .}}
+
+        <!-- Main Content -->
+        <div id="main-content" class="w-full md:flex-1">
+            <!-- Header -->
+            {{template "header" .}}
+
+            <!-- Content -->
+            <main class="p-4 md:p-8">
+                <!-- Flash Messages -->
+                <div id="flash-messages">
+                    {{template "alerts" .}}
+                </div>
+
+                <!-- Page Content -->
+                <div id="page-content">
+                    {{template "content" .}}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals Container -->
+    <div id="modal-container"></div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- Custom JS -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
+{{end}}
+
+{{define "header"}}
+<header class="bg-white shadow-sm p-4 flex justify-between items-center border-b border-gray-200">
+    <div class="flex items-center">
+        <button @click="sidebarOpen = !sidebarOpen" class="md:hidden text-gray-500 focus:outline-none mr-4">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+        <h1 class="text-xl font-semibold text-gray-800">{{.Title}}</h1>
+    </div>
+    <div class="flex items-center space-x-4" x-data="{ open: false }">
+        <div class="relative">
+            <button @click="open = !open" class="flex items-center focus:outline-none">
+                <span class="text-sm font-medium text-gray-700 mr-2">{{.User.RoleName}}</span>
+                <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+                    {{slice .User.RoleName 0 1 | toUpper}}
+                </div>
+            </button>
+            <div x-show="open" @click.away="open = false" x-cloak
+                 class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                <a href="/accounts/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                <button hx-post="/logout" hx-target="body" hx-push-url="true" 
+                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sair</button>
+            </div>
+        </div>
+    </div>
+</header>
+{{end}}
+
+{{define "sidebar"}}
+<aside x-data="{ sidebarOpen: false }" 
+       class="bg-gray-800 text-gray-100 min-h-screen z-40 transition-all duration-300 sidebar-scroll overflow-y-auto"
+       :class="sidebarOpen ? 'w-64 fixed inset-y-0 left-0' : 'w-0 md:w-64 overflow-hidden md:overflow-visible fixed md:relative inset-y-0 left-0'">
+    <div class="p-4 flex items-center justify-between border-b border-gray-700 whitespace-nowrap">
+        <a href="/" class="flex items-center">
+            <span class="text-xl font-bold tracking-wider">PONTO DIT</span>
+        </a>
+        <button @click="sidebarOpen = false" class="md:hidden text-gray-100 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+    <nav class="mt-4 px-2 space-y-1">
+        <a href="/" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "dashboard"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Dashboard
+        </a>
+
+        <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Gestão</div>
+        
+        <a href="/students" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "students"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            Estudantes
+        </a>
+        
+        <a href="/internships" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "internships"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            Estágios
+        </a>
+
+        <a href="/time-records" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "time-records"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Registros de Ponto
+        </a>
+
+        <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Admin</div>
+        
+        <a href="/admin/accounts" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "accounts"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Contas
+        </a>
+
+        <a href="/internship-locations" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "internship-locations"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Locais de Estágio
+        </a>
+
+        <a href="/institutions" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "institutions"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+            Instituições
+        </a>
+
+        <a href="/campus" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "campus"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Campus
+        </a>
+
+        <a href="/courses" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "courses"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            Cursos
+        </a>
+
+        <a href="/time-record-status" class="flex items-center px-4 py-3 text-sm font-medium rounded-md hover:bg-gray-700 {{if eq .ActiveMenu "time-record-status"}}bg-gray-900 text-white{{else}}text-gray-300{{end}}">
+            <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+            Status de Ponto
+        </a>
+    </nav>
+</aside>
+{{end}}

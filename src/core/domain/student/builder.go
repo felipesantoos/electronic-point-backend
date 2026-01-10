@@ -120,13 +120,8 @@ func (builder *builder) WithResponsibleTeacherID(responsibleTeacherID uuid.UUID)
 	return builder
 }
 
-func (builder *builder) WithCurrentInternship(currentInternship internship.Internship) *builder {
-	if currentInternship == nil {
-		builder.fields = append(builder.fields, messages.Internship)
-		builder.errorMessages = append(builder.errorMessages, messages.InternshipErrorMessage)
-		return builder
-	}
-	builder.student.currentInternship = currentInternship
+func (builder *builder) WithCurrentInternships(currentInternships []internship.Internship) *builder {
+	builder.student.currentInternships = currentInternships
 	return builder
 }
 

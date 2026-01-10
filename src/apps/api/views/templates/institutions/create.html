@@ -1,0 +1,25 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Nova Instituição</h2>
+        <p class="text-gray-600">Cadastre uma nova instituição de ensino.</p>
+    </div>
+
+    <div id="institution-alerts">
+        {{template "alerts" .}}
+    </div>
+
+    <form hx-post="/institutions" hx-target="body" hx-push-url="true" class="space-y-4">
+        {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome da Instituição" "Required" true}}
+
+        <div class="pt-4 flex justify-end gap-3">
+            <a href="/institutions" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancelar
+            </a>
+            {{template "form-button" dict "Label" "Cadastrar Instituição"}}
+        </div>
+    </form>
+</div>
+{{end}}
+
+{{template "base" .}}

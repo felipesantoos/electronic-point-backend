@@ -56,3 +56,15 @@ func (this timeRecordStatusRepository) Get(id uuid.UUID) (timeRecordStatus.TimeR
 	}
 	return _timeRecordStatus, nil
 }
+
+func (this timeRecordStatusRepository) Create(data timeRecordStatus.TimeRecordStatus) (*uuid.UUID, errors.Error) {
+	return execQueryReturningID(query.TimeRecordStatus().Insert(), data.Name())
+}
+
+func (this timeRecordStatusRepository) Update(data timeRecordStatus.TimeRecordStatus) errors.Error {
+	return defaultExecQuery(query.TimeRecordStatus().Update(), data.ID(), data.Name())
+}
+
+func (this timeRecordStatusRepository) Delete(id uuid.UUID) errors.Error {
+	return defaultExecQuery(query.TimeRecordStatus().Delete(), id)
+}

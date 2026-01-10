@@ -106,11 +106,14 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 					internship.id, 
 					internship.internship_location_id, 
 					internship.started_in, 
-					internship.ended_in
+					internship.ended_in,
+					internship.schedule_entry_time,
+					internship.schedule_exit_time
 				FROM internship
 				WHERE internship.student_id = student.id
+					AND (internship.ended_in IS NULL OR internship.ended_in >= CURRENT_DATE)
+					AND internship.deleted_at IS NULL
 				ORDER BY internship.created_at DESC
-				LIMIT 1
 			) internship ON true
 			LEFT JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE student.deleted_at IS NULL
@@ -163,11 +166,14 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) ByID() string {
 					internship.id, 
 					internship.internship_location_id, 
 					internship.started_in, 
-					internship.ended_in
+					internship.ended_in,
+					internship.schedule_entry_time,
+					internship.schedule_exit_time
 				FROM internship
 				WHERE internship.student_id = student.id
+					AND (internship.ended_in IS NULL OR internship.ended_in >= CURRENT_DATE)
+					AND internship.deleted_at IS NULL
 				ORDER BY internship.created_at DESC
-				LIMIT 1
 			) internship ON true
 			LEFT JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE person.id = $1

@@ -1,0 +1,26 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Novo Campus</h2>
+        <p class="text-gray-600">Cadastre um novo campus para uma instituição.</p>
+    </div>
+
+    <div id="campus-alerts">
+        {{template "alerts" .}}
+    </div>
+
+    <form hx-post="/campus" hx-target="body" hx-push-url="true" class="space-y-4">
+        {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome do Campus" "Required" true}}
+        {{template "form-select" dict "ID" "institution_id" "Name" "institution_id" "Label" "Instituição" "Required" true "Placeholder" "Selecione a instituição" "Options" .Data.Institutions}}
+
+        <div class="pt-4 flex justify-end gap-3">
+            <a href="/campus" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Cancelar
+            </a>
+            {{template "form-button" dict "Label" "Cadastrar Campus"}}
+        </div>
+    </form>
+</div>
+{{end}}
+
+{{template "base" .}}

@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: .docker/development/Dockerfile.postgres
     ports:
-      - "5432:5432"
+      - "5434:5432"
     env_file: .env
     restart: always
     volumes:
@@ -42,7 +42,7 @@ services:
     command: >
       sh -c 'redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"'
     ports:
-      - "6379:6379"
+      - "6381:6379"
     env_file: .env
     restart: always
     volumes:

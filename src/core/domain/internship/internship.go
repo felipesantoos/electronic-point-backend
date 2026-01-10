@@ -14,11 +14,13 @@ import (
 var _ Internship = &internship{}
 
 type internship struct {
-	id        uuid.UUID
-	startedIn time.Time
-	endedIn   *time.Time
-	location  internshipLocation.InternshipLocation
-	_student  simplifiedStudent.SimplifiedStudent
+	id                uuid.UUID
+	startedIn         time.Time
+	endedIn           *time.Time
+	location          internshipLocation.InternshipLocation
+	_student          simplifiedStudent.SimplifiedStudent
+	scheduleEntryTime *time.Time
+	scheduleExitTime  *time.Time
 }
 
 func (i *internship) ID() uuid.UUID {
@@ -39,6 +41,14 @@ func (i *internship) Location() internshipLocation.InternshipLocation {
 
 func (i *internship) Student() simplifiedStudent.SimplifiedStudent {
 	return i._student
+}
+
+func (i *internship) ScheduleEntryTime() *time.Time {
+	return i.scheduleEntryTime
+}
+
+func (i *internship) ScheduleExitTime() *time.Time {
+	return i.scheduleExitTime
 }
 
 func (i *internship) SetID(id uuid.UUID) errors.Error {
@@ -75,5 +85,15 @@ func (i *internship) SetStudent(_student simplifiedStudent.SimplifiedStudent) er
 		return errors.NewValidationFromString(messages.InternshipStudentErrorMessage)
 	}
 	i._student = _student
+	return nil
+}
+
+func (i *internship) SetScheduleEntryTime(scheduleEntryTime *time.Time) errors.Error {
+	i.scheduleEntryTime = scheduleEntryTime
+	return nil
+}
+
+func (i *internship) SetScheduleExitTime(scheduleExitTime *time.Time) errors.Error {
+	i.scheduleExitTime = scheduleExitTime
 	return nil
 }

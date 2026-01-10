@@ -1,11 +1,21 @@
 #!/bin/bash
 
+# Add Go bin to PATH if not already present
+export PATH="$HOME/go/bin:$PATH"
+
 echo "\
 +-------------------------------------------+
 | Loading environment variables for test... |
 +-------------------------------------------+\
 "
-source src/utils/tests/envs/.env.test
+
+# Check if .env.test exists
+if [ ! -f ".env.test" ]; then
+    echo "Error: .env.test not found in project root!"
+    exit 1
+fi
+
+source .env.test
 schema=$(echo $DATABASE_SCHEMA | sed "s/\r//")
 user=$(echo $DATABASE_USER | sed "s/\r//")
 password=$(echo $DATABASE_PASSWORD | sed "s/\r//")
@@ -21,7 +31,14 @@ echo "\
 | Starting database for tests... |
 +--------------------------------+\
 "
-docker compose -f ./src/utils/tests/docker/docker-compose.test.yml up -d database_test
+
+# Check if docker-compose.test.yml exists
+if [ ! -f "docker-compose.test.yml" ]; then
+    echo "Error: docker-compose.test.yml not found in project root!"
+    exit 1
+fi
+
+docker compose -f ./docker-compose.test.yml up -d database_test
 
 echo "\
 +-------------------------------------+
@@ -29,6 +46,13 @@ echo "\
 +-------------------------------------+\
 "
 go mod tidy
+
+echo "\
++----------------------------------+
+| Cleaning Go build cache... |
++----------------------------------+\
+"
+go clean -cache
 
 echo "\
 +--------------------------------------------------------+

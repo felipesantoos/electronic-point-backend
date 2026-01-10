@@ -1,9 +1,11 @@
 package query
 
 const (
-	InternshipID        = "internship_id"
-	InternshipStartedIn = "internship_started_in"
-	InternshipEndedIn   = "internship_ended_in"
+	InternshipID                = "internship_id"
+	InternshipStartedIn         = "internship_started_in"
+	InternshipEndedIn           = "internship_ended_in"
+	InternshipScheduleEntryTime = "internship_schedule_entry_time"
+	InternshipScheduleExitTime  = "internship_schedule_exit_time"
 )
 
 type InternshipQueryBuilder interface {
@@ -26,9 +28,9 @@ func (*internshipQueryBuilder) Select() InternshipQuerySelectBuilder {
 func (*internshipQueryBuilder) Insert() string {
 	return `
 		INSERT INTO internship (
-			student_id, internship_location_id, started_in, ended_in
+			student_id, internship_location_id, started_in, ended_in, schedule_entry_time, schedule_exit_time
 		) VALUES (
-			$1, $2, $3, $4
+			$1, $2, $3, $4, $5, $6
 		) RETURNING id
 	`
 }
@@ -41,6 +43,8 @@ func (*internshipQueryBuilder) Update() string {
 			internship_location_id = $3,
 			started_in = $4,
 			ended_in = $5,
+			schedule_entry_time = $6,
+			schedule_exit_time = $7,
 			updated_at = CURRENT_TIMESTAMP
 		WHERE id = $1
 	`
@@ -69,6 +73,8 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) All() string {
 			internship.id AS internship_id,
 			internship.started_in AS internship_started_in,
 			internship.ended_in AS internship_ended_in,
+			internship.schedule_entry_time AS internship_schedule_entry_time,
+			internship.schedule_exit_time AS internship_schedule_exit_time,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
 			internship_location.number AS internship_location_number,
@@ -106,6 +112,8 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) ByID() string 
 			internship.id AS internship_id,
 			internship.started_in AS internship_started_in,
 			internship.ended_in AS internship_ended_in,
+			internship.schedule_entry_time AS internship_schedule_entry_time,
+			internship.schedule_exit_time AS internship_schedule_exit_time,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
 			internship_location.number AS internship_location_number,
@@ -141,6 +149,8 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) ByStudentID() 
 			internship.id AS internship_id,
 			internship.started_in AS internship_started_in,
 			internship.ended_in AS internship_ended_in,
+			internship.schedule_entry_time AS internship_schedule_entry_time,
+			internship.schedule_exit_time AS internship_schedule_exit_time,
 			internship_location.id AS internship_location_id,
 			internship_location.name AS internship_location_name,
 			internship_location.number AS internship_location_number,

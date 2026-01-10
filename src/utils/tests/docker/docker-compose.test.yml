@@ -1,0 +1,27 @@
+services:
+  database_test:
+    container_name: eletronic_point_database_test
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: eletronic_point_test
+      POSTGRES_PASSWORD: 12345678_test
+      POSTGRES_DB: eletronic_point_test
+    restart: always
+    volumes:
+      - database_test_data:/var/lib/postgresql/data
+    networks:
+      - eletronic_point_test_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eletronic_point_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  database_test_data:
+
+networks:
+  eletronic_point_test_network:
+    driver: bridge

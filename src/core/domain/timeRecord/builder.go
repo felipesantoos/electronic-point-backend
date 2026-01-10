@@ -2,6 +2,8 @@ package timeRecord
 
 import (
 	"eletronic_point/src/core/domain/errors"
+	"eletronic_point/src/core/domain/internship"
+	"eletronic_point/src/core/domain/simplifiedStudent"
 	"eletronic_point/src/core/domain/timeRecordStatus"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/utils/validator"
@@ -95,6 +97,28 @@ func (builder *builder) WithStudentID(studentID uuid.UUID) *builder {
 	builder.timeRecord.studentID = studentID
 	return builder
 }
+
+func (builder *builder) WithInternshipID(internshipID uuid.UUID) *builder {
+	if !validator.IsUUIDValid(internshipID) {
+		builder.fields = append(builder.fields, messages.InternshipID)
+		builder.errorMessages = append(builder.errorMessages, messages.InternshipIDErrorMessage)
+		return builder
+	}
+
+	builder.timeRecord.internshipID = internshipID
+	return builder
+}
+
+func (builder *builder) WithStudent(student simplifiedStudent.SimplifiedStudent) *builder {
+	builder.timeRecord.student = student
+	return builder
+}
+
+func (builder *builder) WithInternship(internship internship.Internship) *builder {
+	builder.timeRecord.internship = internship
+	return builder
+}
+
 func (builder *builder) WithTimeRecord(_timeRecordStatus timeRecordStatus.TimeRecordStatus) *builder {
 	if _timeRecordStatus == nil {
 		builder.fields = append(builder.fields, messages.TimeRecordStatus)

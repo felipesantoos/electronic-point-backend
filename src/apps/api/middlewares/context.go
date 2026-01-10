@@ -10,7 +10,8 @@ import (
 func EnhanceContext(next handlers.RichHandler) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		authHeader := ctx.Request().Header.Get("Authorization")
-		claims, _ := utils.ExtractTokenClaims(authHeader)
+		_, token := utils.ExtractToken(authHeader)
+		claims, _ := utils.ExtractTokenClaims(token)
 		enhancedCtx, err := handlers.NewRichContext(ctx, claims)
 		if err != nil {
 			return err

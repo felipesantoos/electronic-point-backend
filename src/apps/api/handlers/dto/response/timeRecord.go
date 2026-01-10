@@ -8,15 +8,17 @@ import (
 )
 
 type TimeRecord struct {
-	ID               uuid.UUID        `json:"id"`
-	Date             time.Time        `json:"date"`
-	EntryTime        time.Time        `json:"entry_time"`
-	ExitTime         *time.Time       `json:"exit_time"`
-	Location         string           `json:"location"`
-	IsOffSite        bool             `json:"is_off_site"`
-	Justification    *string          `json:"justification"`
-	StudentID        uuid.UUID        `json:"student_id"`
-	TimeRecordStatus TimeRecordStatus `json:"time_record_status"`
+	ID               uuid.UUID         `json:"id"`
+	Date             time.Time         `json:"date"`
+	EntryTime        time.Time         `json:"entry_time"`
+	ExitTime         *time.Time        `json:"exit_time"`
+	Location         string            `json:"location"`
+	IsOffSite        bool              `json:"is_off_site"`
+	Justification    *string           `json:"justification"`
+	StudentID        uuid.UUID         `json:"student_id"`
+	Student          SimplifiedStudent `json:"student"`
+	Internship       Internship        `json:"internship"`
+	TimeRecordStatus TimeRecordStatus  `json:"time_record_status"`
 }
 
 type timeRecordBuilder struct{}
@@ -35,6 +37,8 @@ func (*timeRecordBuilder) BuildFromDomain(data timeRecord.TimeRecord) TimeRecord
 		IsOffSite:        data.IsOffSite(),
 		Justification:    data.Justification(),
 		StudentID:        data.StudentID(),
+		Student:          SimplifiedStudentBuilder().BuildFromDomain(data.Student()),
+		Internship:       InternshipBuilder().BuildFromDomain(data.Internship()),
 		TimeRecordStatus: TimeRecordStatusBuilder().BuildFromDomain(data.TimeRecordStatus()),
 	}
 }

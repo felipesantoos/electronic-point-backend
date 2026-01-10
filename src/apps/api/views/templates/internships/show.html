@@ -1,0 +1,71 @@
+{{define "content"}}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800">Detalhes do Estágio</h2>
+                <p class="text-gray-600">Vínculo entre o estudante e o local de estágio.</p>
+            </div>
+            <div class="flex gap-2">
+                <a href="/internships" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Voltar
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Student Side -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-gray-700 border-b pb-2">Estudante</h3>
+                <div class="flex items-center">
+                    <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-4">
+                        {{slice .Data.Internship.Student.Name 0 1 | toUpper}}
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-900">{{.Data.Internship.Student.Name}}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="/students/{{formatUUID .Data.Internship.Student.ID}}" class="text-xs text-blue-600 font-bold uppercase hover:underline">Ver perfil completo &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Location Side -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-gray-700 border-b pb-2">Local de Estágio</h3>
+                <div class="flex items-center">
+                    <div class="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-4">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-900">{{.Data.Internship.Location.Name}}</p>
+                        <p class="text-xs text-gray-500">{{.Data.Internship.Location.Street}}, {{.Data.Internship.Location.Number}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 pt-8 border-t">
+            <h3 class="text-lg font-bold text-gray-700 mb-4">Vigência e Carga Horária</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <dt class="text-xs font-bold text-gray-500 uppercase">Início</dt>
+                    <dd class="text-sm text-gray-900">{{formatDate .Data.Internship.StartedIn}}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-bold text-gray-500 uppercase">Previsão de Término</dt>
+                    <dd class="text-sm text-gray-900">{{if .Data.Internship.EndedIn}}{{formatDate .Data.Internship.EndedIn}}{{else}}Indeterminado{{end}}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-bold text-gray-500 uppercase">Carga Horária Estudante</dt>
+                    <dd class="text-sm text-gray-900">{{.Data.Internship.Student.TotalWorkload}}h (Total)</dd>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{template "base" .}}

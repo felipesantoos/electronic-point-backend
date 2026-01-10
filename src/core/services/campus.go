@@ -6,6 +6,7 @@ import (
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/interfaces/secondary"
 	"eletronic_point/src/core/services/filters"
+	"github.com/google/uuid"
 )
 
 type campusServices struct {
@@ -18,4 +19,20 @@ func NewCampusServices(repository secondary.CampusPort) primary.CampusPort {
 
 func (this *campusServices) List(_filters filters.CampusFilters) ([]campus.Campus, errors.Error) {
 	return this.repository.List(_filters)
+}
+
+func (this *campusServices) Get(id uuid.UUID) (campus.Campus, errors.Error) {
+	return this.repository.Get(id)
+}
+
+func (this *campusServices) Create(data campus.Campus) (*uuid.UUID, errors.Error) {
+	return this.repository.Create(data)
+}
+
+func (this *campusServices) Update(data campus.Campus) errors.Error {
+	return this.repository.Update(data)
+}
+
+func (this *campusServices) Delete(id uuid.UUID) errors.Error {
+	return this.repository.Delete(id)
 }

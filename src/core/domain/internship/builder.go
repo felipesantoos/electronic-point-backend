@@ -70,6 +70,16 @@ func (b *Builder) WithStudent(_student simplifiedStudent.SimplifiedStudent) *Bui
 	return b
 }
 
+func (b *Builder) WithScheduleEntryTime(scheduleEntryTime *time.Time) *Builder {
+	b.internship.scheduleEntryTime = scheduleEntryTime
+	return b
+}
+
+func (b *Builder) WithScheduleExitTime(scheduleExitTime *time.Time) *Builder {
+	b.internship.scheduleExitTime = scheduleExitTime
+	return b
+}
+
 func (b *Builder) Build() (Internship, errors.Error) {
 	if len(b.errorMessages) > 0 {
 		return nil, errors.NewValidationWithMetadata(b.errorMessages, map[string]interface{}{

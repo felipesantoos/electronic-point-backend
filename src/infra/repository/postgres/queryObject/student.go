@@ -137,6 +137,22 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	}
 	internshipStartedIn := utils.GetNullableValue[time.Time](data[query.InternshipStartedIn])
 	internshipEndedIn := utils.GetNullableValue[time.Time](data[query.InternshipEndedIn])
+	scheduleEntryTimeStr := utils.GetNullableValue[string](data[query.InternshipScheduleEntryTime])
+	scheduleExitTimeStr := utils.GetNullableValue[string](data[query.InternshipScheduleExitTime])
+	var scheduleEntryTime *time.Time
+	var scheduleExitTime *time.Time
+	if scheduleEntryTimeStr != nil {
+		t, err := time.Parse("15:04:05", *scheduleEntryTimeStr)
+		if err == nil {
+			scheduleEntryTime = &t
+		}
+	}
+	if scheduleExitTimeStr != nil {
+		t, err := time.Parse("15:04:05", *scheduleExitTimeStr)
+		if err == nil {
+			scheduleExitTime = &t
+		}
+	}
 	_person, validationError := person.NewBuilder().WithID(id).WithName(name).
 		WithBirthDate(birthDate).WithEmail(email).WithCPF(cpf).WithPhone(phone).Build()
 	if validationError != nil {
@@ -189,6 +205,12 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 	if locationID != nil {
 		currentInternshipBuilder.WithLocation(location)
 	}
+	if scheduleEntryTime != nil {
+		currentInternshipBuilder.WithScheduleEntryTime(scheduleEntryTime)
+	}
+	if scheduleExitTime != nil {
+		currentInternshipBuilder.WithScheduleExitTime(scheduleExitTime)
+	}
 	currentInternship, validationError := currentInternshipBuilder.Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
@@ -203,7 +225,7 @@ func (s *studentQueryObjectBuilder) FromMap(data map[string]interface{}) (studen
 		WithCourse(_course).
 		WithTotalWorkload(totalWorkload)
 	if internshipStartedIn != nil {
-		studentBuilder.WithCurrentInternship(currentInternship)
+		studentBuilder.WithCurrentInternships([]internship.Internship{currentInternship})
 	}
 	_student, validationError := studentBuilder.Build()
 	if validationError != nil {
@@ -220,7 +242,9 @@ func (s *studentQueryObjectBuilder) FromRows(rows *sqlx.Rows) ([]student.Student
 		return nil, err
 	}
 	defer rows.Close()
-	students := make([]student.Student, 0)
+	studentsMap := make(map[uuid.UUID]student.Student)
+	orderedIDs := make([]uuid.UUID, 0)
+
 	for rows.Next() {
 		var serializedStudent = map[string]interface{}{}
 		nativeError := rows.MapScan(serializedStudent)
@@ -233,7 +257,21 @@ func (s *studentQueryObjectBuilder) FromRows(rows *sqlx.Rows) ([]student.Student
 			logger.Error().Msg(err.String())
 			return nil, err
 		}
-		students = append(students, _student)
+
+		if existingStudent, ok := studentsMap[*_student.ID()]; ok {
+			if _student.CurrentInternships() != nil && len(_student.CurrentInternships()) > 0 {
+				newInternships := append(existingStudent.CurrentInternships(), _student.CurrentInternships()[0])
+				existingStudent.SetCurrentInternships(newInternships)
+			}
+		} else {
+			studentsMap[*_student.ID()] = _student
+			orderedIDs = append(orderedIDs, *_student.ID())
+		}
+	}
+
+	students := make([]student.Student, 0)
+	for _, id := range orderedIDs {
+		students = append(students, studentsMap[id])
 	}
 	return students, nil
 }

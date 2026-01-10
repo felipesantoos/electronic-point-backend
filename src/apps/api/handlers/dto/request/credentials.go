@@ -5,8 +5,8 @@ import (
 )
 
 type Credentials struct {
-	Email    string `json:"email" example:"jose@gmail.com"`
-	Password string `json:"password" example:"123456"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (c *Credentials) ToDomain() credentials.Credentials {

@@ -15,10 +15,14 @@ type Internship interface {
 	EndedIn() *time.Time
 	Location() internshipLocation.InternshipLocation
 	Student() simplifiedStudent.SimplifiedStudent
+	ScheduleEntryTime() *time.Time
+	ScheduleExitTime() *time.Time
 
 	SetID(uuid.UUID) errors.Error
 	SetStartedIn(time.Time) errors.Error
 	SetEndedIn(*time.Time) errors.Error
 	SetLocation(internshipLocation.InternshipLocation) errors.Error
 	SetStudent(simplifiedStudent.SimplifiedStudent) errors.Error
+	SetScheduleEntryTime(*time.Time) errors.Error
+	SetScheduleExitTime(*time.Time) errors.Error
 }

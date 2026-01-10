@@ -24,3 +24,15 @@ func (this *timeRecordStatusServices) List() ([]timeRecordStatus.TimeRecordStatu
 func (this *timeRecordStatusServices) Get(id uuid.UUID) (timeRecordStatus.TimeRecordStatus, errors.Error) {
 	return this.repository.Get(id)
 }
+
+func (this *timeRecordStatusServices) Create(data timeRecordStatus.TimeRecordStatus) (*uuid.UUID, errors.Error) {
+	return this.repository.Create(data)
+}
+
+func (this *timeRecordStatusServices) Update(data timeRecordStatus.TimeRecordStatus) errors.Error {
+	return this.repository.Update(data)
+}
+
+func (this *timeRecordStatusServices) Delete(id uuid.UUID) errors.Error {
+	return this.repository.Delete(id)
+}

@@ -50,6 +50,14 @@ func Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		authHeader := ctx.Request().Header.Get("Authorization")
 		_, token := utils.ExtractToken(authHeader)
+
+		// If token is missing in header, try cookie (for frontend requests)
+		if token == "" {
+			if cookie, err := ctx.Cookie(handlers.COOKIE_TOKEN_NAME); err == nil {
+				token = cookie.Value
+			}
+		}
+
 		method := ctx.Request().Method
 		path := ctx.Request().URL.Path
 		if accRole, ok := utils.ExtractAuthorizationAccountRole(token); !ok {

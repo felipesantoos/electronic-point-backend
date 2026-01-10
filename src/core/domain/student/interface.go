@@ -23,7 +23,7 @@ type Student interface {
 	WorkloadCompleted() int
 	PendingWorkload() int
 	ResponsibleTeacherID() uuid.UUID
-	CurrentInternship() internship.Internship
+	CurrentInternships() []internship.Internship
 	InternshipHistory() []internship.Internship
 	FrequencyHistory() []timeRecord.TimeRecord
 
@@ -36,7 +36,7 @@ type Student interface {
 	SetWorkloadCompleted(int) errors.Error
 	SetPendingWorkload(int) errors.Error
 	SetResponsibleTeacherID(uuid.UUID) errors.Error
-	SetCurrentInternship(internship.Internship) errors.Error
+	SetCurrentInternships([]internship.Internship) errors.Error
 	SetInternshipHistory([]internship.Internship) errors.Error
 	SetFrequencyHistory([]timeRecord.TimeRecord) errors.Error
 }

@@ -1,0 +1,58 @@
+{{define "content"}}
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 class="text-lg font-bold text-gray-800">Gerenciamento de Estágios</h2>
+        <a href="/internships/new" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Vincular Novo Estágio
+        </a>
+    </div>
+    <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <form hx-get="/internships" hx-target="#page-content" hx-push-url="true" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                {{template "form-select" dict "ID" "studentID" "Name" "studentID" "Label" "Estudante" "Placeholder" "Todos os estudantes" "Options" .Data.Students "Selected" .Data.Filters.StudentID}}
+            </div>
+            <div class="flex items-end pb-4 space-x-2">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    Filtrar
+                </button>
+                <a href="/internships" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    {{template "table-header" "Estudante"}}
+                    {{template "table-header" "Local"}}
+                    {{template "table-header" "Início"}}
+                    {{template "table-header" "Fim"}}
+                    {{template "table-header" "Ações"}}
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {{range .Data.Internships}}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{.Student.Name}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{.Location.Name}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDate .StartedIn}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{if .EndedIn}}{{formatDate .EndedIn}}{{else}}Ativo{{end}}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        {{template "table-action-button" dict "URL" (printf "/internships/%s" (formatUUID .ID)) "Label" "Ver"}}
+                        {{template "table-delete-button" dict "URL" (printf "/api/internships/%s" (formatUUID .ID))}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Nenhum estágio encontrado.</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}
+
+{{template "base" .}}

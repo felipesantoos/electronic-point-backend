@@ -3,12 +3,15 @@ package response
 import (
 	"eletronic_point/src/core/domain/timeRecordStatus"
 
+	"strings"
+
 	"github.com/google/uuid"
 )
 
 type TimeRecordStatus struct {
 	ID   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
+	Code string    `json:"code"`
 }
 
 type timeRecordStatusBuilder struct{}
@@ -21,6 +24,7 @@ func (*timeRecordStatusBuilder) BuildFromDomain(data timeRecordStatus.TimeRecord
 	return TimeRecordStatus{
 		ID:   data.ID(),
 		Name: data.Name(),
+		Code: strings.ToUpper(data.Name()),
 	}
 }
 
