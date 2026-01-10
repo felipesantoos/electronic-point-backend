@@ -3,7 +3,7 @@
     <label for="{{.ID}}" class="block text-sm font-medium text-gray-700 mb-1">{{.Label}}</label>
     <input type="{{default_val .Type "text"}}" id="{{.ID}}" name="{{.Name}}" value="{{default_val .Value ""}}" 
            {{if .Required}}required{{end}} {{if .ReadOnly}}readonly{{end}}
-           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm {{if .ReadOnly}}bg-gray-50{{end}}"
+           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 {{if .ReadOnly}}bg-gray-50{{end}}"
            placeholder="{{.Placeholder}}">
     {{if .HelpText}}
     <p class="mt-1 text-xs text-gray-500">{{.HelpText}}</p>
@@ -15,7 +15,7 @@
 <div class="mb-4">
     <label for="{{.ID}}" class="block text-sm font-medium text-gray-700 mb-1">{{.Label}}</label>
     <select id="{{.ID}}" name="{{.Name}}" {{if .Required}}required{{end}}
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900">
         {{if .Placeholder}}
         <option value="">{{.Placeholder}}</option>
         {{end}}
@@ -78,8 +78,9 @@
     
     <div class="relative">
         <input type="text" 
-               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm cursor-pointer"
+               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm cursor-pointer text-gray-900"
                :placeholder="label || '{{.Placeholder}}'"
+               :class="label && !search ? 'placeholder:text-gray-900 font-semibold' : 'placeholder:text-gray-400'"
                x-model="search"
                @click="open = true"
                @focus="open = true">

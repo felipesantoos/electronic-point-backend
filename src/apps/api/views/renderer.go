@@ -46,6 +46,7 @@ func NewRenderer(root string) *TemplateRenderer {
 			}
 			return int((float64(completed) / float64(total)) * 100)
 		},
+		"calculateDuration": calculateDuration,
 		"marshal": func(v interface{}) template.JS {
 			a, _ := json.Marshal(v)
 			return template.JS(a)
@@ -272,4 +273,14 @@ func imageUrl(path *string) string {
 		return p
 	}
 	return "/api/files/" + p
+}
+
+func calculateDuration(entry, exit time.Time) string {
+	if entry.IsZero() || exit.IsZero() {
+		return ""
+	}
+	duration := exit.Sub(entry)
+	hours := int(duration.Hours())
+	minutes := int(duration.Minutes()) % 60
+	return fmt.Sprintf("%02dh%02dm", hours, minutes)
 }

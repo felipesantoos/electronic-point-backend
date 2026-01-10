@@ -51,7 +51,8 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 		"Filters":     f,
 	}
 
-	return ctx.Render(http.StatusOK, "time-records/list.html", helpers.NewPageData(ctx, "Registros de Ponto", "time-records", data))
+	return ctx.Render(http.StatusOK, "time-records/list.html", helpers.NewPageData(ctx, "Registros de Ponto", "time-records", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Registros de Ponto", URL: "/time-records"}))
 }
 
 func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
@@ -61,7 +62,11 @@ func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		"Students": helpers.ToOptions(students),
 	}
 
-	return ctx.Render(http.StatusOK, "time-records/create.html", helpers.NewPageData(ctx, "Novo Registro", "time-records", data))
+	return ctx.Render(http.StatusOK, "time-records/create.html", helpers.NewPageData(ctx, "Novo Registro", "time-records", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Registros de Ponto", URL: "/time-records"},
+			helpers.Breadcrumb{Label: "Novo", URL: "/time-records/new"},
+		))
 }
 
 func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
@@ -124,9 +129,14 @@ func (h *timeRecordViewHandlers) Show(ctx handlers.RichContext) error {
 		return ctx.Redirect(http.StatusFound, "/time-records")
 	}
 
+	trResponse := response.TimeRecordBuilder().BuildFromDomain(tr)
 	data := map[string]interface{}{
-		"TimeRecord": response.TimeRecordBuilder().BuildFromDomain(tr),
+		"TimeRecord": trResponse,
 	}
 
-	return ctx.Render(http.StatusOK, "time-records/show.html", helpers.NewPageData(ctx, "Detalhes do Registro", "time-records", data))
+	return ctx.Render(http.StatusOK, "time-records/show.html", helpers.NewPageData(ctx, "Detalhes do Registro", "time-records", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Registros de Ponto", URL: "/time-records"},
+			helpers.Breadcrumb{Label: trResponse.Student.Name, URL: "/time-records/" + id.String()},
+		))
 }
