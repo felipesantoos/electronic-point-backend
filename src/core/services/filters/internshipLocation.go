@@ -6,4 +6,5 @@ import (
 
 type InternshipLocationFilters struct {
 	StudentID *uuid.UUID
+	Search    *string
 }

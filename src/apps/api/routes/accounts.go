@@ -22,6 +22,7 @@ func (a *accountRouter) Load(rootEndpoint *echo.Group) {
 	adminRouter := rootEndpoint.Group("/admin/accounts")
 	adminRouter.GET("", middlewares.EnhanceContext(a.handler.List))
 	adminRouter.POST("", middlewares.EnhanceContext(a.handler.Create))
+	adminRouter.DELETE("/:id", middlewares.EnhanceContext(a.handler.Delete))
 	router := rootEndpoint.Group("/accounts")
 	router.GET("/profile", middlewares.EnhanceContext(a.handler.FindProfile))
 	router.PUT("/profile", middlewares.EnhanceContext(a.handler.UpdateProfile))

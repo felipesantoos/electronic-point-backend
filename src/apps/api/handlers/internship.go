@@ -114,7 +114,7 @@ func (this *internshipHandlers) Update(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // Delete
@@ -145,7 +145,7 @@ func (this *internshipHandlers) Delete(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // List

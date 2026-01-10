@@ -9,5 +9,6 @@ const (
 	Name          = "name"
 	InstitutionID = "institutionID"
 	CampusID      = "campusID"
+	RoleID        = "role_id"
 	Search        = "search"
 )

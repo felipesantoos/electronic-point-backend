@@ -42,7 +42,7 @@
             </div>
             <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden shadow-inner">
                 <div class="bg-blue-600 h-full rounded-full transition-all duration-1000 ease-out shadow-sm" 
-                     style="width: {{percentage .Data.Student.WorkloadCompleted .Data.Student.TotalWorkload}}%"></div>
+                     style="width: var(--progress); --progress: {{percentage .Data.Student.WorkloadCompleted .Data.Student.TotalWorkload}}%;"></div>
             </div>
             <div class="grid grid-cols-3 gap-4 mt-4">
                 <div class="p-3 bg-white rounded-lg border border-gray-100 shadow-sm text-center">

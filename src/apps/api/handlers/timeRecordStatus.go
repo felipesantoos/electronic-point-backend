@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/params"
+	"eletronic_point/src/core/domain/timeRecordStatus"
 	"eletronic_point/src/core/interfaces/primary"
 	"net/http"
 
@@ -12,6 +14,9 @@ import (
 type TimeRecordStatusHandlers interface {
 	List(RichContext) error
 	Get(RichContext) error
+	Create(RichContext) error
+	Update(RichContext) error
+	Delete(RichContext) error
 }
 
 type timeRecordStatusHandlers struct {
@@ -60,9 +65,60 @@ func (this *timeRecordStatusHandlers) Get(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	timeRecordStatus, err := this.services.Get(id)
+	_timeRecordStatus, err := this.services.Get(id)
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.JSON(http.StatusOK, response.TimeRecordStatusBuilder().BuildFromDomain(timeRecordStatus))
+	return ctx.JSON(http.StatusOK, response.TimeRecordStatusBuilder().BuildFromDomain(_timeRecordStatus))
+}
+
+// Create
+func (this *timeRecordStatusHandlers) Create(ctx RichContext) error {
+	var timeRecordStatusDTO request.TimeRecordStatus
+	if err := ctx.Bind(&timeRecordStatusDTO); err != nil {
+		return badRequestErrorWithMessage(err.Error())
+	}
+	_timeRecordStatus, err := timeRecordStatus.NewBuilder().WithName(timeRecordStatusDTO.Name).Build()
+	if err != nil {
+		return responseFromError(err)
+	}
+	id, err := this.services.Create(_timeRecordStatus)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return ctx.JSON(http.StatusCreated, response.IDBuilder().FromUUID(*id))
+}
+
+// Update
+func (this *timeRecordStatusHandlers) Update(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	var timeRecordStatusDTO request.TimeRecordStatus
+	if err := ctx.Bind(&timeRecordStatusDTO); err != nil {
+		return badRequestErrorWithMessage(err.Error())
+	}
+	_timeRecordStatus, err := timeRecordStatus.NewBuilder().WithID(id).WithName(timeRecordStatusDTO.Name).Build()
+	if err != nil {
+		return responseFromError(err)
+	}
+	err = this.services.Update(_timeRecordStatus)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return successNoContent(ctx)
+}
+
+// Delete
+func (this *timeRecordStatusHandlers) Delete(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	err := this.services.Delete(id)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return successNoContent(ctx)
 }

@@ -7,6 +7,7 @@ import (
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/interfaces/secondary"
+	"eletronic_point/src/core/services/filters"
 
 	"github.com/google/uuid"
 )
@@ -19,8 +20,8 @@ func NewAccountService(repository secondary.AccountPort) primary.AccountPort {
 	return &accountService{repository}
 }
 
-func (s *accountService) List() ([]account.Account, errors.Error) {
-	return s.adapter.List()
+func (s *accountService) List(f filters.AccountFilters) ([]account.Account, errors.Error) {
+	return s.adapter.List(f)
 }
 
 func (s *accountService) FindByID(uID *uuid.UUID) (account.Account, errors.Error) {
@@ -29,6 +30,14 @@ func (s *accountService) FindByID(uID *uuid.UUID) (account.Account, errors.Error
 
 func (s *accountService) Create(account account.Account) (*uuid.UUID, errors.Error) {
 	return s.adapter.Create(account)
+}
+
+func (s *accountService) Update(account account.Account) errors.Error {
+	return s.adapter.Update(account)
+}
+
+func (s *accountService) Delete(id uuid.UUID) errors.Error {
+	return s.adapter.Delete(id)
 }
 
 func (s *accountService) UpdateAccountProfile(person person.Person) errors.Error {

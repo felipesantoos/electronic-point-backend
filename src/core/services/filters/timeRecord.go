@@ -12,4 +12,5 @@ type TimeRecordFilters struct {
 	EndDate   *time.Time
 	TeacherID *uuid.UUID
 	StatusID  *uuid.UUID
+	Search    *string
 }

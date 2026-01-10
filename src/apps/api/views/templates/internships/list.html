@@ -9,7 +9,7 @@
     <div class="p-4 border-b border-gray-200 bg-gray-50">
         <form hx-get="/internships" hx-target="#page-content" hx-push-url="true" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                {{template "form-select" dict "ID" "studentID" "Name" "studentID" "Label" "Estudante" "Placeholder" "Todos os estudantes" "Options" .Data.Students "Selected" .Data.Filters.StudentID}}
+                {{template "form-searchable-select" dict "ID" "studentID" "Name" "studentID" "Label" "Estudante" "Placeholder" "Todos os estudantes" "Options" .Data.Students "Selected" .Data.Filters.StudentID}}
             </div>
             <div class="flex items-end pb-4 space-x-2">
                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
@@ -21,7 +21,7 @@
             </div>
         </form>
     </div>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto" id="internships-table-container">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>

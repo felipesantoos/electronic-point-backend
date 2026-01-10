@@ -2,15 +2,23 @@ package handlers
 
 import (
 	"eletronic_point/src/apps/api/handlers/checkers"
+	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/params"
+	"eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 type InstitutionHandlers interface {
 	List(RichContext) error
+	Get(RichContext) error
+	Create(RichContext) error
+	Update(RichContext) error
+	Delete(RichContext) error
 }
 
 type institutionHandlers struct {
@@ -23,8 +31,8 @@ func NewInstitutionHandlers(services primary.InstitutionPort) InstitutionHandler
 
 // List
 // @ID Institution.List
-// @Summary Listar todos as instituições.
-// @Description Recupera uma lista de todos as instituições no sistema.
+// @Summary Listar todas as instituições.
+// @Description Recupera uma lista de todas as instituições no sistema.
 // @Tags Instituições
 // @Security BearerAuth
 // @Produce json
@@ -51,4 +59,68 @@ func (this *institutionHandlers) List(ctx RichContext) error {
 		return responseFromError(err)
 	}
 	return ctx.JSON(http.StatusOK, response.InstitutionBuilder().BuildFromDomainList(institutions))
+}
+
+// Get
+func (this *institutionHandlers) Get(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	_institution, err := this.services.Get(id)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return ctx.JSON(http.StatusOK, response.InstitutionBuilder().BuildFromDomain(_institution))
+}
+
+// Create
+func (this *institutionHandlers) Create(ctx RichContext) error {
+	var institutionDTO request.Institution
+	if err := ctx.Bind(&institutionDTO); err != nil {
+		return badRequestErrorWithMessage(err.Error())
+	}
+	_institution, err := institution.NewBuilder().WithName(institutionDTO.Name).Build()
+	if err != nil {
+		return responseFromError(err)
+	}
+	id, err := this.services.Create(_institution)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return ctx.JSON(http.StatusCreated, response.IDBuilder().FromUUID(*id))
+}
+
+// Update
+func (this *institutionHandlers) Update(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	var institutionDTO request.Institution
+	if err := ctx.Bind(&institutionDTO); err != nil {
+		return badRequestErrorWithMessage(err.Error())
+	}
+	_institution, err := institution.NewBuilder().WithID(id).WithName(institutionDTO.Name).Build()
+	if err != nil {
+		return responseFromError(err)
+	}
+	err = this.services.Update(_institution)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return successNoContent(ctx)
+}
+
+// Delete
+func (this *institutionHandlers) Delete(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	err := this.services.Delete(id)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return successNoContent(ctx)
 }

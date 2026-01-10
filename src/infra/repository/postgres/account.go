@@ -30,8 +30,12 @@ func NewAccountRepository() secondary.AccountPort {
 	return &accountRepository{}
 }
 
-func (r *accountRepository) List() ([]account.Account, errors.Error) {
-	rows, err := repository.Queryx(query.Account().Select().All())
+func (r *accountRepository) List(_filters filters.AccountFilters) ([]account.Account, errors.Error) {
+	searchParam := ""
+	if _filters.Search != nil {
+		searchParam = *_filters.Search
+	}
+	rows, err := repository.Queryx(query.Account().Select().All(), _filters.RoleID, searchParam)
 	if err != nil {
 		return nil, err
 	}
@@ -92,6 +96,34 @@ func (r *accountRepository) Create(account account.Account) (*uuid.UUID, errors.
 		return nil, errors.NewUnexpected()
 	}
 	return id, nil
+}
+
+func (r *accountRepository) Update(account account.Account) errors.Error {
+	transaction, err := repository.BeginTransaction()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	defer transaction.CloseConn()
+	err = r.updatePassingTrasaction(transaction, account)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	err = transaction.Commit()
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return errors.NewUnexpected()
+	}
+	return nil
+}
+
+func (r *accountRepository) Delete(id uuid.UUID) errors.Error {
+	_, err := repository.ExecQuery(query.Account().Delete(), id.String())
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *accountRepository) createPassingTrasaction(tx *repository.SQLTransaction, account account.Account) (*uuid.UUID, *uuid.UUID, errors.Error) {
@@ -160,6 +192,16 @@ func (r *accountRepository) updatePassingTrasaction(tx *repository.SQLTransactio
 		query.Account().Update().EmailByPersonID(),
 		account.Email(),
 		account.Person().ID(),
+	)
+	if err != nil {
+		logger.Error().Msg(err.String())
+		return err
+	}
+	err = defaultTxExecQuery(
+		tx,
+		query.Account().Update().RoleByAccountID(),
+		account.Role().Code(),
+		account.ID(),
 	)
 	if err != nil {
 		logger.Error().Msg(err.String())

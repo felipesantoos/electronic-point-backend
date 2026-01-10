@@ -1,5 +1,5 @@
 {{define "content"}}
-<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-gray-800">Novo Campus</h2>
         <p class="text-gray-600">Cadastre um novo campus para uma instituição.</p>
@@ -9,11 +9,22 @@
         {{template "alerts" .}}
     </div>
 
-    <form hx-post="/campus" hx-target="body" hx-push-url="true" class="space-y-4">
-        {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome do Campus" "Required" true}}
-        {{template "form-select" dict "ID" "institution_id" "Name" "institution_id" "Label" "Instituição" "Required" true "Placeholder" "Selecione a instituição" "Options" .Data.Institutions}}
+    <form hx-post="/campus" hx-target="body" hx-push-url="true" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Basic Info -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações Básicas</h3>
+                {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome do Campus" "Required" true}}
+            </div>
 
-        <div class="pt-4 flex justify-end gap-3">
+            <!-- Institution -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Instituição</h3>
+                {{template "form-searchable-select" dict "ID" "institution_id" "Name" "institution_id" "Label" "Instituição" "Required" true "Placeholder" "Selecione a instituição" "Options" .Data.Institutions}}
+            </div>
+        </div>
+
+        <div class="pt-6 flex justify-end gap-3 border-t">
             <a href="/campus" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                 Cancelar
             </a>

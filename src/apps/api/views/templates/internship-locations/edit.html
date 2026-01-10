@@ -1,5 +1,5 @@
 {{define "content"}}
-<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-gray-800">Editar Local de Estágio</h2>
         <p class="text-gray-600">Atualize os dados de <strong>{{.Data.Location.Name}}</strong>.</p>
@@ -9,29 +9,47 @@
         {{template "alerts" .}}
     </div>
 
-    <form hx-put="/internship-locations/{{formatUUID .Data.Location.ID}}" hx-target="body" hx-push-url="true" class="space-y-4">
-        {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome da Empresa/Local" "Value" .Data.Location.Name "Required" true}}
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {{template "form-input" dict "ID" "zip_code" "Name" "zip_code" "Label" "CEP" "Value" .Data.Location.ZipCode "Required" true}}
-            {{template "form-input" dict "ID" "city" "Name" "city" "Label" "Cidade" "Value" .Data.Location.City "Required" true}}
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="md:col-span-2">
-                {{template "form-input" dict "ID" "street" "Name" "street" "Label" "Logradouro (Rua/Av)" "Value" .Data.Location.Street "Required" true}}
+    <form hx-put="/internship-locations/{{formatUUID .Data.Location.ID}}" hx-target="body" hx-push-url="true" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Basic Info -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações Básicas</h3>
+                {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome da Empresa/Local" "Value" .Data.Location.Name "Required" true}}
             </div>
-            {{template "form-input" dict "ID" "number" "Name" "number" "Label" "Número" "Value" .Data.Location.Number "Required" true}}
+
+            <!-- Coordinates -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Coordenadas (Opcional)</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    {{template "form-input" dict "ID" "lat" "Name" "lat" "Type" "number" "Label" "Latitude" "Value" .Data.Location.Lat}}
+                    {{template "form-input" dict "ID" "long" "Name" "long" "Type" "number" "Label" "Longitude" "Value" .Data.Location.Long}}
+                </div>
+            </div>
         </div>
 
-        {{template "form-input" dict "ID" "neighborhood" "Name" "neighborhood" "Label" "Bairro" "Value" .Data.Location.Neighborhood "Required" true}}
+        <!-- Address Info -->
+        <div class="space-y-4 pt-4 border-t">
+            <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Endereço</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-1">
+                    {{template "form-input" dict "ID" "zip_code" "Name" "zip_code" "Label" "CEP" "Value" .Data.Location.ZipCode "Required" true}}
+                </div>
+                <div class="md:col-span-2">
+                    {{template "form-input" dict "ID" "city" "Name" "city" "Label" "Cidade" "Value" .Data.Location.City "Required" true}}
+                </div>
+            </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {{template "form-input" dict "ID" "lat" "Name" "lat" "Type" "number" "Label" "Latitude" "Value" .Data.Location.Lat}}
-            {{template "form-input" dict "ID" "long" "Name" "long" "Type" "number" "Label" "Longitude" "Value" .Data.Location.Long}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                    {{template "form-input" dict "ID" "street" "Name" "street" "Label" "Logradouro (Rua/Av)" "Value" .Data.Location.Street "Required" true}}
+                </div>
+                {{template "form-input" dict "ID" "number" "Name" "number" "Label" "Número" "Value" .Data.Location.Number "Required" true}}
+            </div>
+
+            {{template "form-input" dict "ID" "neighborhood" "Name" "neighborhood" "Label" "Bairro" "Value" .Data.Location.Neighborhood "Required" true}}
         </div>
 
-        <div class="pt-4 flex justify-end gap-3">
+        <div class="pt-6 flex justify-end gap-3">
             <a href="/internship-locations" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                 Cancelar
             </a>

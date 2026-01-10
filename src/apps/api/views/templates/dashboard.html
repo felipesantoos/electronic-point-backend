@@ -86,9 +86,21 @@
             <span class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">Total de Registros</span>
         </div>
         <div class="relative h-64">
+            {{if .Data.HasActivity}}
             <canvas id="activityChart" 
                     data-labels='{{marshal .Data.ActivityLabels}}'
                     data-values='{{marshal .Data.ActivityData}}'></canvas>
+            {{else}}
+            <div class="flex flex-col items-center justify-center h-full text-center p-8">
+                <div class="p-4 rounded-full bg-gray-50 text-gray-400 mb-4">
+                    <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900">Sem atividade recente</h3>
+                <p class="text-xs text-gray-500 mt-1 max-w-[200px]">Nenhum registro de ponto foi realizado nos últimos 7 dias.</p>
+            </div>
+            {{end}}
         </div>
     </div>
 

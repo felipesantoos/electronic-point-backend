@@ -5,6 +5,7 @@ import "fmt"
 type AccountQueryBuilder interface {
 	Select() AccountQuerySelectBuilder
 	Insert() string
+	Delete() string
 	Update() AccountQueryUpdateBuilder
 }
 
@@ -30,6 +31,7 @@ type AccountQueryUpdateBuilder interface {
 	EmailByPersonID() string
 	Password() string
 	Profile() string
+	RoleByAccountID() string
 }
 
 type accountQueryUpdateBuilder struct{}
@@ -46,12 +48,18 @@ func (*accountQueryBuilder) Insert() string {
 	`
 }
 
+func (*accountQueryBuilder) Delete() string {
+	return `
+		DELETE FROM account WHERE id=$1;
+	`
+}
+
 func (*accountQueryBuilder) Update() AccountQueryUpdateBuilder {
 	return &accountQueryUpdateBuilder{}
 }
 
 func (q *accountQuerySelectBuilder) All() string {
-	return q.defaultStatement("")
+	return q.defaultStatement("($1::uuid IS NULL OR ar.id = $1) AND ($2 = '' OR p.name ILIKE '%' || $2 || '%' OR a.email ILIKE '%' || $2 || '%' OR p.cpf ILIKE '%' || $2 || '%')")
 }
 
 func (q *accountQuerySelectBuilder) ByID() string {
@@ -161,5 +169,15 @@ func (*accountQueryUpdateBuilder) Profile() string {
 			birth_date=$2,
 			phone=$3
 		WHERE id=$4
+	`
+}
+
+func (*accountQueryUpdateBuilder) RoleByAccountID() string {
+	return `
+		UPDATE account
+		SET role_id = ar.id
+		FROM account_role ar
+		WHERE lower(ar.code) = lower($1)
+			AND account.id = $2
 	`
 }

@@ -3,9 +3,12 @@ package handlers
 import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
+	"eletronic_point/src/apps/api/handlers/params"
 	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/services/filters"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/wallrony/go-validator/validator"
 )
 
@@ -15,6 +18,7 @@ type AccountHandler interface {
 	Create(RichContext) error
 	UpdatePassword(RichContext) error
 	UpdateProfile(RichContext) error
+	Delete(RichContext) error
 }
 
 type accountHandler struct {
@@ -44,7 +48,17 @@ func NewAccountHandler(service primary.AccountPort) AccountHandler {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /admin/accounts [get]
 func (h *accountHandler) List(context RichContext) error {
-	accounts, err := h.service.List()
+	f := filters.AccountFilters{}
+	if val := context.QueryParam(params.Search); val != "" {
+		f.Search = &val
+	}
+	if val := context.QueryParam("role_id"); val != "" {
+		if id, err := uuid.Parse(val); err == nil {
+			f.RoleID = &id
+		}
+	}
+
+	accounts, err := h.service.List(f)
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
@@ -184,6 +198,14 @@ func (h *accountHandler) UpdatePassword(context RichContext) error {
 	}
 	err := h.service.UpdateAccountPassword(context.AccountID(), data.ToDomain())
 	if err != nil {
+		return response.ErrorBuilder().NewFromDomain(err)
+	}
+	return context.NoContent(http.StatusOK)
+}
+
+func (h *accountHandler) Delete(context RichContext) error {
+	id, _ := uuid.Parse(context.Param("id"))
+	if err := h.service.Delete(id); err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
 	return context.NoContent(http.StatusOK)

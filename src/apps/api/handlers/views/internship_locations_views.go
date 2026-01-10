@@ -18,30 +18,36 @@ type InternshipLocationViewHandlers interface {
 	Create(handlers.RichContext) error
 	EditPage(handlers.RichContext) error
 	Update(handlers.RichContext) error
+	Show(handlers.RichContext) error
 }
 
 type internshipLocationViewHandlers struct {
-	service primary.InternshipLocationPort
+	service           primary.InternshipLocationPort
+	internshipService primary.InternshipPort
 }
 
-func NewInternshipLocationViewHandlers(service primary.InternshipLocationPort) InternshipLocationViewHandlers {
-	return &internshipLocationViewHandlers{service}
+func NewInternshipLocationViewHandlers(
+	service primary.InternshipLocationPort,
+	internshipService primary.InternshipPort,
+) InternshipLocationViewHandlers {
+	return &internshipLocationViewHandlers{service, internshipService}
 }
 
 func (h *internshipLocationViewHandlers) List(ctx handlers.RichContext) error {
-	name := ctx.QueryParam("name")
+	f := helpers.GetInternshipLocationFilters(ctx)
 
-	locations, err := h.service.List(filters.InternshipLocationFilters{})
+	locations, err := h.service.List(f)
 	if err != nil {
 		return ctx.Render(http.StatusOK, "internship-locations/list.html", helpers.PageData{Errors: []string{err.String()}})
 	}
 
 	data := map[string]interface{}{
 		"Locations": response.InternshipLocationBuilder().BuildFromDomainList(locations),
-		"Filters":   map[string]string{"name": name},
+		"Filters":   f,
 	}
 
-	return ctx.Render(http.StatusOK, "internship-locations/list.html", helpers.NewPageData(ctx, "Locais de Estágio", "internship-locations", data))
+	return ctx.Render(http.StatusOK, "internship-locations/list.html", helpers.NewPageData(ctx, "Locais de Estágio", "internship-locations", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Locais de Estágio", URL: "/internship-locations"}))
 }
 
 func (h *internshipLocationViewHandlers) CreatePage(ctx handlers.RichContext) error {
@@ -104,4 +110,37 @@ func (h *internshipLocationViewHandlers) Update(ctx handlers.RichContext) error 
 
 	ctx.Response().Header().Set("HX-Redirect", "/internship-locations")
 	return ctx.NoContent(http.StatusOK)
+}
+
+func (h *internshipLocationViewHandlers) Show(ctx handlers.RichContext) error {
+	id, _ := uuid.Parse(ctx.Param("id"))
+	loc, err := h.service.Get(id)
+	if err != nil {
+		return ctx.Redirect(http.StatusFound, "/internship-locations")
+	}
+
+	// Fetch related internships
+	internships, _ := h.internshipService.List(filters.InternshipFilters{})
+	// Filter internships manually for this location if the service doesn't support it directly
+	// Actually, let's see if InternshipFilters supports LocationID
+	// Checking src/core/services/filters/internship.go
+
+	locationInternships := make([]response.Internship, 0)
+	allInternships := response.InternshipBuilder().BuildFromDomainList(internships)
+	for _, intern := range allInternships {
+		if intern.Location.ID == id {
+			locationInternships = append(locationInternships, intern)
+		}
+	}
+
+	data := map[string]interface{}{
+		"Location":    response.InternshipLocationBuilder().BuildFromDomain(loc),
+		"Internships": locationInternships,
+	}
+
+	return ctx.Render(http.StatusOK, "internship-locations/show.html", helpers.NewPageData(ctx, "Detalhes do Local", "internship-locations", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Locais de Estágio", URL: "/internship-locations"},
+			helpers.Breadcrumb{Label: "Detalhes", URL: "/internship-locations/" + id.String()},
+		))
 }

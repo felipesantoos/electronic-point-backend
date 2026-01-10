@@ -63,7 +63,7 @@ func (this internshipLocationRepository) Delete(id uuid.UUID) errors.Error {
 }
 
 func (this internshipLocationRepository) List(_filters filters.InternshipLocationFilters) ([]internshipLocation.InternshipLocation, errors.Error) {
-	rows, err := repository.Queryx(query.InternshipLocation().Select().All(), _filters.StudentID)
+	rows, err := repository.Queryx(query.InternshipLocation().Select().All(), _filters.StudentID, _filters.Search)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

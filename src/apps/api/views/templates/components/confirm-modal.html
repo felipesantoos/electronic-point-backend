@@ -3,15 +3,32 @@
         open: false, 
         title: 'Confirmar', 
         message: 'Deseja realmente realizar esta ação?',
+        target: null,
         issueRequest: null,
         show(detail) {
             this.title = detail.title;
             this.message = detail.question;
+            this.target = detail.target;
             this.issueRequest = detail.issueRequest;
             this.open = true;
         },
         confirm() {
-            if (this.issueRequest) this.issueRequest();
+            if (this.issueRequest && this.target) {
+                // Temporarily remove hx-confirm to prevent HTMX from showing the browser popup
+                // when we call issueRequest()
+                const originalConfirm = this.target.getAttribute('hx-confirm');
+                this.target.removeAttribute('hx-confirm');
+                
+                // Trigger the request
+                this.issueRequest();
+                
+                // Restore hx-confirm after a small delay
+                if (originalConfirm) {
+                    setTimeout(() => {
+                        this.target.setAttribute('hx-confirm', originalConfirm);
+                    }, 100);
+                }
+            }
             this.open = false;
         }
     }"

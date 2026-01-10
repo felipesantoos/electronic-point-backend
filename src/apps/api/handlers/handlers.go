@@ -207,3 +207,10 @@ func stringListToUUIDList(list []string) ([]uuid.UUID, errors.Error) {
 	}
 	return ids, nil
 }
+
+func successNoContent(ctx echo.Context) error {
+	if ctx.Request().Header.Get("HX-Request") == "true" {
+		return ctx.String(http.StatusOK, "")
+	}
+	return ctx.NoContent(http.StatusNoContent)
+}

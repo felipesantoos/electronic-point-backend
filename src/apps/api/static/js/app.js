@@ -1,8 +1,11 @@
 // Custom JS for Ponto Eletrônico
 
-document.addEventListener('DOMContentLoaded', () => {
+// We use a self-invoking function or check to prevent multiple initialization
+if (typeof window.epAppInitialized === 'undefined') {
+    window.epAppInitialized = true;
+
     // Handle HTMX errors
-    document.body.addEventListener('htmx:responseError', (event) => {
+    document.addEventListener('htmx:responseError', (event) => {
         const status = event.detail.xhr.status;
         if (status === 401) {
             window.location.href = '/login';
@@ -14,123 +17,131 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle HTMX beforeSwap to handle errors with custom templates
-    document.body.addEventListener('htmx:beforeSwap', (event) => {
+    document.addEventListener('htmx:beforeSwap', (event) => {
         if (event.detail.xhr.status === 422) {
-            // Allow 422 status to swap content (validation errors)
             event.detail.shouldSwap = true;
             event.detail.isError = false;
         } else if (event.detail.xhr.status >= 400) {
-            // Log other errors
             console.error('HTMX error:', event.detail.xhr.status, event.detail.xhr.responseText);
         }
     });
 
-    // Handle hx-boosted links to close sidebar on mobile
-    document.body.addEventListener('htmx:afterOnLoad', () => {
-        // If sidebar is open (Alpine.js state), we could close it here
-        // But since we use Alpine.js, it's better to handle it there if needed
-    });
-
     // HTMX Progress Bar logic
-    const progressBar = document.querySelector('#htmx-progress div');
     let progressInterval;
-
-    document.body.addEventListener('htmx:configRequest', () => {
+    document.addEventListener('htmx:configRequest', (event) => {
+        event.detail.withCredentials = true;
+        
+        const progressBar = document.querySelector('#htmx-progress div');
         if (!progressBar) return;
         
-        // Reset and show progress bar
         progressBar.style.width = '0%';
         progressBar.style.opacity = '1';
         
-        // Animate to 90% over some time
         let width = 0;
+        clearInterval(progressInterval);
         progressInterval = setInterval(() => {
             if (width < 90) {
-                width += Math.random() * 2; // Slower progress
+                width += Math.random() * 2;
                 progressBar.style.width = `${width}%`;
             }
         }, 100);
     });
 
-    document.body.addEventListener('htmx:afterRequest', () => {
-        if (!progressBar) return;
-        
-        clearInterval(progressInterval);
-        
-        // Complete the bar
-        progressBar.style.width = '100%';
-        
-        // Hide after a small delay
-        setTimeout(() => {
-            progressBar.style.opacity = '0';
+    document.addEventListener('htmx:afterRequest', (event) => {
+        const progressBar = document.querySelector('#htmx-progress div');
+        if (progressBar) {
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
             setTimeout(() => {
-                progressBar.style.width = '0%';
-            }, 300);
-        }, 500);
+                progressBar.style.opacity = '0';
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                }, 300);
+            }, 500);
+        }
+
+        const xhr = event.detail.xhr;
+        const requestConfig = event.detail.requestConfig;
+        const method = (requestConfig && requestConfig.method ? requestConfig.method : '').toUpperCase();
+        const stateChangingMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
+        
+        if (xhr.status >= 200 && xhr.status < 300 && stateChangingMethods.includes(method)) {
+            let message = 'Operação realizada com sucesso!';
+            if (method === 'DELETE') message = 'Registro removido com sucesso!';
+            if (method === 'POST') message = 'Registro criado com sucesso!';
+            if (method === 'PUT' || method === 'PATCH') message = 'Registro atualizado com sucesso!';
+            
+            const target = event.target;
+            const skipToast = (target && typeof target.closest === 'function' && target.closest('[data-no-toast]')) || 
+                             xhr.getResponseHeader('HX-Redirect') ||
+                             xhr.getResponseHeader('X-Skip-Toast');
+
+            if (!skipToast) {
+                showToast('success', message);
+            }
+        }
     });
 
-    // Initialize on load or HTMX swap
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initApp);
-    } else {
-        initApp();
-    }
-
-    function initApp() {
+    document.addEventListener('htmx:afterOnLoad', () => {
         applyInputMasks();
-    }
-
-    // Global HTMX headers
-    document.body.addEventListener('htmx:configRequest', (event) => {
-        // Ensure cookies are sent with every request
-        event.detail.withCredentials = true;
     });
 
-    document.body.addEventListener('htmx:afterOnLoad', () => {
-        applyInputMasks();
-    });
+    // Custom Confirmation Modal Logic
+    document.addEventListener('htmx:confirm', (event) => {
+        const target = event.target;
+        if (!target || typeof target.closest !== 'function') return;
 
-    // Custom Confirmation Modal Logic for HTMX
-    document.body.addEventListener('htmx:confirm', (event) => {
-        // Only intercept if there's a confirmation message (hx-confirm)
-        if (!event.detail.question) return;
+        const elt = target.closest('[hx-confirm]');
+        if (!elt || !event.detail.question) return;
 
-        // Prevent immediate execution
         event.preventDefault();
 
-        // Dispatch an event that our Alpine.js modal will listen to
-        const title = event.target.getAttribute('data-confirm-title') || 'Confirmar Ação';
+        const title = elt.getAttribute('data-confirm-title') || 'Confirmar Ação';
+        const originalIssueRequest = event.detail.issueRequest;
+
+        const modifiedIssueRequest = () => {
+            const originalHxConfirm = elt.getAttribute('hx-confirm');
+            elt.removeAttribute('hx-confirm');
+            originalIssueRequest();
+            setTimeout(() => {
+                if (originalHxConfirm) elt.setAttribute('hx-confirm', originalHxConfirm);
+            }, 100);
+        };
+
         window.dispatchEvent(new CustomEvent('open-confirm-modal', {
             detail: {
                 title: title,
                 question: event.detail.question,
-                issueRequest: event.detail.issueRequest
+                issueRequest: modifiedIssueRequest
             }
         }));
     });
-});
+}
 
+// These functions need to be outside the initialization check because they might be 
+// called by inline event handlers or after HTMX swaps
 function applyInputMasks() {
     const cpfInputs = document.querySelectorAll('input[name="cpf"]');
     cpfInputs.forEach(input => {
+        if (input.dataset.maskApplied) return;
+        input.dataset.maskApplied = 'true';
         input.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 11) value = value.slice(0, 11);
-            
             value = value.replace(/(\d{3})(\d)/, '$1.$2');
             value = value.replace(/(\d{3})(\d)/, '$1.$2');
             value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            
             e.target.value = value;
         });
     });
 
     const phoneInputs = document.querySelectorAll('input[name="phone"]');
     phoneInputs.forEach(input => {
+        if (input.dataset.maskApplied) return;
+        input.dataset.maskApplied = 'true';
         input.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 11) value = value.slice(0, 11);
-            
             if (value.length > 10) {
                 value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
             } else if (value.length > 5) {
@@ -140,13 +151,11 @@ function applyInputMasks() {
             } else if (value.length > 0) {
                 value = value.replace(/^(\d*)/, '($1');
             }
-            
             e.target.value = value;
         });
     });
 }
 
-// Toast notification helper
 function showToast(type, message) {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -163,55 +172,37 @@ function showToast(type, message) {
             <span class="font-medium">${message}</span>
         </div>
         <button onclick="removeToast(this.parentElement)" class="ml-4 text-gray-400 hover:text-gray-600 focus:outline-none">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="6 18L18 6M6 6l12 12"></path></svg>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
         </button>
     `;
 
     container.appendChild(toast);
-
-    // Animate in
     requestAnimationFrame(() => {
         toast.classList.remove('translate-x-full', 'opacity-0');
     });
 
-    // Auto-hide
     const duration = type === 'error' ? 8000 : 4000;
-    setTimeout(() => {
-        removeToast(toast);
-    }, duration);
+    setTimeout(() => removeToast(toast), duration);
 }
 
 function removeToast(toast) {
     if (!toast || !toast.parentElement) return;
-    
-    // Animate out
     toast.classList.add('translate-x-full', 'opacity-0');
-    
-    // Remove from DOM after animation
     setTimeout(() => {
         if (toast.parentElement) toast.remove();
     }, 500);
 }
 
-// Preview image before upload
 function previewImage(input, previewId) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
-        
-        // Basic validation
-        if (file.size > 2 * 1024 * 1024) { // 2MB
+        if (file.size > 2 * 1024 * 1024) {
             showToast('error', 'O arquivo é muito grande. O limite é 2MB.');
             input.value = '';
             return;
         }
-
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        if (!allowedTypes.includes(file.type)) {
-            showToast('error', 'Formato de arquivo não suportado. Use JPG, PNG ou WebP.');
-            input.value = '';
-            return;
-        }
-
         const reader = new FileReader();
         reader.onload = (e) => {
             const preview = document.getElementById(previewId);
@@ -222,4 +213,11 @@ function previewImage(input, previewId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+// Initial mask application
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyInputMasks);
+} else {
+    applyInputMasks();
 }

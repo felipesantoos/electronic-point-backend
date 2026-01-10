@@ -242,7 +242,7 @@ func (this *studentHandlers) Update(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // Delete
@@ -273,7 +273,7 @@ func (this *studentHandlers) Delete(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // List
@@ -299,7 +299,7 @@ func (this *studentHandlers) List(ctx RichContext) error {
 	_filters := filters.StudentFilters{}
 	if ctx.RoleName() == role.TEACHER_ROLE_CODE {
 		_filters.TeacherID = ctx.ProfileID()
-	} else {
+	} else if ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenError
 	}
 	if !checkers.IsEmpty(ctx.QueryParam(params.InstitutionID)) {
@@ -352,7 +352,7 @@ func (this *studentHandlers) Get(ctx RichContext) error {
 	_filters := filters.StudentFilters{}
 	if ctx.RoleName() == role.TEACHER_ROLE_CODE {
 		_filters.TeacherID = ctx.ProfileID()
-	} else {
+	} else if ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenError
 	}
 	result, err := this.services.Get(id, _filters)

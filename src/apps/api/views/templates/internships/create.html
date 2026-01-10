@@ -10,12 +10,17 @@
     </div>
 
     <form hx-post="/internships" hx-target="body" hx-push-url="true" class="space-y-4">
-        {{template "form-select" dict "ID" "student_id" "Name" "student_id" "Label" "Estudante" "Required" true "Placeholder" "Selecione o estudante" "Options" .Data.Students "Selected" .Data.SelectedStudentID}}
-        {{template "form-select" dict "ID" "location_id" "Name" "location_id" "Label" "Local de Estágio" "Required" true "Placeholder" "Selecione o local" "Options" .Data.Locations}}
+        {{template "form-searchable-select" dict "ID" "student_id" "Name" "student_id" "Label" "Estudante" "Required" true "Placeholder" "Selecione o estudante" "Options" .Data.Students "Selected" .Data.SelectedStudentID}}
+        {{template "form-searchable-select" dict "ID" "location_id" "Name" "location_id" "Label" "Local de Estágio" "Required" true "Placeholder" "Selecione o local" "Options" .Data.Locations}}
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {{template "form-input" dict "ID" "started_in" "Name" "started_in" "Label" "Data de Início" "Type" "date" "Required" true}}
             {{template "form-input" dict "ID" "ended_in" "Name" "ended_in" "Label" "Data de Término (Opcional)" "Type" "date"}}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {{template "form-input" dict "ID" "schedule_entry_time" "Name" "schedule_entry_time" "Label" "Horário de Entrada" "Type" "time" "Required" true}}
+            {{template "form-input" dict "ID" "schedule_exit_time" "Name" "schedule_exit_time" "Label" "Horário de Saída" "Type" "time" "Required" true}}
         </div>
 
         <div class="pt-4 flex justify-end gap-3">

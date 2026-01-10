@@ -72,6 +72,59 @@ func GetTimeRecordFilters(ctx handlers.RichContext) filters.TimeRecordFilters {
 		}
 	}
 
+	if val := ctx.QueryParam(params.Search); val != "" {
+		f.Search = &val
+	}
+
+	return f
+}
+
+// GetInstitutionFilters extracts institution filters from the request query parameters
+func GetInstitutionFilters(ctx handlers.RichContext) filters.InstitutionFilters {
+	f := filters.InstitutionFilters{}
+
+	if val := ctx.QueryParam(params.Search); val != "" {
+		f.Name = &val
+	} else if val := ctx.QueryParam(params.Name); val != "" {
+		f.Name = &val
+	}
+
+	return f
+}
+
+// GetCampusFilters extracts campus filters from the request query parameters
+func GetCampusFilters(ctx handlers.RichContext) filters.CampusFilters {
+	f := filters.CampusFilters{}
+
+	if val := ctx.QueryParam(params.InstitutionID); val != "" {
+		if id, err := uuid.Parse(val); err == nil {
+			f.InstitutionID = &id
+		}
+	}
+
+	if val := ctx.QueryParam(params.Search); val != "" {
+		f.Name = &val
+	} else if val := ctx.QueryParam(params.Name); val != "" {
+		f.Name = &val
+	}
+
+	return f
+}
+
+// GetAccountFilters extracts account filters from the request query parameters
+func GetAccountFilters(ctx handlers.RichContext) filters.AccountFilters {
+	f := filters.AccountFilters{}
+
+	if val := ctx.QueryParam(params.RoleID); val != "" {
+		if id, err := uuid.Parse(val); err == nil {
+			f.RoleID = &id
+		}
+	}
+
+	if val := ctx.QueryParam(params.Search); val != "" {
+		f.Search = &val
+	}
+
 	return f
 }
 
@@ -83,6 +136,23 @@ func GetInternshipFilters(ctx handlers.RichContext) filters.InternshipFilters {
 		if id, err := uuid.Parse(val); err == nil {
 			f.StudentID = &id
 		}
+	}
+
+	return f
+}
+
+// GetInternshipLocationFilters extracts internship location filters from the request query parameters
+func GetInternshipLocationFilters(ctx handlers.RichContext) filters.InternshipLocationFilters {
+	f := filters.InternshipLocationFilters{}
+
+	if val := ctx.QueryParam(params.StudentID); val != "" {
+		if id, err := uuid.Parse(val); err == nil {
+			f.StudentID = &id
+		}
+	}
+
+	if val := ctx.QueryParam(params.Search); val != "" {
+		f.Search = &val
 	}
 
 	return f

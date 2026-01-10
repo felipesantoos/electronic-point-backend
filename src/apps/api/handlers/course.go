@@ -2,15 +2,23 @@ package handlers
 
 import (
 	"eletronic_point/src/apps/api/handlers/checkers"
+	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/params"
+	"eletronic_point/src/core/domain/course"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 type CourseHandlers interface {
 	List(RichContext) error
+	Get(RichContext) error
+	Create(RichContext) error
+	Update(RichContext) error
+	Delete(RichContext) error
 }
 
 type courseHandlers struct {
@@ -51,4 +59,68 @@ func (this *courseHandlers) List(ctx RichContext) error {
 		return responseFromError(err)
 	}
 	return ctx.JSON(http.StatusOK, response.CourseBuilder().BuildFromDomainList(courses))
+}
+
+// Get
+func (this *courseHandlers) Get(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	_course, err := this.services.Get(id)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return ctx.JSON(http.StatusOK, response.CourseBuilder().BuildFromDomain(_course))
+}
+
+// Create
+func (this *courseHandlers) Create(ctx RichContext) error {
+	var courseDTO request.Course
+	if err := ctx.Bind(&courseDTO); err != nil {
+		return badRequestErrorWithMessage(err.Error())
+	}
+	_course, err := course.NewBuilder().WithName(courseDTO.Name).Build()
+	if err != nil {
+		return responseFromError(err)
+	}
+	id, err := this.services.Create(_course)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return ctx.JSON(http.StatusCreated, response.IDBuilder().FromUUID(*id))
+}
+
+// Update
+func (this *courseHandlers) Update(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	var courseDTO request.Course
+	if err := ctx.Bind(&courseDTO); err != nil {
+		return badRequestErrorWithMessage(err.Error())
+	}
+	_course, err := course.NewBuilder().WithID(id).WithName(courseDTO.Name).Build()
+	if err != nil {
+		return responseFromError(err)
+	}
+	err = this.services.Update(_course)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return successNoContent(ctx)
+}
+
+// Delete
+func (this *courseHandlers) Delete(ctx RichContext) error {
+	id, conversionError := uuid.Parse(ctx.Param(params.ID))
+	if conversionError != nil {
+		return badRequestErrorWithMessage(conversionError.Error())
+	}
+	err := this.services.Delete(id)
+	if err != nil {
+		return responseFromError(err)
+	}
+	return successNoContent(ctx)
 }

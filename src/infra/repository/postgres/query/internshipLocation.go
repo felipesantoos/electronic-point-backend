@@ -89,6 +89,7 @@ func (internshipLocationQuerySelectBuilder *internshipLocationQuerySelectBuilder
 			LEFT JOIN student ON student.id = internship.student_id
 		WHERE internship_location.deleted_at IS NULL
 			AND ($1::uuid IS NULL OR student.id = $1)
+			AND ($2::text IS NULL OR internship_location.name ILIKE '%' || $2 || '%' OR internship_location.city ILIKE '%' || $2 || '%')
 		ORDER BY internship_location.name ASC
 	`
 }

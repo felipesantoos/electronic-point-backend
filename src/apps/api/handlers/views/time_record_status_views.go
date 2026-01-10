@@ -40,11 +40,16 @@ func (h *timeRecordStatusViewHandlers) List(ctx handlers.RichContext) error {
 		"Filters":  map[string]string{"name": name},
 	}
 
-	return ctx.Render(http.StatusOK, "time-record-status/list.html", helpers.NewPageData(ctx, "Status de Ponto", "time-record-status", data))
+	return ctx.Render(http.StatusOK, "time-record-status/list.html", helpers.NewPageData(ctx, "Status de Ponto", "time-record-status", data).
+		WithBreadcrumbs(helpers.Breadcrumb{Label: "Status de Ponto", URL: "/time-record-status"}))
 }
 
 func (h *timeRecordStatusViewHandlers) CreatePage(ctx handlers.RichContext) error {
-	return ctx.Render(http.StatusOK, "time-record-status/create.html", helpers.NewPageData(ctx, "Novo Status", "time-record-status", nil))
+	return ctx.Render(http.StatusOK, "time-record-status/create.html", helpers.NewPageData(ctx, "Novo Status", "time-record-status", nil).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Status de Ponto", URL: "/time-record-status"},
+			helpers.Breadcrumb{Label: "Novo", URL: "/time-record-status/new"},
+		))
 }
 
 func (h *timeRecordStatusViewHandlers) Create(ctx handlers.RichContext) error {
@@ -80,7 +85,12 @@ func (h *timeRecordStatusViewHandlers) EditPage(ctx handlers.RichContext) error 
 		Status: response.TimeRecordStatusBuilder().BuildFromDomain(status),
 	}
 
-	return ctx.Render(http.StatusOK, "time-record-status/edit.html", helpers.NewPageData(ctx, "Editar Status", "time-record-status", data))
+	return ctx.Render(http.StatusOK, "time-record-status/edit.html", helpers.NewPageData(ctx, "Editar Status", "time-record-status", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Status de Ponto", URL: "/time-record-status"},
+			helpers.Breadcrumb{Label: status.Name(), URL: "/time-record-status/" + id.String()},
+			helpers.Breadcrumb{Label: "Editar", URL: "/time-record-status/" + id.String() + "/edit"},
+		))
 }
 
 func (h *timeRecordStatusViewHandlers) Update(ctx handlers.RichContext) error {
@@ -97,7 +107,7 @@ func (h *timeRecordStatusViewHandlers) Update(ctx handlers.RichContext) error {
 		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
 	}
 
-	ctx.Response().Header().Set("HX-Redirect", "/time-record-status")
+	ctx.Response().Header().Set("HX-Redirect", "/time-record-status/"+id.String())
 	return ctx.NoContent(http.StatusOK)
 }
 
@@ -114,5 +124,9 @@ func (h *timeRecordStatusViewHandlers) Show(ctx handlers.RichContext) error {
 		Status: response.TimeRecordStatusBuilder().BuildFromDomain(status),
 	}
 
-	return ctx.Render(http.StatusOK, "time-record-status/show.html", helpers.NewPageData(ctx, "Detalhes do Status", "time-record-status", data))
+	return ctx.Render(http.StatusOK, "time-record-status/show.html", helpers.NewPageData(ctx, status.Name(), "time-record-status", data).
+		WithBreadcrumbs(
+			helpers.Breadcrumb{Label: "Status de Ponto", URL: "/time-record-status"},
+			helpers.Breadcrumb{Label: status.Name(), URL: "/time-record-status/" + id.String()},
+		))
 }

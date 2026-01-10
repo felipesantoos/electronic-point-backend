@@ -56,12 +56,12 @@ func (h *dashboardViewHandlers) Dashboard(ctx handlers.RichContext) error {
 	// Calculate stats and activity data
 	pendingCount := 0
 	recentRecords := []response.TimeRecord{}
-	
+
 	// Activity for the last 7 days
 	activityData := make([]int, 7)
 	activityLabels := make([]string, 7)
 	now := time.Now()
-	
+
 	for i := 0; i < 7; i++ {
 		day := now.AddDate(0, 0, -i)
 		activityLabels[6-i] = day.Format("02/01")
@@ -71,7 +71,7 @@ func (h *dashboardViewHandlers) Dashboard(ctx handlers.RichContext) error {
 		if strings.ToUpper(tr.TimeRecordStatus().Name()) == "PENDING" {
 			pendingCount++
 		}
-		
+
 		// Map record to activity chart
 		daysAgo := int(now.Sub(tr.Date()).Hours() / 24)
 		if daysAgo >= 0 && daysAgo < 7 {
@@ -84,22 +84,32 @@ func (h *dashboardViewHandlers) Dashboard(ctx handlers.RichContext) error {
 		}
 	}
 
+	hasActivity := false
+	for _, count := range activityData {
+		if count > 0 {
+			hasActivity = true
+			break
+		}
+	}
+
 	data := struct {
 		TotalStudents      int
 		ActiveInternships  int
 		PendingTimeRecords int
 		TotalLocations     int
 		RecentTimeRecords  []response.TimeRecord
-		ActivityData      []int
-		ActivityLabels    []string
+		ActivityData       []int
+		ActivityLabels     []string
+		HasActivity        bool
 	}{
 		TotalStudents:      len(students),
 		ActiveInternships:  len(internships),
 		PendingTimeRecords: pendingCount,
 		TotalLocations:     len(locations),
 		RecentTimeRecords:  recentRecords,
-		ActivityData:      activityData,
-		ActivityLabels:    activityLabels,
+		ActivityData:       activityData,
+		ActivityLabels:     activityLabels,
+		HasActivity:        hasActivity,
 	}
 
 	return ctx.Render(http.StatusOK, "dashboard", helpers.NewPageData(ctx, "Dashboard", "dashboard", data))

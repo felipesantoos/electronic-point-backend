@@ -21,4 +21,8 @@ func NewInstitutionRouter() Router {
 func (this *institutionRouter) Load(rootEndpoint *echo.Group) {
 	router := rootEndpoint.Group("/institutions")
 	router.GET("", middlewares.EnhanceContext(this._handlers.List))
+	router.GET("/:id", middlewares.EnhanceContext(this._handlers.Get))
+	router.POST("", middlewares.EnhanceContext(this._handlers.Create))
+	router.PUT("/:id", middlewares.EnhanceContext(this._handlers.Update))
+	router.DELETE("/:id", middlewares.EnhanceContext(this._handlers.Delete))
 }

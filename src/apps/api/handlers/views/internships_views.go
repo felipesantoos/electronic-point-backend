@@ -21,8 +21,8 @@ type InternshipViewHandlers interface {
 }
 
 type internshipViewHandlers struct {
-	service          primary.InternshipPort
-	studentService   primary.StudentPort
+	service         primary.InternshipPort
+	studentService  primary.StudentPort
 	locationService primary.InternshipLocationPort
 }
 
@@ -74,10 +74,12 @@ func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
 
 func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 	var body struct {
-		StudentID  string `form:"student_id"`
-		LocationID string `form:"location_id"`
-		StartedIn  string `form:"started_in"`
-		EndedIn    string `form:"ended_in"`
+		StudentID         string `form:"student_id"`
+		LocationID        string `form:"location_id"`
+		StartedIn         string `form:"started_in"`
+		EndedIn           string `form:"ended_in"`
+		ScheduleEntryTime string `form:"schedule_entry_time"`
+		ScheduleExitTime  string `form:"schedule_exit_time"`
 	}
 	if err := ctx.Bind(&body); err != nil {
 		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
@@ -86,18 +88,36 @@ func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 	studentID, _ := uuid.Parse(body.StudentID)
 	locationID, _ := uuid.Parse(body.LocationID)
 	startedIn, _ := time.Parse("2006-01-02", body.StartedIn)
-	
+
 	var endedInPtr *time.Time
 	if body.EndedIn != "" {
 		endedIn, _ := time.Parse("2006-01-02", body.EndedIn)
 		endedInPtr = &endedIn
 	}
 
+	var entryTimePtr *time.Time
+	if body.ScheduleEntryTime != "" {
+		t, err := time.Parse("15:04", body.ScheduleEntryTime)
+		if err == nil {
+			entryTimePtr = &t
+		}
+	}
+
+	var exitTimePtr *time.Time
+	if body.ScheduleExitTime != "" {
+		t, err := time.Parse("15:04", body.ScheduleExitTime)
+		if err == nil {
+			exitTimePtr = &t
+		}
+	}
+
 	dto := request.Internship{
-		StudentID:  studentID,
-		LocationID: locationID,
-		StartedIn:  startedIn,
-		EndedIn:    endedInPtr,
+		StudentID:         studentID,
+		LocationID:        locationID,
+		StartedIn:         startedIn,
+		EndedIn:           endedInPtr,
+		ScheduleEntryTime: entryTimePtr,
+		ScheduleExitTime:  exitTimePtr,
 	}
 
 	intern, dErr := dto.ToDomain()
@@ -131,4 +151,3 @@ func (h *internshipViewHandlers) Show(ctx handlers.RichContext) error {
 			helpers.Breadcrumb{Label: "Detalhes", URL: "/internships/" + id.String()},
 		))
 }
-

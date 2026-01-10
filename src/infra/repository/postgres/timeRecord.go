@@ -94,8 +94,13 @@ func (this timeRecordRepository) Delete(id uuid.UUID) errors.Error {
 }
 
 func (this timeRecordRepository) List(_filters filters.TimeRecordFilters) ([]timeRecord.TimeRecord, errors.Error) {
+	search := ""
+	if _filters.Search != nil {
+		search = *_filters.Search
+	}
+
 	rows, err := repository.Queryx(query.TimeRecord().Select().All(), _filters.StudentID,
-		_filters.StartDate, _filters.EndDate, _filters.TeacherID, _filters.StatusID)
+		_filters.StartDate, _filters.EndDate, _filters.TeacherID, _filters.StatusID, search)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()

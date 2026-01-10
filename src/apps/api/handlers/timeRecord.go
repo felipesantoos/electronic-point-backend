@@ -135,7 +135,7 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // Delete
@@ -166,7 +166,7 @@ func (this *timeRecordHandlers) Delete(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // List
@@ -323,13 +323,13 @@ func (this *timeRecordHandlers) Approve(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }
 
 // Disapprove
 // @ID TimeRecord.Disapprove
 // @Summary Desaprovar um registro de tempo.
-// @Description Atualiza o status de um registro de tempo para "Desaprovado".
+// @Description Atualiza os status de um registro de tempo para "Desaprovado".
 // @Tags Registros de tempo
 // @Security BearerAuth
 // @Produce json
@@ -358,5 +358,5 @@ func (this *timeRecordHandlers) Disapprove(ctx RichContext) error {
 	if err != nil {
 		return responseFromError(err)
 	}
-	return ctx.NoContent(http.StatusNoContent)
+	return successNoContent(ctx)
 }

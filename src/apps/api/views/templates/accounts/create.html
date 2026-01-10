@@ -9,11 +9,14 @@
         {{template "alerts" .}}
     </div>
 
-    <form hx-post="/admin/accounts" hx-target="body" hx-push-url="true" class="space-y-4">
-        {{template "form-input" dict "ID" "email" "Name" "email" "Label" "Email" "Type" "email" "Required" true "Placeholder" "exemplo@email.com"}}
-        {{template "form-input" dict "ID" "password" "Name" "password" "Label" "Senha" "Type" "password" "Required" true "Placeholder" "••••••••"}}
-        
-        {{template "form-select" dict "ID" "role_id" "Name" "role_id" "Label" "Função" "Required" true "Placeholder" "Selecione uma função" "Options" .Data.Roles}}
+    <form hx-post="/admin/accounts" hx-target="body" hx-push-url="true" class="space-y-6">
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações de Acesso</h3>
+            {{template "form-input" dict "ID" "email" "Name" "email" "Label" "Email" "Type" "email" "Required" true "Placeholder" "exemplo@email.com"}}
+            {{template "form-input" dict "ID" "password" "Name" "password" "Label" "Senha" "Type" "password" "Required" true "Placeholder" "••••••••"}}
+            
+            {{template "form-searchable-select" dict "ID" "role_id" "Name" "role_id" "Label" "Função" "Required" true "Placeholder" "Selecione uma função" "Options" .Data.Roles}}
+        </div>
 
         <div class="pt-4 flex justify-end gap-3">
             <a href="/admin/accounts" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
