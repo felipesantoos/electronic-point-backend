@@ -1,8 +1,9 @@
 package query
 
 const (
-	CampusID   = "campus_id"
-	CampusName = "campus_name"
+	CampusID            = "campus_id"
+	CampusName          = "campus_name"
+	CampusInstitutionID = "campus_institution_id"
 )
 
 type CampusQueryBuilder interface {
@@ -57,7 +58,8 @@ func (campusQuerySelectBuilder *campusQuerySelectBuilder) All() string {
 	return `
 		SELECT
 			campus.id AS campus_id,
-			campus.name AS campus_name
+			campus.name AS campus_name,
+			campus.institution_id AS campus_institution_id
 		FROM campus
 		WHERE campus.deleted_at IS NULL
 			AND campus.name LIKE '%' || COALESCE($1, campus.name) || '%'
@@ -69,7 +71,8 @@ func (campusQuerySelectBuilder *campusQuerySelectBuilder) ByID() string {
 	return `
 		SELECT
 			campus.id AS campus_id,
-			campus.name AS campus_name
+			campus.name AS campus_name,
+			campus.institution_id AS campus_institution_id
 		FROM campus
 		WHERE campus.id = $1 AND campus.deleted_at IS NULL
 	`

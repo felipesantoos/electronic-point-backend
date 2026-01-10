@@ -28,7 +28,12 @@ func (this *campusQueryObjectBuilder) FromMap(data map[string]interface{}) (camp
 		return nil, errors.NewUnexpected()
 	}
 	name := fmt.Sprint(data[query.CampusName])
-	_campus, validationError := campus.NewBuilder().WithID(id).WithName(name).Build()
+	institutionID, err := uuid.Parse(string(data[query.CampusInstitutionID].([]uint8)))
+	if err != nil {
+		logger.Error().Msg(err.Error())
+		return nil, errors.NewUnexpected()
+	}
+	_campus, validationError := campus.NewBuilder().WithID(id).WithName(name).WithInstitutionID(institutionID).Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return nil, validationError
