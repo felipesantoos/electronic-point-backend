@@ -5,8 +5,6 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
-	eletronic_point_internshipLocation "eletronic_point/src/core/domain/internshipLocation"
-	eletronic_point_student "eletronic_point/src/core/domain/student"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
@@ -51,7 +49,7 @@ func (h *internshipViewHandlers) List(ctx handlers.RichContext) error {
 		Filters     filters.InternshipFilters
 	}{
 		Internships: response.InternshipBuilder().BuildFromDomainList(internships),
-		Students:    h.toStudentOptions(students),
+		Students:    helpers.ToOptions(students),
 		Filters:     f,
 	}
 
@@ -70,8 +68,8 @@ func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		Locations         interface{}
 		SelectedStudentID string
 	}{
-		Students:          h.toStudentOptions(students),
-		Locations:         h.toLocationOptions(locations),
+		Students:          helpers.ToOptions(students),
+		Locations:         helpers.ToOptions(locations),
 		SelectedStudentID: selectedStudentID,
 	}
 
@@ -144,19 +142,3 @@ func (h *internshipViewHandlers) Show(ctx handlers.RichContext) error {
 		))
 }
 
-// Helpers
-func (h *internshipViewHandlers) toStudentOptions(students []eletronic_point_student.Student) interface{} {
-	options := make([]struct{ Label, Value string }, 0)
-	for _, s := range students {
-		options = append(options, struct{ Label, Value string }{Label: s.Name(), Value: s.ID().String()})
-	}
-	return options
-}
-
-func (h *internshipViewHandlers) toLocationOptions(locations []eletronic_point_internshipLocation.InternshipLocation) interface{} {
-	options := make([]struct{ Label, Value string }, 0)
-	for _, l := range locations {
-		options = append(options, struct{ Label, Value string }{Label: l.Name(), Value: l.ID().String()})
-	}
-	return options
-}

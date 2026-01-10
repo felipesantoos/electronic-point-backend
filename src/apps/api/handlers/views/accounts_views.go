@@ -58,18 +58,10 @@ func (h *accountViewHandlers) CreatePage(ctx handlers.RichContext) error {
 
 	roles, _ := h.resourcesService.ListAccountRoles()
 	
-	roleOptions := make([]struct{ Label, Value string }, 0)
-	for _, r := range roles {
-		roleOptions = append(roleOptions, struct{ Label, Value string }{
-			Label: r.Name(),
-			Value: r.ID().String(),
-		})
-	}
-
 	data := struct {
 		Roles interface{}
 	}{
-		Roles: roleOptions,
+		Roles: helpers.ToOptions(roles),
 	}
 
 	return ctx.Render(http.StatusOK, "accounts/create.html", helpers.NewPageData(ctx, "Nova Conta", "accounts", data))

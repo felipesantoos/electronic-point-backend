@@ -163,15 +163,10 @@ func (h *resourceViewHandlers) Campus(ctx handlers.RichContext) error {
 func (h *resourceViewHandlers) CreateCampusPage(ctx handlers.RichContext) error {
 	institutions, _ := h.institutionService.List(filters.InstitutionFilters{})
 
-	options := make([]struct{ Label, Value string }, 0)
-	for _, inst := range institutions {
-		options = append(options, struct{ Label, Value string }{Label: inst.Name(), Value: inst.ID().String()})
-	}
-
 	data := struct {
 		Institutions interface{}
 	}{
-		Institutions: options,
+		Institutions: helpers.ToOptions(institutions),
 	}
 
 	return ctx.Render(http.StatusOK, "campus/create.html", helpers.NewPageData(ctx, "Novo Campus", "campus", data).
@@ -207,17 +202,13 @@ func (h *resourceViewHandlers) EditCampusPage(ctx handlers.RichContext) error {
 	}
 
 	institutions, _ := h.institutionService.List(filters.InstitutionFilters{})
-	options := make([]struct{ Label, Value string }, 0)
-	for _, inst := range institutions {
-		options = append(options, struct{ Label, Value string }{Label: inst.Name(), Value: inst.ID().String()})
-	}
 
 	data := struct {
 		Campus       response.Campus
 		Institutions interface{}
 	}{
 		Campus:       response.CampusBuilder().BuildFromDomain(camp),
-		Institutions: options,
+		Institutions: helpers.ToOptions(institutions),
 	}
 
 	return ctx.Render(http.StatusOK, "campus/edit.html", helpers.NewPageData(ctx, "Editar Campus", "campus", data).

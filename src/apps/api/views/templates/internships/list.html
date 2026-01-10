@@ -40,8 +40,10 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDate .StartedIn}}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{if .EndedIn}}{{formatDate .EndedIn}}{{else}}Ativo{{end}}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {{template "table-action-button" dict "URL" (printf "/internships/%s" (formatUUID .ID)) "Label" "Ver"}}
-                        {{template "table-delete-button" dict "URL" (printf "/api/internships/%s" (formatUUID .ID))}}
+                        <div class="flex items-center flex-wrap gap-2">
+                            {{template "table-action-button" dict "URL" (printf "/internships/%s" (formatUUID .ID)) "Label" "Ver"}}
+                            {{template "table-delete-button" dict "URL" (printf "/api/internships/%s" (formatUUID .ID))}}
+                        </div>
                     </td>
                 </tr>
                 {{else}}

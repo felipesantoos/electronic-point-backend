@@ -38,9 +38,11 @@
                         <span class="px-2 py-1 rounded-md bg-gray-100 font-mono text-xs">{{.Code}}</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {{template "table-action-button" dict "URL" (printf "/time-record-status/%s" (formatUUID .ID)) "Label" "Ver"}}
-                        {{template "table-action-button" dict "URL" (printf "/time-record-status/%s/edit" (formatUUID .ID)) "Label" "Editar"}}
-                        {{template "table-delete-button" dict "URL" (printf "/api/time-record-status/%s" (formatUUID .ID))}}
+                        <div class="flex items-center flex-wrap gap-2">
+                            {{template "table-action-button" dict "URL" (printf "/time-record-status/%s" (formatUUID .ID)) "Label" "Ver"}}
+                            {{template "table-action-button" dict "URL" (printf "/time-record-status/%s/edit" (formatUUID .ID)) "Label" "Editar"}}
+                            {{template "table-delete-button" dict "URL" (printf "/api/time-record-status/%s" (formatUUID .ID))}}
+                        </div>
                     </td>
                 </tr>
                 {{else}}

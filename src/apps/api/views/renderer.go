@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"time"
 
@@ -200,6 +201,16 @@ func defaultVal(val interface{}, fallback string) string {
 	if val == nil {
 		return fallback
 	}
+
+	// Handle pointer types
+	rv := reflect.ValueOf(val)
+	if rv.Kind() == reflect.Ptr {
+		if rv.IsNil() {
+			return fallback
+		}
+		return defaultVal(rv.Elem().Interface(), fallback)
+	}
+
 	if s, ok := val.(string); ok {
 		if s == "" {
 			return fallback
@@ -214,6 +225,23 @@ func isSelected(val interface{}, selected interface{}) bool {
 	if val == nil || selected == nil {
 		return false
 	}
+
+	v1 := reflect.ValueOf(val)
+	if v1.Kind() == reflect.Ptr {
+		if v1.IsNil() {
+			return false
+		}
+		val = v1.Elem().Interface()
+	}
+
+	v2 := reflect.ValueOf(selected)
+	if v2.Kind() == reflect.Ptr {
+		if v2.IsNil() {
+			return false
+		}
+		selected = v2.Elem().Interface()
+	}
+
 	return fmt.Sprintf("%v", val) == fmt.Sprintf("%v", selected)
 }
 

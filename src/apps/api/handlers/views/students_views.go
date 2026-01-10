@@ -6,9 +6,6 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/formData"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
-	eletronic_point_campus "eletronic_point/src/core/domain/campus"
-	eletronic_point_course "eletronic_point/src/core/domain/course"
-	eletronic_point_institution "eletronic_point/src/core/domain/institution"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
@@ -59,8 +56,8 @@ func (h *studentViewHandlers) List(ctx handlers.RichContext) error {
 		Filters      filters.StudentFilters
 	}{
 		Students:     response.StudentBuilder().BuildFromDomainList(students),
-		Institutions: h.toOptions(institutions),
-		Campus:       h.toOptions(campus),
+		Institutions: helpers.ToOptions(institutions),
+		Campus:       helpers.ToOptions(campus),
 		Filters:      f,
 	}
 
@@ -76,8 +73,8 @@ func (h *studentViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		Campus  interface{}
 		Courses interface{}
 	}{
-		Campus:  h.toOptions(campus),
-		Courses: h.toOptions(courses),
+		Campus:  helpers.ToOptions(campus),
+		Courses: helpers.ToOptions(courses),
 	}
 
 	return ctx.Render(http.StatusOK, "students/create.html", helpers.NewPageData(ctx, "Novo Estudante", "students", data).
@@ -143,8 +140,8 @@ func (h *studentViewHandlers) EditPage(ctx handlers.RichContext) error {
 		Courses interface{}
 	}{
 		Student: response.StudentBuilder().BuildFromDomain(s),
-		Campus:  h.toOptions(campus),
-		Courses: h.toOptions(courses),
+		Campus:  helpers.ToOptions(campus),
+		Courses: helpers.ToOptions(courses),
 	}
 
 	return ctx.Render(http.StatusOK, "students/edit.html", helpers.NewPageData(ctx, "Editar Estudante", "students", data).
@@ -213,25 +210,4 @@ func (h *studentViewHandlers) Show(ctx handlers.RichContext) error {
 			helpers.Breadcrumb{Label: "Estudantes", URL: "/students"},
 			helpers.Breadcrumb{Label: s.Name(), URL: "/students/" + id.String()},
 		))
-}
-
-// Helper to convert list to options
-func (h *studentViewHandlers) toOptions(list interface{}) interface{} {
-	options := make([]struct{ Label, Value string }, 0)
-
-	switch v := list.(type) {
-	case []eletronic_point_campus.Campus:
-		for _, item := range v {
-			options = append(options, struct{ Label, Value string }{Label: item.Name(), Value: item.ID().String()})
-		}
-	case []eletronic_point_course.Course:
-		for _, item := range v {
-			options = append(options, struct{ Label, Value string }{Label: item.Name(), Value: item.ID().String()})
-		}
-	case []eletronic_point_institution.Institution:
-		for _, item := range v {
-			options = append(options, struct{ Label, Value string }{Label: item.Name(), Value: item.ID().String()})
-		}
-	}
-	return options
 }

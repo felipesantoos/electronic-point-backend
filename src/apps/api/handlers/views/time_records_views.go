@@ -5,8 +5,6 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
-	eletronic_point_student "eletronic_point/src/core/domain/student"
-	eletronic_point_status "eletronic_point/src/core/domain/timeRecordStatus"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
@@ -23,9 +21,9 @@ type TimeRecordViewHandlers interface {
 }
 
 type timeRecordViewHandlers struct {
-	service       primary.TimeRecordPort
+	service        primary.TimeRecordPort
 	studentService primary.StudentPort
-	statusService primary.TimeRecordStatusPort
+	statusService  primary.TimeRecordStatusPort
 }
 
 func NewTimeRecordViewHandlers(
@@ -53,8 +51,8 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 		Filters     filters.TimeRecordFilters
 	}{
 		TimeRecords: response.TimeRecordBuilder().BuildFromDomainList(records),
-		Students:    h.toStudentOptions(students),
-		Statuses:    h.toStatusOptions(statuses),
+		Students:    helpers.ToOptions(students),
+		Statuses:    helpers.ToOptions(statuses),
 		Filters:     f,
 	}
 
@@ -67,7 +65,7 @@ func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
 	data := struct {
 		Students interface{}
 	}{
-		Students: h.toStudentOptions(students),
+		Students: helpers.ToOptions(students),
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/create.html", helpers.NewPageData(ctx, "Novo Registro", "time-records", data))
@@ -90,7 +88,7 @@ func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
 	studentID, _ := uuid.Parse(body.StudentID)
 	date, _ := time.Parse("2006-01-02", body.Date)
 	entryTime, _ := time.Parse("2006-01-02T15:04", body.EntryTime)
-	
+
 	var exitTimePtr *time.Time
 	if body.ExitTime != "" {
 		exitTime, _ := time.Parse("2006-01-02T15:04", body.ExitTime)
@@ -140,21 +138,4 @@ func (h *timeRecordViewHandlers) Show(ctx handlers.RichContext) error {
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/show.html", helpers.NewPageData(ctx, "Detalhes do Registro", "time-records", data))
-}
-
-// Helpers
-func (h *timeRecordViewHandlers) toStudentOptions(students []eletronic_point_student.Student) interface{} {
-	options := make([]struct{ Label, Value string }, 0)
-	for _, s := range students {
-		options = append(options, struct{ Label, Value string }{Label: s.Name(), Value: s.ID().String()})
-	}
-	return options
-}
-
-func (h *timeRecordViewHandlers) toStatusOptions(statuses []eletronic_point_status.TimeRecordStatus) interface{} {
-	options := make([]struct{ Label, Value string }, 0)
-	for _, s := range statuses {
-		options = append(options, struct{ Label, Value string }{Label: s.Name(), Value: s.ID().String()})
-	}
-	return options
 }
