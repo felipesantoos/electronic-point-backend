@@ -120,6 +120,7 @@ func (studentQuerySelectBuilder *studentQuerySelectBuilder) All() string {
 			AND teacher.id = COALESCE($1, teacher.id)
 			AND institution.id = COALESCE($2, institution.id)
 			AND campus.id = COALESCE($3, campus.id)
+			AND ($4 = '' OR person.name ILIKE '%' || $4 || '%' OR student.registration ILIKE '%' || $4 || '%' OR person.cpf ILIKE '%' || $4 || '%')
 		ORDER BY person.name ASC
 	`
 }

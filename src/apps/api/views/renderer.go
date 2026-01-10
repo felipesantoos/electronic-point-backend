@@ -39,6 +39,12 @@ func NewRenderer(root string) *TemplateRenderer {
 		"is_selected":       isSelected,
 		"image_url":         imageUrl,
 		"add":               func(a, b int) int { return a + b },
+		"percentage": func(completed, total int) int {
+			if total == 0 {
+				return 0
+			}
+			return int((float64(completed) / float64(total)) * 100)
+		},
 		"marshal": func(v interface{}) template.JS {
 			a, _ := json.Marshal(v)
 			return template.JS(a)

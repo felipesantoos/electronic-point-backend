@@ -29,6 +29,10 @@ func GetStudentFilters(ctx handlers.RichContext) filters.StudentFilters {
 		}
 	}
 
+	if val := ctx.QueryParam(params.Search); val != "" {
+		f.Search = &val
+	}
+
 	return f
 }
 

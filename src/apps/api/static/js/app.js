@@ -69,11 +69,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 
+    // Initialize on load or HTMX swap
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+
+    function initApp() {
+        applyInputMasks();
+    }
+
     // Global HTMX headers (e.g. CSRF token if needed)
     document.body.addEventListener('htmx:configRequest', (event) => {
-        // Example: event.detail.headers['X-CSRF-Token'] = '...';
+        // ...
+    });
+
+    document.body.addEventListener('htmx:afterOnLoad', () => {
+        applyInputMasks();
     });
 });
+
+function applyInputMasks() {
+    const cpfInputs = document.querySelectorAll('input[name="cpf"]');
+    cpfInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            
+            e.target.value = value;
+        });
+    });
+
+    const phoneInputs = document.querySelectorAll('input[name="phone"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            if (value.length > 10) {
+                value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (value.length > 5) {
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+            } else if (value.length > 0) {
+                value = value.replace(/^(\d*)/, '($1');
+            }
+            
+            e.target.value = value;
+        });
+    });
+}
 
 // Toast notification helper
 function showToast(type, message) {
@@ -151,15 +202,4 @@ function previewImage(input, previewId) {
         };
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-// Global function to handle image load errors
-function handleImageError(img) {
-    // Prevent infinite loop if the default image also fails
-    if (img.getAttribute('data-tried-default')) return;
-    
-    img.setAttribute('data-tried-default', 'true');
-    // Default SVG avatar
-    img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'%3E%3C/path%3E%3C/svg%3E";
-    img.classList.add('bg-gray-100'); // Add background to the SVG
 }

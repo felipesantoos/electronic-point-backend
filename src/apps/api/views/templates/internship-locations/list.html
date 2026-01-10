@@ -6,6 +6,21 @@
             Novo Local
         </a>
     </div>
+    <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <form hx-get="/internship-locations" hx-target="#page-content" hx-push-url="true" class="flex gap-4">
+            <div class="flex-1">
+                <input type="text" name="name" value="{{index .Data.Filters "name"}}" 
+                       placeholder="Buscar por nome..."
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                Filtrar
+            </button>
+            <a hx-get="/internship-locations" hx-target="#page-content" hx-push-url="true" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
+                Limpar
+            </a>
+        </form>
+    </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

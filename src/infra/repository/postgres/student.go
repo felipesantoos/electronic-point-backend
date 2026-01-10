@@ -148,8 +148,12 @@ func (this studentRepository) Delete(id uuid.UUID) errors.Error {
 }
 
 func (this studentRepository) List(_filters filters.StudentFilters) ([]student.Student, errors.Error) {
+	searchParam := ""
+	if _filters.Search != nil {
+		searchParam = *_filters.Search
+	}
 	rows, err := repository.Queryx(query.Student().Select().All(), _filters.TeacherID, _filters.InstitutionID,
-		_filters.CampusID)
+		_filters.CampusID, searchParam)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return nil, errors.NewUnexpected()
