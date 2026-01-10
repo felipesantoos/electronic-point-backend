@@ -20,7 +20,7 @@ func CampusBuilder() *campusBuilder {
 
 func (*campusBuilder) BuildFromDomain(data campus.Campus) Campus {
 	var institutionID *uuid.UUID
-	if data.InstitutionID().ID() != 0 {
+	if data.InstitutionID() != uuid.Nil {
 		aux := data.InstitutionID()
 		institutionID = &aux
 	}

@@ -76,6 +76,7 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 	// Build SimplifiedStudent
 	studentName := fmt.Sprint(data[query.PersonName])
 	studentProfilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
+	studentTotalWorkload := int(data[query.StudentTotalWorkload].(int64))
 	institutionID, _ := uuid.Parse(string(data[query.InstitutionID].([]uint8)))
 	institutionName := fmt.Sprint(data[query.InstitutionName])
 	_institution, _ := institution.NewBuilder().WithID(institutionID).WithName(institutionName).Build()
@@ -86,7 +87,8 @@ func (t *timeRecordQueryObjectBuilder) FromMap(data map[string]interface{}) (tim
 	courseName := fmt.Sprint(data[query.CourseName])
 	_course, _ := course.NewBuilder().WithID(courseID).WithName(courseName).Build()
 	_student, _ := simplifiedStudent.NewBuilder().WithID(studentID).WithName(studentName).
-		WithProfilePicture(studentProfilePicture).WithInstitution(_institution).WithCampus(_campus).WithCourse(_course).Build()
+		WithProfilePicture(studentProfilePicture).WithInstitution(_institution).WithCampus(_campus).WithCourse(_course).
+		WithTotalWorkload(studentTotalWorkload).Build()
 
 	// Build Internship
 	var _internship internship.Internship

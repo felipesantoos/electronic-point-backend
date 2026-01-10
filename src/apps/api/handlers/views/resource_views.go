@@ -61,12 +61,9 @@ func (h *resourceViewHandlers) Institutions(ctx handlers.RichContext) error {
 
 	institutions, _ := h.institutionService.List(filters.InstitutionFilters{Name: namePtr})
 
-	data := struct {
-		Institutions []response.Institution
-		Filters      map[string]string
-	}{
-		Institutions: response.InstitutionBuilder().BuildFromDomainList(institutions),
-		Filters:      map[string]string{"name": name},
+	data := map[string]interface{}{
+		"Institutions": response.InstitutionBuilder().BuildFromDomainList(institutions),
+		"Filters":      map[string]string{"name": name},
 	}
 
 	return ctx.Render(http.StatusOK, "institutions/list.html", helpers.NewPageData(ctx, "Instituições", "institutions", data).
@@ -148,12 +145,9 @@ func (h *resourceViewHandlers) Campus(ctx handlers.RichContext) error {
 
 	campus, _ := h.campusService.List(filters.CampusFilters{Name: namePtr})
 
-	data := struct {
-		Campus  []response.Campus
-		Filters map[string]string
-	}{
-		Campus:  response.CampusBuilder().BuildFromDomainList(campus),
-		Filters: map[string]string{"name": name},
+	data := map[string]interface{}{
+		"Campus":  response.CampusBuilder().BuildFromDomainList(campus),
+		"Filters": map[string]string{"name": name},
 	}
 
 	return ctx.Render(http.StatusOK, "campus/list.html", helpers.NewPageData(ctx, "Campus", "campus", data).
@@ -163,10 +157,8 @@ func (h *resourceViewHandlers) Campus(ctx handlers.RichContext) error {
 func (h *resourceViewHandlers) CreateCampusPage(ctx handlers.RichContext) error {
 	institutions, _ := h.institutionService.List(filters.InstitutionFilters{})
 
-	data := struct {
-		Institutions interface{}
-	}{
-		Institutions: helpers.ToOptions(institutions),
+	data := map[string]interface{}{
+		"Institutions": helpers.ToOptions(institutions),
 	}
 
 	return ctx.Render(http.StatusOK, "campus/create.html", helpers.NewPageData(ctx, "Novo Campus", "campus", data).
@@ -203,12 +195,9 @@ func (h *resourceViewHandlers) EditCampusPage(ctx handlers.RichContext) error {
 
 	institutions, _ := h.institutionService.List(filters.InstitutionFilters{})
 
-	data := struct {
-		Campus       response.Campus
-		Institutions interface{}
-	}{
-		Campus:       response.CampusBuilder().BuildFromDomain(camp),
-		Institutions: helpers.ToOptions(institutions),
+	data := map[string]interface{}{
+		"Campus":       response.CampusBuilder().BuildFromDomain(camp),
+		"Institutions": helpers.ToOptions(institutions),
 	}
 
 	return ctx.Render(http.StatusOK, "campus/edit.html", helpers.NewPageData(ctx, "Editar Campus", "campus", data).
@@ -246,12 +235,9 @@ func (h *resourceViewHandlers) Courses(ctx handlers.RichContext) error {
 
 	courses, _ := h.courseService.List(filters.CourseFilters{Name: namePtr})
 
-	data := struct {
-		Courses []response.Course
-		Filters map[string]string
-	}{
-		Courses: response.CourseBuilder().BuildFromDomainList(courses),
-		Filters: map[string]string{"name": name},
+	data := map[string]interface{}{
+		"Courses": response.CourseBuilder().BuildFromDomainList(courses),
+		"Filters": map[string]string{"name": name},
 	}
 
 	return ctx.Render(http.StatusOK, "courses/list.html", helpers.NewPageData(ctx, "Cursos", "courses", data).

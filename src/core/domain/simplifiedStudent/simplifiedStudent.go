@@ -20,6 +20,7 @@ type simplifiedStudent struct {
 	_institution   institution.Institution
 	_campus        campus.Campus
 	_course        course.Course
+	totalWorkload  int
 }
 
 func (s *simplifiedStudent) ID() *uuid.UUID {
@@ -44,6 +45,10 @@ func (s *simplifiedStudent) Campus() campus.Campus {
 
 func (s *simplifiedStudent) Course() course.Course {
 	return s._course
+}
+
+func (s *simplifiedStudent) TotalWorkload() int {
+	return s.totalWorkload
 }
 
 func (s *simplifiedStudent) SetID(id *uuid.UUID) errors.Error {
@@ -88,5 +93,10 @@ func (s *simplifiedStudent) SetCourse(_course course.Course) errors.Error {
 		return errors.NewFromString(messages.StudentCourseErrorMessage)
 	}
 	s._course = _course
+	return nil
+}
+
+func (s *simplifiedStudent) SetTotalWorkload(totalWorkload int) errors.Error {
+	s.totalWorkload = totalWorkload
 	return nil
 }

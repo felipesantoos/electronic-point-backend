@@ -43,14 +43,10 @@ func (h *internshipViewHandlers) List(ctx handlers.RichContext) error {
 
 	students, _ := h.studentService.List(filters.StudentFilters{})
 
-	data := struct {
-		Internships []response.Internship
-		Students    interface{}
-		Filters     filters.InternshipFilters
-	}{
-		Internships: response.InternshipBuilder().BuildFromDomainList(internships),
-		Students:    helpers.ToOptions(students),
-		Filters:     f,
+	data := map[string]interface{}{
+		"Internships": response.InternshipBuilder().BuildFromDomainList(internships),
+		"Students":    helpers.ToOptions(students),
+		"Filters":     f,
 	}
 
 	return ctx.Render(http.StatusOK, "internships/list.html", helpers.NewPageData(ctx, "Estágios", "internships", data).
@@ -63,14 +59,10 @@ func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
 
 	selectedStudentID := ctx.QueryParam("student_id")
 
-	data := struct {
-		Students          interface{}
-		Locations         interface{}
-		SelectedStudentID string
-	}{
-		Students:          helpers.ToOptions(students),
-		Locations:         helpers.ToOptions(locations),
-		SelectedStudentID: selectedStudentID,
+	data := map[string]interface{}{
+		"Students":          helpers.ToOptions(students),
+		"Locations":         helpers.ToOptions(locations),
+		"SelectedStudentID": selectedStudentID,
 	}
 
 	return ctx.Render(http.StatusOK, "internships/create.html", helpers.NewPageData(ctx, "Vincular Estágio", "internships", data).
@@ -129,10 +121,8 @@ func (h *internshipViewHandlers) Show(ctx handlers.RichContext) error {
 		return ctx.Redirect(http.StatusFound, "/internships")
 	}
 
-	data := struct {
-		Internship response.Internship
-	}{
-		Internship: response.InternshipBuilder().BuildFromDomain(intern),
+	data := map[string]interface{}{
+		"Internship": response.InternshipBuilder().BuildFromDomain(intern),
 	}
 
 	return ctx.Render(http.StatusOK, "internships/show.html", helpers.NewPageData(ctx, "Detalhes do Estágio", "internships", data).

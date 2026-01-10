@@ -35,7 +35,8 @@
 
 {{define "table-delete-button"}}
 <button hx-delete="{{.URL}}" 
-        hx-confirm="Tem certeza que deseja excluir este item?" 
+        hx-confirm="Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita." 
+        data-confirm-title="Confirmar Exclusão"
         hx-target="closest tr" 
         hx-swap="outerHTML"
         class="inline-flex items-center px-3 py-1.5 border border-red-200 text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 hover:border-red-300 transition-colors duration-150"

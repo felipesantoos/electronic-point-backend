@@ -84,6 +84,11 @@ func (builder *builder) WithCourse(_course course.Course) *builder {
 	return builder
 }
 
+func (builder *builder) WithTotalWorkload(totalWorkload int) *builder {
+	builder.simplifiedStudent.totalWorkload = totalWorkload
+	return builder
+}
+
 func (builder *builder) Build() (SimplifiedStudent, errors.Error) {
 	if len(builder.errorMessages) > 0 {
 		return nil, errors.NewValidationWithMetadata(builder.errorMessages, map[string]interface{}{

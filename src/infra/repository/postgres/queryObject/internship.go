@@ -91,6 +91,7 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}, shou
 	}
 	studentName := fmt.Sprint(data[query.PersonName])
 	studentProfilePicture := utils.GetNullableValue[string](data[query.StudentProfilePicture])
+	studentTotalWorkload := int(data[query.StudentTotalWorkload].(int64))
 	institutionID, err := uuid.Parse(string(data[query.InstitutionID].([]uint8)))
 	if err != nil {
 		logger.Error().Msg(err.Error())
@@ -125,7 +126,8 @@ func (i *internshipQueryObjectBuilder) FromMap(data map[string]interface{}, shou
 		return nil, validationError
 	}
 	studentBuilder := simplifiedStudent.NewBuilder().WithID(studentID).WithName(studentName).
-		WithProfilePicture(studentProfilePicture).WithInstitution(_institution).WithCampus(_campus).WithCourse(_course)
+		WithProfilePicture(studentProfilePicture).WithInstitution(_institution).WithCampus(_campus).WithCourse(_course).
+		WithTotalWorkload(studentTotalWorkload)
 	_student, validationError := studentBuilder.Build()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())

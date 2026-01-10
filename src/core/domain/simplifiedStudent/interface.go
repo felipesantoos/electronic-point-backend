@@ -16,6 +16,7 @@ type SimplifiedStudent interface {
 	Institution() institution.Institution
 	Campus() campus.Campus
 	Course() course.Course
+	TotalWorkload() int
 
 	SetID(*uuid.UUID) errors.Error
 	SetName(string) errors.Error
@@ -23,4 +24,5 @@ type SimplifiedStudent interface {
 	SetInstitution(institution.Institution) errors.Error
 	SetCampus(campus.Campus) errors.Error
 	SetCourse(course.Course) errors.Error
+	SetTotalWorkload(int) errors.Error
 }

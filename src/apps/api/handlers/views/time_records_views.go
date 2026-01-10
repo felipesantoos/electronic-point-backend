@@ -44,16 +44,11 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 	students, _ := h.studentService.List(filters.StudentFilters{})
 	statuses, _ := h.statusService.List()
 
-	data := struct {
-		TimeRecords []response.TimeRecord
-		Students    interface{}
-		Statuses    interface{}
-		Filters     filters.TimeRecordFilters
-	}{
-		TimeRecords: response.TimeRecordBuilder().BuildFromDomainList(records),
-		Students:    helpers.ToOptions(students),
-		Statuses:    helpers.ToOptions(statuses),
-		Filters:     f,
+	data := map[string]interface{}{
+		"TimeRecords": response.TimeRecordBuilder().BuildFromDomainList(records),
+		"Students":    helpers.ToOptions(students),
+		"Statuses":    helpers.ToOptions(statuses),
+		"Filters":     f,
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/list.html", helpers.NewPageData(ctx, "Registros de Ponto", "time-records", data))
@@ -62,10 +57,8 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
 	students, _ := h.studentService.List(filters.StudentFilters{})
 
-	data := struct {
-		Students interface{}
-	}{
-		Students: helpers.ToOptions(students),
+	data := map[string]interface{}{
+		"Students": helpers.ToOptions(students),
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/create.html", helpers.NewPageData(ctx, "Novo Registro", "time-records", data))
@@ -131,10 +124,8 @@ func (h *timeRecordViewHandlers) Show(ctx handlers.RichContext) error {
 		return ctx.Redirect(http.StatusFound, "/time-records")
 	}
 
-	data := struct {
-		TimeRecord response.TimeRecord
-	}{
-		TimeRecord: response.TimeRecordBuilder().BuildFromDomain(tr),
+	data := map[string]interface{}{
+		"TimeRecord": response.TimeRecordBuilder().BuildFromDomain(tr),
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/show.html", helpers.NewPageData(ctx, "Detalhes do Registro", "time-records", data))

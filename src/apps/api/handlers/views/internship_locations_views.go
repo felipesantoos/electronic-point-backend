@@ -29,15 +29,16 @@ func NewInternshipLocationViewHandlers(service primary.InternshipLocationPort) I
 }
 
 func (h *internshipLocationViewHandlers) List(ctx handlers.RichContext) error {
+	name := ctx.QueryParam("name")
+
 	locations, err := h.service.List(filters.InternshipLocationFilters{})
 	if err != nil {
 		return ctx.Render(http.StatusOK, "internship-locations/list.html", helpers.PageData{Errors: []string{err.String()}})
 	}
 
-	data := struct {
-		Locations []response.InternshipLocation
-	}{
-		Locations: response.InternshipLocationBuilder().BuildFromDomainList(locations),
+	data := map[string]interface{}{
+		"Locations": response.InternshipLocationBuilder().BuildFromDomainList(locations),
+		"Filters":   map[string]string{"name": name},
 	}
 
 	return ctx.Render(http.StatusOK, "internship-locations/list.html", helpers.NewPageData(ctx, "Locais de Estágio", "internship-locations", data))

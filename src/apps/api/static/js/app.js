@@ -88,6 +88,25 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('htmx:afterOnLoad', () => {
         applyInputMasks();
     });
+
+    // Custom Confirmation Modal Logic for HTMX
+    document.body.addEventListener('htmx:confirm', (event) => {
+        // Only intercept if there's a confirmation message (hx-confirm)
+        if (!event.detail.question) return;
+
+        // Prevent immediate execution
+        event.preventDefault();
+
+        // Dispatch an event that our Alpine.js modal will listen to
+        const title = event.target.getAttribute('data-confirm-title') || 'Confirmar Ação';
+        window.dispatchEvent(new CustomEvent('open-confirm-modal', {
+            detail: {
+                title: title,
+                question: event.detail.question,
+                issueRequest: event.detail.issueRequest
+            }
+        }));
+    });
 });
 
 function applyInputMasks() {

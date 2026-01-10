@@ -11,8 +11,25 @@
 
     <form hx-post="/internship-locations" hx-target="body" hx-push-url="true" class="space-y-4">
         {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome da Empresa/Local" "Required" true}}
-        {{template "form-input" dict "ID" "cnpj" "Name" "cnpj" "Label" "CNPJ" "Required" true}}
-        {{template "form-input" dict "ID" "address" "Name" "address" "Label" "Endereço Completo" "Required" true}}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {{template "form-input" dict "ID" "zip_code" "Name" "zip_code" "Label" "CEP" "Required" true}}
+            {{template "form-input" dict "ID" "city" "Name" "city" "Label" "Cidade" "Required" true}}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2">
+                {{template "form-input" dict "ID" "street" "Name" "street" "Label" "Logradouro (Rua/Av)" "Required" true}}
+            </div>
+            {{template "form-input" dict "ID" "number" "Name" "number" "Label" "Número" "Required" true}}
+        </div>
+
+        {{template "form-input" dict "ID" "neighborhood" "Name" "neighborhood" "Label" "Bairro" "Required" true}}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {{template "form-input" dict "ID" "lat" "Name" "lat" "Type" "number" "Label" "Latitude"}}
+            {{template "form-input" dict "ID" "long" "Name" "long" "Type" "number" "Label" "Longitude"}}
+        </div>
 
         <div class="pt-4 flex justify-end gap-3">
             <a href="/internship-locations" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">

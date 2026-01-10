@@ -49,16 +49,11 @@ func (h *studentViewHandlers) List(ctx handlers.RichContext) error {
 	institutions, _ := h.institutionService.List(filters.InstitutionFilters{})
 	campus, _ := h.campusService.List(filters.CampusFilters{})
 
-	data := struct {
-		Students     []response.Student
-		Institutions interface{}
-		Campus       interface{}
-		Filters      filters.StudentFilters
-	}{
-		Students:     response.StudentBuilder().BuildFromDomainList(students),
-		Institutions: helpers.ToOptions(institutions),
-		Campus:       helpers.ToOptions(campus),
-		Filters:      f,
+	data := map[string]interface{}{
+		"Students":     response.StudentBuilder().BuildFromDomainList(students),
+		"Institutions": helpers.ToOptions(institutions),
+		"Campus":       helpers.ToOptions(campus),
+		"Filters":      f,
 	}
 
 	return ctx.Render(http.StatusOK, "students/list.html", helpers.NewPageData(ctx, "Estudantes", "students", data).
@@ -69,12 +64,9 @@ func (h *studentViewHandlers) CreatePage(ctx handlers.RichContext) error {
 	campus, _ := h.campusService.List(filters.CampusFilters{})
 	courses, _ := h.courseService.List(filters.CourseFilters{})
 
-	data := struct {
-		Campus  interface{}
-		Courses interface{}
-	}{
-		Campus:  helpers.ToOptions(campus),
-		Courses: helpers.ToOptions(courses),
+	data := map[string]interface{}{
+		"Campus":  helpers.ToOptions(campus),
+		"Courses": helpers.ToOptions(courses),
 	}
 
 	return ctx.Render(http.StatusOK, "students/create.html", helpers.NewPageData(ctx, "Novo Estudante", "students", data).
@@ -134,14 +126,10 @@ func (h *studentViewHandlers) EditPage(ctx handlers.RichContext) error {
 	campus, _ := h.campusService.List(filters.CampusFilters{})
 	courses, _ := h.courseService.List(filters.CourseFilters{})
 
-	data := struct {
-		Student response.Student
-		Campus  interface{}
-		Courses interface{}
-	}{
-		Student: response.StudentBuilder().BuildFromDomain(s),
-		Campus:  helpers.ToOptions(campus),
-		Courses: helpers.ToOptions(courses),
+	data := map[string]interface{}{
+		"Student": response.StudentBuilder().BuildFromDomain(s),
+		"Campus":  helpers.ToOptions(campus),
+		"Courses": helpers.ToOptions(courses),
 	}
 
 	return ctx.Render(http.StatusOK, "students/edit.html", helpers.NewPageData(ctx, "Editar Estudante", "students", data).
@@ -199,10 +187,8 @@ func (h *studentViewHandlers) Show(ctx handlers.RichContext) error {
 		return ctx.Redirect(http.StatusFound, "/students")
 	}
 
-	data := struct {
-		Student response.Student
-	}{
-		Student: response.StudentBuilder().BuildFromDomain(s),
+	data := map[string]interface{}{
+		"Student": response.StudentBuilder().BuildFromDomain(s),
 	}
 
 	return ctx.Render(http.StatusOK, "students/show.html", helpers.NewPageData(ctx, s.Name(), "students", data).

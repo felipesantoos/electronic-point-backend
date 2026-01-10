@@ -29,15 +29,15 @@ func NewTimeRecordStatusViewHandlers(service primary.TimeRecordStatusPort) TimeR
 }
 
 func (h *timeRecordStatusViewHandlers) List(ctx handlers.RichContext) error {
+	name := ctx.QueryParam("name")
 	statuses, err := h.service.List()
 	if err != nil {
 		return ctx.Render(http.StatusOK, "time-record-status/list.html", helpers.PageData{Errors: []string{err.String()}})
 	}
 
-	data := struct {
-		Statuses []response.TimeRecordStatus
-	}{
-		Statuses: response.TimeRecordStatusBuilder().BuildFromDomainList(statuses),
+	data := map[string]interface{}{
+		"Statuses": response.TimeRecordStatusBuilder().BuildFromDomainList(statuses),
+		"Filters":  map[string]string{"name": name},
 	}
 
 	return ctx.Render(http.StatusOK, "time-record-status/list.html", helpers.NewPageData(ctx, "Status de Ponto", "time-record-status", data))

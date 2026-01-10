@@ -156,8 +156,25 @@ func formatDateTime(t time.Time) string {
 	return t.Format("02/01/2006 15:04:05")
 }
 
-func formatUUID(id uuid.UUID) string {
-	return id.String()
+func formatUUID(id interface{}) string {
+	if id == nil {
+		return ""
+	}
+
+	switch v := id.(type) {
+	case uuid.UUID:
+		if v == uuid.Nil {
+			return ""
+		}
+		return v.String()
+	case *uuid.UUID:
+		if v == nil || *v == uuid.Nil {
+			return ""
+		}
+		return v.String()
+	default:
+		return fmt.Sprintf("%v", id)
+	}
 }
 
 func isAdmin(roleName string) bool {

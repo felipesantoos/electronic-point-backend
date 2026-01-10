@@ -13,6 +13,7 @@ type SimplifiedStudent struct {
 	Institution    Institution `json:"institution"`
 	Campus         Campus      `json:"campus"`
 	Course         Course      `json:"course"`
+	TotalWorkload  int         `json:"total_workload"`
 }
 
 type simplifiedStudentBuilder struct{}
@@ -29,6 +30,7 @@ func (*simplifiedStudentBuilder) BuildFromDomain(data simplifiedStudent.Simplifi
 		Institution:    InstitutionBuilder().BuildFromDomain(data.Institution()),
 		Campus:         CampusBuilder().BuildFromDomain(data.Campus()),
 		Course:         CourseBuilder().BuildFromDomain(data.Course()),
+		TotalWorkload:  data.TotalWorkload(),
 	}
 }
 
