@@ -32,6 +32,7 @@ type AccountQueryUpdateBuilder interface {
 	Password() string
 	Profile() string
 	RoleByAccountID() string
+	RoleByPersonID() string
 }
 
 type accountQueryUpdateBuilder struct{}
@@ -179,5 +180,15 @@ func (*accountQueryUpdateBuilder) RoleByAccountID() string {
 		FROM account_role ar
 		WHERE lower(ar.code) = lower($1)
 			AND account.id = $2
+	`
+}
+
+func (*accountQueryUpdateBuilder) RoleByPersonID() string {
+	return `
+		UPDATE account
+		SET role_id = ar.id
+		FROM account_role ar
+		WHERE lower(ar.code) = lower($1)
+			AND account.person_id = $2
 	`
 }

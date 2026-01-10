@@ -120,6 +120,12 @@ func (this studentRepository) Update(_student student.Student) errors.Error {
 		logger.Error().Msg(err.String())
 		return err
 	}
+
+	existingStudent, getErr := this.Get(*_student.ID(), filters.StudentFilters{})
+	if getErr == nil && _student.ProfilePicture() == nil {
+		_student.SetProfilePicture(existingStudent.ProfilePicture())
+	}
+
 	err = defaultTxExecQuery(transaction, query.Student().Update(), _student.ID(),
 		_student.Registration(), _student.ProfilePicture(), _student.Campus().ID(),
 		_student.Course().ID(), _student.TotalWorkload())

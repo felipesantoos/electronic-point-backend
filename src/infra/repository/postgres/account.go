@@ -197,12 +197,21 @@ func (r *accountRepository) updatePassingTrasaction(tx *repository.SQLTransactio
 		logger.Error().Msg(err.String())
 		return err
 	}
-	err = defaultTxExecQuery(
-		tx,
-		query.Account().Update().RoleByAccountID(),
-		account.Role().Code(),
-		account.ID(),
-	)
+	if account.ID() != nil {
+		err = defaultTxExecQuery(
+			tx,
+			query.Account().Update().RoleByAccountID(),
+			account.Role().Code(),
+			account.ID(),
+		)
+	} else {
+		err = defaultTxExecQuery(
+			tx,
+			query.Account().Update().RoleByPersonID(),
+			account.Role().Code(),
+			account.Person().ID(),
+		)
+	}
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return err
