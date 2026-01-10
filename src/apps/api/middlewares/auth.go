@@ -76,8 +76,7 @@ func Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 			}).Msg("FORBIDDEN ACCESS")
 			return ctx.NoContent(http.StatusForbidden)
 		} else if accRole != role.ANONYMOUS_ROLE_CODE {
-			_, authToken := utils.ExtractToken(authHeader)
-			if valid, err := sessionIsValidWith(authToken); !valid {
+			if valid, err := sessionIsValidWith(token); !valid {
 				if err != nil {
 					return ctx.JSON(http.StatusUnauthorized, response.ErrorBuilder().NewUnauthorizedError())
 				}

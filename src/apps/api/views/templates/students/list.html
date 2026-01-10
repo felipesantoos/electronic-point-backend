@@ -12,10 +12,10 @@
                 {{template "form-input" dict "ID" "search" "Name" "search" "Label" "Buscar por Nome, Matrícula ou CPF" "Placeholder" "Ex: Ana Silva" "Value" .Data.Filters.Search}}
             </div>
             <div>
-                {{template "form-select" dict "ID" "institutionID" "Name" "institutionID" "Label" "Instituição" "Placeholder" "Todas" "Options" .Data.Institutions "Selected" .Data.Filters.InstitutionID}}
+                {{template "form-searchable-select" dict "ID" "institutionID" "Name" "institutionID" "Label" "Instituição" "Placeholder" "Todas" "Options" .Data.Institutions "Selected" .Data.Filters.InstitutionID}}
             </div>
             <div>
-                {{template "form-select" dict "ID" "campusID" "Name" "campusID" "Label" "Campus" "Placeholder" "Todos" "Options" .Data.Campus "Selected" .Data.Filters.CampusID}}
+                {{template "form-searchable-select" dict "ID" "campusID" "Name" "campusID" "Label" "Campus" "Placeholder" "Todos" "Options" .Data.Campus "Selected" .Data.Filters.CampusID}}
             </div>
             <div class="flex items-end pb-4 space-x-2">
                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">

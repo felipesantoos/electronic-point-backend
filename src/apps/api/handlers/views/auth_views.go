@@ -27,7 +27,7 @@ func NewAuthViewHandlers(service primary.AuthPort) AuthViewHandlers {
 }
 
 func (h *authViewHandlers) LoginPage(ctx handlers.RichContext) error {
-	if ctx.AccountID() != nil {
+	if ctx.AccountID() != nil && ctx.IsAdmin() {
 		return ctx.Redirect(http.StatusFound, "/")
 	}
 	return ctx.Render(http.StatusOK, "auth/login", helpers.NewPageData(ctx, "Login", "", nil))

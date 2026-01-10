@@ -13,6 +13,12 @@ import (
 // and redirects to /login if not authenticated. It also handles HTMX requests.
 func ViewsAuthorize(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
+		// Never redirect on the login page itself, auth actions, or static assets
+		path := ctx.Request().URL.Path
+		if path == "/login" || strings.HasPrefix(path, "/static/") || strings.HasPrefix(path, "/api/auth") {
+			return next(ctx)
+		}
+
 		// Check for token in cookie
 		cookie, err := ctx.Cookie(handlers.COOKIE_TOKEN_NAME)
 		var token string
@@ -29,10 +35,6 @@ func ViewsAuthorize(next echo.HandlerFunc) echo.HandlerFunc {
 		// Validate token
 		accRole, ok := utils.ExtractAuthorizationAccountRole(token)
 
-		// Check if it's an anonymous request allowed by some other mechanism
-		// For now, we only allow if it's not anonymous or if it's a non-protected path
-		// But this middleware is intended to be used on PROTECTED view routes.
-
 		if !ok || accRole == "anonymous" {
 			return redirectToLogin(ctx)
 		}
@@ -44,15 +46,6 @@ func ViewsAuthorize(next echo.HandlerFunc) echo.HandlerFunc {
 
 		// Only allow ADMIN users for the frontend
 		if strings.ToLower(accRole) != "admin" {
-			// Clear cookie and redirect to login if not admin
-			cookie := &http.Cookie{
-				Name:     handlers.COOKIE_TOKEN_NAME,
-				Value:    "",
-				Path:     "/",
-				HttpOnly: true,
-				MaxAge:   -1,
-			}
-			ctx.SetCookie(cookie)
 			return redirectToLogin(ctx)
 		}
 
@@ -64,6 +57,16 @@ func ViewsAuthorize(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func redirectToLogin(ctx echo.Context) error {
+	// Always clear the cookie when redirecting to login to prevent loops with invalid tokens
+	cookie := &http.Cookie{
+		Name:     handlers.COOKIE_TOKEN_NAME,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: false,
+		MaxAge:   -1,
+	}
+	ctx.SetCookie(cookie)
+
 	// If it's an HTMX request, we can't just redirect with 302
 	// because HTMX will follow the redirect and swap the login page into the target area.
 	// We want the whole page to redirect.

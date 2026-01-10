@@ -27,8 +27,8 @@
             <div class="space-y-4">
                 <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações Acadêmicas</h3>
                 {{template "form-input" dict "ID" "registration" "Name" "registration" "Label" "Matrícula" "Required" true}}
-                {{template "form-select" dict "ID" "campus_id" "Name" "campus_id" "Label" "Campus" "Required" true "Placeholder" "Selecione o campus" "Options" .Data.Campus}}
-                {{template "form-select" dict "ID" "course_id" "Name" "course_id" "Label" "Curso" "Required" true "Placeholder" "Selecione o curso" "Options" .Data.Courses}}
+                {{template "form-searchable-select" dict "ID" "campus_id" "Name" "campus_id" "Label" "Campus" "Required" true "Placeholder" "Selecione o campus" "Options" .Data.Campus}}
+                {{template "form-searchable-select" dict "ID" "course_id" "Name" "course_id" "Label" "Curso" "Required" true "Placeholder" "Selecione o curso" "Options" .Data.Courses}}
                 {{template "form-input" dict "ID" "total_workload" "Name" "total_workload" "Label" "Carga Horária Total (horas)" "Type" "number" "Required" true}}
             </div>
         </div>

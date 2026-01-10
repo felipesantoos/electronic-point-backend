@@ -125,7 +125,7 @@
 {{define "sidebar"}}
 <aside x-data="{ sidebarOpen: false }" 
        class="bg-gray-800 text-gray-100 min-h-screen z-40 transition-all duration-300 sidebar-scroll overflow-y-auto"
-       :class="sidebarOpen ? 'w-64 fixed inset-y-0 left-0' : 'w-0 md:w-64 overflow-hidden md:overflow-visible fixed md:relative inset-y-0 left-0'">
+       :class="sidebarOpen ? 'w-64 fixed inset-y-0 left-0' : 'w-0 md:w-64 overflow-hidden md:overflow-visible fixed md:sticky md:top-0 md:h-screen inset-y-0 left-0'">
     <div class="p-4 flex items-center justify-between border-b border-gray-700 whitespace-nowrap">
         <a href="/" class="flex items-center">
             <span class="text-xl font-bold tracking-wider">Ponto Eletrônico</span>

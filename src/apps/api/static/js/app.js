@@ -80,9 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
         applyInputMasks();
     }
 
-    // Global HTMX headers (e.g. CSRF token if needed)
+    // Global HTMX headers
     document.body.addEventListener('htmx:configRequest', (event) => {
-        // ...
+        // Ensure cookies are sent with every request
+        event.detail.withCredentials = true;
     });
 
     document.body.addEventListener('htmx:afterOnLoad', () => {
