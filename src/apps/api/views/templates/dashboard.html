@@ -188,7 +188,7 @@
                                             Seu registro de ponto está 
                                             {{end}}
                                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{if eq .TimeRecordStatus.Code "APPROVED"}}bg-green-100 text-green-800{{else if eq .TimeRecordStatus.Code "DISAPPROVED"}}bg-red-100 text-red-800{{else}}bg-yellow-100 text-yellow-800{{end}}">
-                                                {{.TimeRecordStatus.Name}}
+                                                {{translateStatus .TimeRecordStatus.Name}}
                                             </span>
                                         </p>
                                     </div>

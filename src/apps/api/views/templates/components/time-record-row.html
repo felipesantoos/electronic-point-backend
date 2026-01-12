@@ -1,0 +1,70 @@
+<tr id="time-record-{{formatUUID .TimeRecord.ID}}">
+    {{if not .User.IsStudent}}
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 h-10 w-10">
+                {{if .TimeRecord.Student.ProfilePicture}}
+                <img class="h-10 w-10 rounded-full object-cover" 
+                        src="{{image_url .TimeRecord.Student.ProfilePicture}}" 
+                        onerror="handleImageError(this)" alt="">
+                {{else}}
+                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                    {{slice .TimeRecord.Student.Name 0 1 | toUpper}}
+                </div>
+                {{end}}
+            </div>
+            <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">{{.TimeRecord.Student.Name}}</div>
+                <div class="text-xs text-gray-500">{{.TimeRecord.Student.Course.Name}}</div>
+            </div>
+        </div>
+    </td>
+    {{end}}
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDate .TimeRecord.Date}}</td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDateTime .TimeRecord.EntryTime}}</td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{if .TimeRecord.ExitTime}}{{formatDateTime .TimeRecord.ExitTime}}{{else}}-{{end}}</td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm">
+        <span class="px-2 py-1 rounded-full text-xs font-bold 
+            {{if eq .TimeRecord.TimeRecordStatus.Code "APPROVED"}}bg-green-100 text-green-800
+            {{else if eq .TimeRecord.TimeRecordStatus.Code "DISAPPROVED"}}bg-red-100 text-red-800
+            {{else}}bg-yellow-100 text-yellow-800{{end}}">
+            {{translateStatus .TimeRecord.TimeRecordStatus.Name}}
+        </span>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <div class="flex items-center flex-wrap gap-2">
+            {{template "table-action-button" dict "URL" (printf "/time-records/%s" (formatUUID .TimeRecord.ID)) "Label" "Ver"}}
+            {{if and (eq .TimeRecord.TimeRecordStatus.Code "PENDING") (or .User.IsAdmin .User.IsTeacher)}}
+                <button hx-patch="/time-records/{{formatUUID .TimeRecord.ID}}/approve" 
+                        hx-confirm="Deseja aprovar este registro de ponto?"
+                        {{if .User.IsAdmin}}hx-include="#teacher_id"{{end}}
+                        data-confirm-title="Confirmar Aprovação"
+                        hx-target="closest tr" 
+                        hx-swap="outerHTML" 
+                        class="inline-flex items-center px-3 py-1.5 border border-green-200 text-xs font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100 hover:border-green-300 transition-colors duration-150"
+                        title="Aprovar">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Aprovar
+                </button>
+                <button hx-patch="/time-records/{{formatUUID .TimeRecord.ID}}/disapprove" 
+                        hx-confirm="Deseja reprovar este registro de ponto?"
+                        {{if .User.IsAdmin}}hx-include="#teacher_id"{{end}}
+                        data-confirm-title="Confirmar Reprovação"
+                        hx-target="closest tr" 
+                        hx-swap="outerHTML" 
+                        class="inline-flex items-center px-3 py-1.5 border border-orange-200 text-xs font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100 hover:border-orange-300 transition-colors duration-150"
+                        title="Reprovar">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Reprovar
+                </button>
+            {{end}}
+            {{if or .User.IsAdmin .User.IsStudent}}
+                {{template "table-delete-button" dict "URL" (printf "/api/time-records/%s" (formatUUID .TimeRecord.ID))}}
+            {{end}}
+        </div>
+    </td>
+</tr>

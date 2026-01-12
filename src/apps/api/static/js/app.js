@@ -143,6 +143,7 @@ if (typeof window.epAppInitialized === 'undefined') {
             detail: {
                 title: title,
                 question: event.detail.question,
+                target: elt,
                 issueRequest: modifiedIssueRequest
             }
         }));

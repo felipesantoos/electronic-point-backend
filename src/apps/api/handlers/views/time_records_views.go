@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
+	"eletronic_point/src/core/domain/errors"
 	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
@@ -20,6 +21,8 @@ type TimeRecordViewHandlers interface {
 	CreatePage(handlers.RichContext) error
 	Create(handlers.RichContext) error
 	Show(handlers.RichContext) error
+	Approve(handlers.RichContext) error
+	Disapprove(handlers.RichContext) error
 }
 
 type timeRecordViewHandlers struct {
@@ -181,4 +184,63 @@ func (h *timeRecordViewHandlers) Show(ctx handlers.RichContext) error {
 			helpers.Breadcrumb{Label: "Registros de Ponto", URL: "/time-records"},
 			helpers.Breadcrumb{Label: trResponse.Student.Name, URL: "/time-records/" + id.String()},
 		))
+}
+
+func (h *timeRecordViewHandlers) Approve(ctx handlers.RichContext) error {
+	return h.handleStatusUpdate(ctx, h.service.Approve)
+}
+
+func (h *timeRecordViewHandlers) Disapprove(ctx handlers.RichContext) error {
+	return h.handleStatusUpdate(ctx, h.service.Disapprove)
+}
+
+func (h *timeRecordViewHandlers) handleStatusUpdate(ctx handlers.RichContext, action func(uuid.UUID, uuid.UUID) errors.Error) error {
+	id, conversionError := uuid.Parse(ctx.Param("id"))
+	if conversionError != nil {
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "ID inválido")
+	}
+
+	var actorID *uuid.UUID
+	if ctx.IsAdmin() {
+		teacherIDStr := ctx.FormValue("teacher_id")
+		if teacherIDStr == "" {
+			teacherIDStr = ctx.QueryParam("teacher_id")
+		}
+
+		if teacherIDStr != "" {
+			if uid, err := uuid.Parse(teacherIDStr); err == nil {
+				actorID = &uid
+			}
+		}
+
+		// Fallback para o ID do admin se nenhum professor for selecionado
+		if actorID == nil {
+			actorID = ctx.ProfileID()
+		}
+	} else {
+		actorID = ctx.ProfileID()
+	}
+
+	if err := action(id, *actorID); err != nil {
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
+	}
+
+	// Se for uma atualização na página de detalhes, redirecionamos para atualizar tudo
+	if ctx.Request().Header.Get("HX-Target") == "body" {
+		ctx.Response().Header().Set("HX-Redirect", ctx.Request().Header.Get("HX-Current-URL"))
+		return ctx.NoContent(http.StatusOK)
+	}
+
+	// Se for na lista, renderizamos apenas a linha atualizada
+	updatedRecord, err := h.service.Get(id, filters.TimeRecordFilters{})
+	if err != nil {
+		return helpers.HTMXError(ctx, http.StatusInternalServerError, "Erro ao buscar registro atualizado")
+	}
+
+	data := map[string]interface{}{
+		"TimeRecord": response.TimeRecordBuilder().BuildFromDomain(updatedRecord),
+		"User":       helpers.NewPageData(ctx, "", "", nil).User,
+	}
+
+	return ctx.Render(http.StatusOK, "components/time-record-row.html", data)
 }

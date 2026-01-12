@@ -111,6 +111,8 @@ func (r *viewRouter) Load(rootEndpoint *echo.Group) {
 	protected.GET("/time-records/new", middlewares.EnhanceContext(r.timeRecordHandlers.CreatePage))
 	protected.POST("/time-records", middlewares.EnhanceContext(r.timeRecordHandlers.Create))
 	protected.GET("/time-records/:id", middlewares.EnhanceContext(r.timeRecordHandlers.Show))
+	protected.PATCH("/time-records/:id/approve", middlewares.EnhanceContext(r.timeRecordHandlers.Approve))
+	protected.PATCH("/time-records/:id/disapprove", middlewares.EnhanceContext(r.timeRecordHandlers.Disapprove))
 
 	// Time Record Status
 	protected.GET("/time-record-status", middlewares.EnhanceContext(r.timeRecordStatusHandlers.List))

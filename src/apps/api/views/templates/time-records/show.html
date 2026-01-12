@@ -32,7 +32,7 @@
                                 {{if eq .Data.TimeRecord.TimeRecordStatus.Code "APPROVED"}}bg-green-100 text-green-800 border border-green-200
                                 {{else if eq .Data.TimeRecord.TimeRecordStatus.Code "DISAPPROVED"}}bg-red-100 text-red-800 border border-red-200
                                 {{else}}bg-yellow-100 text-yellow-800 border border-yellow-200{{end}}">
-                                {{.Data.TimeRecord.TimeRecordStatus.Name}}
+                                {{translateStatus .Data.TimeRecord.TimeRecordStatus.Name}}
                             </span>
                             {{if .Data.TimeRecord.IsOffSite}}
                             <span class="px-3 py-1 bg-orange-100 text-orange-800 border border-orange-200 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
@@ -194,7 +194,7 @@
                     {{if .User.IsAdmin}}
                         {{template "form-searchable-select" dict "ID" "teacher_id" "Name" "teacher_id" "Label" "Professor Responsável" "Required" true "Placeholder" "Selecione o professor" "Options" .Data.Teachers}}
                     {{end}}
-                    <button hx-patch="/api/time-records/{{formatUUID .Data.TimeRecord.ID}}/approve" 
+                    <button hx-patch="/time-records/{{formatUUID .Data.TimeRecord.ID}}/approve" 
                             hx-confirm="Deseja aprovar este registro de ponto?"
                             {{if .User.IsAdmin}}hx-include="#teacher_id"{{end}}
                             data-confirm-title="Confirmar Aprovação"
@@ -203,7 +203,7 @@
                         <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                         Aprovar Registro
                     </button>
-                    <button hx-patch="/api/time-records/{{formatUUID .Data.TimeRecord.ID}}/disapprove" 
+                    <button hx-patch="/time-records/{{formatUUID .Data.TimeRecord.ID}}/disapprove" 
                             hx-confirm="Deseja reprovar este registro de ponto?"
                             {{if .User.IsAdmin}}hx-include="#teacher_id"{{end}}
                             data-confirm-title="Confirmar Reprovação"
@@ -233,7 +233,7 @@
                     {{end}}
                 </div>
                 <p class="text-sm font-bold text-gray-800 uppercase tracking-widest">Status Finalizado</p>
-                <p class="text-xs text-gray-500 mt-1">Este registro foi <span class="font-bold lowercase">{{.Data.TimeRecord.TimeRecordStatus.Name}}</span> e não pode mais ser alterado.</p>
+                <p class="text-xs text-gray-500 mt-1">Este registro foi <span class="font-bold lowercase">{{translateStatus .Data.TimeRecord.TimeRecordStatus.Name}}</span> e não pode mais ser alterado.</p>
             </div>
             {{end}}
         </div>

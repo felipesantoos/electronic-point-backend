@@ -20,6 +20,19 @@ type TemplateRenderer struct {
 	templates map[string]*template.Template
 }
 
+func translateStatus(status string) string {
+	switch strings.ToLower(status) {
+	case "pending":
+		return "Pendente"
+	case "approved":
+		return "Aprovado"
+	case "disapproved":
+		return "Reprovado"
+	default:
+		return status
+	}
+}
+
 // NewRenderer creates a new TemplateRenderer and parses templates from the provided root directory
 func NewRenderer(root string) *TemplateRenderer {
 	funcMap := template.FuncMap{
@@ -35,6 +48,7 @@ func NewRenderer(root string) *TemplateRenderer {
 		"isStudent":         isStudent,
 		"isProfessional":    isProfessional,
 		"canManageAccounts": canManageAccounts,
+		"translateStatus":   translateStatus,
 		"dict":              dict,
 		"default_val":       defaultVal,
 		"is_selected":       isSelected,
