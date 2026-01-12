@@ -14,7 +14,7 @@ type internshipServices struct {
 	repository secondary.InternshipPort
 }
 
-func NewInternshipServices(repository secondary.InternshipPort) primary.InternshipPort {
+func NewInternshipService(repository secondary.InternshipPort) primary.InternshipPort {
 	return &internshipServices{repository}
 }
 

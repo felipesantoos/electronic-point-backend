@@ -27,43 +27,43 @@ func ResourcesServices() primary.ResourcesPort {
 
 func StudentServices() primary.StudentPort {
 	repository := postgres.NewStudentRepository()
-	return services.NewStudentServices(repository)
+	return services.NewStudentService(repository)
 }
 
 func TimeRecordServices() primary.TimeRecordPort {
 	repository := postgres.NewTimeRecordRepository()
 	internshipRepository := postgres.NewInternshipRepository()
-	return services.NewTimeRecordServices(repository, internshipRepository)
+	return services.NewTimeRecordService(repository, internshipRepository)
 }
 
 func InternshipLocationServices() primary.InternshipLocationPort {
 	repository := postgres.NewInternshipLocationRepository()
-	return services.NewInternshipLocationServices(repository)
+	return services.NewInternshipLocationService(repository)
 }
 
 func InternshipServices() primary.InternshipPort {
 	repository := postgres.NewInternshipRepository()
-	return services.NewInternshipServices(repository)
+	return services.NewInternshipService(repository)
 }
 
 func TimeRecordStatusServices() primary.TimeRecordStatusPort {
 	repository := postgres.NewTimeRecordStatusRepository()
-	return services.NewTimeRecordStatusServices(repository)
+	return services.NewTimeRecordStatusService(repository)
 }
 
 func CourseServices() primary.CoursePort {
 	repository := postgres.NewCourseRepository()
-	return services.NewCourseServices(repository)
+	return services.NewCourseService(repository)
 }
 
 func CampusServices() primary.CampusPort {
 	repository := postgres.NewCampusRepository()
-	return services.NewCampusServices(repository)
+	return services.NewCampusService(repository)
 }
 
 func InstitutionServices() primary.InstitutionPort {
 	repository := postgres.NewInstitutionRepository()
-	return services.NewInstitutionServices(repository)
+	return services.NewInstitutionService(repository)
 }
 
 func FileServices() primary.FilePort {

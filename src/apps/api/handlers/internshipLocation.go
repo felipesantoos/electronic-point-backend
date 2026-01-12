@@ -50,7 +50,7 @@ func NewInternshipLocationHandlers(services primary.InternshipLocationPort) Inte
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /internship-locations [post]
 func (this *internshipLocationHandlers) Create(ctx RichContext) error {
-	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	var internshipLocationDTO request.InternshipLocation
@@ -91,7 +91,7 @@ func (this *internshipLocationHandlers) Create(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /internship-locations/{id} [put]
 func (this *internshipLocationHandlers) Update(ctx RichContext) error {
-	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))

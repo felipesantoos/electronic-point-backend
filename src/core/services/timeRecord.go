@@ -19,7 +19,7 @@ type timeRecordServices struct {
 	internshipRepository secondary.InternshipPort
 }
 
-func NewTimeRecordServices(repository secondary.TimeRecordPort, internshipRepository secondary.InternshipPort) primary.TimeRecordPort {
+func NewTimeRecordService(repository secondary.TimeRecordPort, internshipRepository secondary.InternshipPort) primary.TimeRecordPort {
 	return &timeRecordServices{repository, internshipRepository}
 }
 

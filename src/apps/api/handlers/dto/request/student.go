@@ -11,16 +11,17 @@ import (
 )
 
 type Student struct {
-	Name           string    `form:"name"`
-	BirthDate      string    `form:"birth_date"`
-	CPF            string    `form:"cpf"`
-	Email          string    `form:"email"`
-	Phone          string    `form:"phone"`
-	Registration   string    `form:"registration"`
-	ProfilePicture *string   `form:"profile_picture"`
-	CampusID       uuid.UUID `form:"campus_id"`
-	CourseID       uuid.UUID `form:"course_id"`
-	TotalWorkload  int       `form:"total_workload"`
+	Name                 string     `form:"name"`
+	BirthDate            string     `form:"birth_date"`
+	CPF                  string     `form:"cpf"`
+	Email                string     `form:"email"`
+	Phone                string     `form:"phone"`
+	Registration         string     `form:"registration"`
+	ProfilePicture       *string    `form:"profile_picture"`
+	CampusID             uuid.UUID  `form:"campus_id"`
+	CourseID             uuid.UUID  `form:"course_id"`
+	TotalWorkload        int        `form:"total_workload"`
+	ResponsibleTeacherID *uuid.UUID `form:"responsible_teacher_id"`
 }
 
 func (this *Student) ToDomain() (student.Student, errors.Error) {

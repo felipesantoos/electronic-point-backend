@@ -44,11 +44,6 @@ func ViewsAuthorize(next echo.HandlerFunc) echo.HandlerFunc {
 			return redirectToLogin(ctx)
 		}
 
-		// Only allow ADMIN users for the frontend
-		if strings.ToLower(accRole) != "admin" {
-			return redirectToLogin(ctx)
-		}
-
 		// Set token in Authorization header for other middlewares/handlers that might expect it
 		ctx.Request().Header.Set("Authorization", "Bearer "+token)
 

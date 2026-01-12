@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	eletronic_point_account "eletronic_point/src/core/domain/account"
 	eletronic_point_campus "eletronic_point/src/core/domain/campus"
 	eletronic_point_course "eletronic_point/src/core/domain/course"
 	eletronic_point_institution "eletronic_point/src/core/domain/institution"
@@ -23,6 +24,10 @@ func ToOptions(list interface{}) []Option {
 	}
 
 	switch v := list.(type) {
+	case []eletronic_point_account.Account:
+		for _, item := range v {
+			options = append(options, Option{Label: item.Person().Name(), Value: item.Person().ID().String()})
+		}
 	case []eletronic_point_campus.Campus:
 		for _, item := range v {
 			options = append(options, Option{Label: item.Name(), Value: item.ID().String()})

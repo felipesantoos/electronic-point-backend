@@ -13,7 +13,7 @@ type timeRecordStatusServices struct {
 	repository secondary.TimeRecordStatusPort
 }
 
-func NewTimeRecordStatusServices(repository secondary.TimeRecordStatusPort) primary.TimeRecordStatusPort {
+func NewTimeRecordStatusService(repository secondary.TimeRecordStatusPort) primary.TimeRecordStatusPort {
 	return &timeRecordStatusServices{repository}
 }
 

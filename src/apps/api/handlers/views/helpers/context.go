@@ -3,6 +3,7 @@ package helpers
 import (
 	"eletronic_point/src/apps/api/handlers"
 	"eletronic_point/src/apps/api/handlers/dto/response"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -30,6 +31,8 @@ type UserInfo struct {
 	ProfileID *uuid.UUID
 	RoleName  string
 	IsAdmin   bool
+	IsTeacher bool
+	IsStudent bool
 }
 
 // FlashMessage represents a temporary message to be displayed to the user
@@ -47,6 +50,8 @@ func NewPageData(ctx handlers.RichContext, title string, activeMenu string, data
 			ProfileID: ctx.ProfileID(),
 			RoleName:  ctx.RoleName(),
 			IsAdmin:   ctx.IsAdmin(),
+			IsTeacher: strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor",
+			IsStudent: strings.ToLower(ctx.RoleName()) == "student" || strings.ToLower(ctx.RoleName()) == "estudante",
 		},
 		ActiveMenu:    activeMenu,
 		Data:          data,

@@ -178,7 +178,7 @@
             </a>
 
             <!-- Approval Card (Conditional) -->
-            {{if eq .Data.TimeRecord.TimeRecordStatus.Code "PENDING"}}
+            {{if and (eq .Data.TimeRecord.TimeRecordStatus.Code "PENDING") (or .User.IsAdmin .User.IsTeacher)}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h4 class="text-sm font-bold text-gray-700 uppercase tracking-widest mb-4 flex items-center">
                     <svg class="h-4 w-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,8 +189,12 @@
                 <p class="text-gray-500 text-sm mb-6">Este registro aguarda análise do coordenador ou professor responsável.</p>
                 
                 <div class="space-y-3">
+                    {{if .User.IsAdmin}}
+                        {{template "form-searchable-select" dict "ID" "teacher_id" "Name" "teacher_id" "Label" "Professor Responsável" "Required" true "Placeholder" "Selecione o professor" "Options" .Data.Teachers}}
+                    {{end}}
                     <button hx-patch="/api/time-records/{{formatUUID .Data.TimeRecord.ID}}/approve" 
                             hx-confirm="Deseja aprovar este registro de ponto?"
+                            {{if .User.IsAdmin}}hx-include="#teacher_id"{{end}}
                             data-confirm-title="Confirmar Aprovação"
                             hx-target="body" hx-push-url="true"
                             class="w-full py-2.5 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold shadow-sm transition-all active:scale-95 flex items-center justify-center">
@@ -199,6 +203,7 @@
                     </button>
                     <button hx-patch="/api/time-records/{{formatUUID .Data.TimeRecord.ID}}/disapprove" 
                             hx-confirm="Deseja reprovar este registro de ponto?"
+                            {{if .User.IsAdmin}}hx-include="#teacher_id"{{end}}
                             data-confirm-title="Confirmar Reprovação"
                             hx-target="body" hx-push-url="true"
                             class="w-full py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-bold shadow-sm transition-all active:scale-95 flex items-center justify-center">
@@ -206,6 +211,14 @@
                         Reprovar Registro
                     </button>
                 </div>
+            </div>
+            {{else if eq .Data.TimeRecord.TimeRecordStatus.Code "PENDING"}}
+            <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center">
+                <div class="h-12 w-12 rounded-full mx-auto mb-4 flex items-center justify-center bg-yellow-100 text-yellow-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <p class="text-sm font-bold text-gray-800 uppercase tracking-widest">Aguardando Análise</p>
+                <p class="text-xs text-gray-500 mt-1">Este registro está em análise e aguarda aprovação do seu professor responsável.</p>
             </div>
             {{else}}
             <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center">

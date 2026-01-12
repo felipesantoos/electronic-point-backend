@@ -6,10 +6,12 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/formData"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
+	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -28,6 +30,8 @@ type studentViewHandlers struct {
 	institutionService primary.InstitutionPort
 	campusService      primary.CampusPort
 	courseService      primary.CoursePort
+	accountService     primary.AccountPort
+	resourcesService   primary.ResourcesPort
 }
 
 func NewStudentViewHandlers(
@@ -35,8 +39,10 @@ func NewStudentViewHandlers(
 	institutionService primary.InstitutionPort,
 	campusService primary.CampusPort,
 	courseService primary.CoursePort,
+	accountService primary.AccountPort,
+	resourcesService primary.ResourcesPort,
 ) StudentViewHandlers {
-	return &studentViewHandlers{service, institutionService, campusService, courseService}
+	return &studentViewHandlers{service, institutionService, campusService, courseService, accountService, resourcesService}
 }
 
 func (h *studentViewHandlers) List(ctx handlers.RichContext) error {
@@ -69,6 +75,21 @@ func (h *studentViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		"Courses": helpers.ToOptions(courses),
 	}
 
+	if ctx.IsAdmin() {
+		roles, _ := h.resourcesService.ListAccountRoles()
+		var teacherRoleID *uuid.UUID
+		for _, r := range roles {
+			if strings.ToLower(r.Code()) == role.TEACHER_ROLE_CODE {
+				teacherRoleID = r.ID()
+				break
+			}
+		}
+		if teacherRoleID != nil {
+			teachers, _ := h.accountService.List(filters.AccountFilters{RoleID: teacherRoleID})
+			data["Teachers"] = helpers.ToOptions(teachers)
+		}
+	}
+
 	return ctx.Render(http.StatusOK, "students/create.html", helpers.NewPageData(ctx, "Novo Estudante", "students", data).
 		WithBreadcrumbs(
 			helpers.Breadcrumb{Label: "Estudantes", URL: "/students"},
@@ -87,17 +108,29 @@ func (h *studentViewHandlers) Create(ctx handlers.RichContext) error {
 
 	fileName, _ := helpers.SaveUploadedFile(ctx, formData.StudentProfilePicture)
 
+	var teacherID *uuid.UUID
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		if val := ctx.FormValue("responsible_teacher_id"); val != "" {
+			if uid, err := uuid.Parse(val); err == nil {
+				teacherID = &uid
+			}
+		}
+	} else {
+		teacherID = ctx.ProfileID()
+	}
+
 	dto := request.Student{
-		Name:           ctx.FormValue(formData.StudentName),
-		BirthDate:      ctx.FormValue(formData.StudentBirthDate),
-		CPF:            ctx.FormValue(formData.StudentCPF),
-		Email:          ctx.FormValue(formData.StudentEmail),
-		Phone:          ctx.FormValue(formData.StudentPhone),
-		Registration:   ctx.FormValue(formData.StudentRegistration),
-		ProfilePicture: fileName,
-		CampusID:       campusID,
-		CourseID:       courseID,
-		TotalWorkload:  totalWorkload,
+		Name:                 ctx.FormValue(formData.StudentName),
+		BirthDate:            ctx.FormValue(formData.StudentBirthDate),
+		CPF:                  ctx.FormValue(formData.StudentCPF),
+		Email:                ctx.FormValue(formData.StudentEmail),
+		Phone:                ctx.FormValue(formData.StudentPhone),
+		Registration:         ctx.FormValue(formData.StudentRegistration),
+		ProfilePicture:       fileName,
+		CampusID:             campusID,
+		CourseID:             courseID,
+		TotalWorkload:        totalWorkload,
+		ResponsibleTeacherID: teacherID,
 	}
 
 	s, dErr := dto.ToDomain()
@@ -105,7 +138,9 @@ func (h *studentViewHandlers) Create(ctx handlers.RichContext) error {
 		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
 	}
 
-	s.SetResponsibleTeacherID(*ctx.ProfileID())
+	if teacherID != nil {
+		s.SetResponsibleTeacherID(*teacherID)
+	}
 
 	_, err := h.service.Create(s)
 	if err != nil {

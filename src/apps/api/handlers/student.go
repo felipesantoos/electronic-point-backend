@@ -64,7 +64,9 @@ func NewStudentHandlers(services primary.StudentPort) StudentHandlers {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /students [post]
 func (this *studentHandlers) Create(ctx RichContext) error {
-	personID := ctx.ProfileID()
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
+		return forbiddenError
+	}
 	if formDataError := ctx.Request().ParseMultipartForm(10 << 20); formDataError != nil {
 		logger.Error().Msg(formDataError.Error())
 		return badRequestErrorWithMessage(formDataError.Error())
@@ -90,6 +92,19 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
+	var teacherID *uuid.UUID
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		if val := ctx.FormValue("responsible_teacher_id"); val != "" {
+			if uid, err := uuid.Parse(val); err == nil {
+				teacherID = &uid
+			}
+		}
+		if teacherID == nil {
+			return badRequestErrorWithMessage("responsible_teacher_id is required for admin")
+		}
+	} else {
+		teacherID = ctx.ProfileID()
+	}
 	var fileName *string
 	file, header, formFileError := ctx.Request().FormFile(formData.StudentProfilePicture)
 	if formFileError == nil {
@@ -112,23 +127,24 @@ func (this *studentHandlers) Create(ctx RichContext) error {
 		return badRequestErrorWithMessage(formFileError.Error())
 	}
 	studentDTO := request.Student{
-		Name:           name,
-		BirthDate:      birthDate,
-		CPF:            cpf,
-		Email:          email,
-		Phone:          phone,
-		Registration:   registration,
-		ProfilePicture: fileName,
-		CampusID:       *campusID,
-		CourseID:       *courseID,
-		TotalWorkload:  totalWorkload,
+		Name:                 name,
+		BirthDate:            birthDate,
+		CPF:                  cpf,
+		Email:                email,
+		Phone:                phone,
+		Registration:         registration,
+		ProfilePicture:       fileName,
+		CampusID:             *campusID,
+		CourseID:             *courseID,
+		TotalWorkload:        totalWorkload,
+		ResponsibleTeacherID: teacherID,
 	}
 	_student, validationError := studentDTO.ToDomain()
 	if validationError != nil {
 		logger.Error().Msg(validationError.String())
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
-	err = _student.SetResponsibleTeacherID(*personID)
+	err = _student.SetResponsibleTeacherID(*teacherID)
 	if err != nil {
 		logger.Error().Msg(err.String())
 		return unprocessableEntityErrorWithMessage(err.String())

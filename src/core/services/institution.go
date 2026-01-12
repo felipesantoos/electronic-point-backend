@@ -13,7 +13,7 @@ type institutionServices struct {
 	repository secondary.InstitutionPort
 }
 
-func NewInstitutionServices(repository secondary.InstitutionPort) primary.InstitutionPort {
+func NewInstitutionService(repository secondary.InstitutionPort) primary.InstitutionPort {
 	return &institutionServices{repository}
 }
 

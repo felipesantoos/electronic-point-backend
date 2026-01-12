@@ -103,6 +103,12 @@ func (internshipQuerySelectBuilder *internshipQuerySelectBuilder) All() string {
 			INNER JOIN internship_location ON internship_location.id = internship.internship_location_id
 		WHERE internship.deleted_at IS NULL
 			AND ($1::uuid IS NULL OR internship.student_id = $1)
+			AND ($2::uuid IS NULL OR EXISTS (
+				SELECT 1 FROM student_linked_to_teacher
+				WHERE student_linked_to_teacher.student_id = internship.student_id
+				AND student_linked_to_teacher.teacher_id = $2
+				AND student_linked_to_teacher.deleted_at IS NULL
+			))
 		ORDER BY person.name ASC, internship.created_at DESC
 	`
 }

@@ -5,6 +5,7 @@ import (
 	"eletronic_point/src/core/domain/person"
 	"eletronic_point/src/core/domain/professional"
 	"eletronic_point/src/core/domain/role"
+	"eletronic_point/src/core/domain/student"
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/utils/validator"
 	"net/mail"
@@ -76,6 +77,16 @@ func (builder *builder) WithProfessional(_professional professional.Professional
 		return builder
 	}
 	builder.account.professional = _professional
+	return builder
+}
+
+func (builder *builder) WithStudent(_student student.Student) *builder {
+	if _student != nil && _student.IsValid() != nil {
+		builder.fields = append(builder.fields, messages.AccountStudent)
+		builder.errorMessages = append(builder.errorMessages, messages.AccountStudentErrorMessage)
+		return builder
+	}
+	builder.account._student = _student
 	return builder
 }
 

@@ -11,12 +11,13 @@ import (
 )
 
 type Internship struct {
-	StudentID         uuid.UUID  `json:"student_id" example:"02e62826-bf41-4944-adb2-051b6a30a131"`
-	LocationID        uuid.UUID  `json:"location_id" example:"0d0518be-bd9d-4ac4-9f95-6c536e00b247"`
-	StartedIn         time.Time  `json:"started_in" example:"2024-06-01T00:00:00Z"`
-	EndedIn           *time.Time `json:"ended_in" example:"null"`
-	ScheduleEntryTime *time.Time `json:"schedule_entry_time" example:"2024-06-01T08:00:00Z"`
-	ScheduleExitTime  *time.Time `json:"schedule_exit_time" example:"2024-06-01T17:00:00Z"`
+	StudentID         uuid.UUID  `json:"student_id" form:"student_id" example:"02e62826-bf41-4944-adb2-051b6a30a131"`
+	TeacherID         *uuid.UUID `json:"teacher_id,omitempty" form:"teacher_id" example:"ea11bb4b-9aed-4444-9c00-f80bde564063"`
+	LocationID        uuid.UUID  `json:"location_id" form:"location_id" example:"0d0518be-bd9d-4ac4-9f95-6c536e00b247"`
+	StartedIn         time.Time  `json:"started_in" form:"started_in" example:"2024-06-01T00:00:00Z"`
+	EndedIn           *time.Time `json:"ended_in" form:"ended_in" example:"null"`
+	ScheduleEntryTime *time.Time `json:"schedule_entry_time" form:"schedule_entry_time" example:"2024-06-01T08:00:00Z"`
+	ScheduleExitTime  *time.Time `json:"schedule_exit_time" form:"schedule_exit_time" example:"2024-06-01T17:00:00Z"`
 }
 
 func (this *Internship) ToDomain() (internship.Internship, errors.Error) {

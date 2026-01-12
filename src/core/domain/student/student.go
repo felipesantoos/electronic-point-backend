@@ -172,3 +172,10 @@ func (s *student) SetFrequencyHistory(frequencyHistory []timeRecord.TimeRecord) 
 	s.frequencyHistory = frequencyHistory
 	return nil
 }
+
+func (s *student) IsValid() errors.Error {
+	if s.Person == nil {
+		return errors.NewValidationFromString(messages.PersonErrorMessage)
+	}
+	return s.Person.IsValid()
+}

@@ -6,6 +6,7 @@ import (
 	"eletronic_point/src/apps/api/handlers/views/helpers"
 	"eletronic_point/src/core/interfaces/primary"
 	"net/http"
+	"strings"
 )
 
 type AuthViewHandlers interface {
@@ -27,7 +28,7 @@ func NewAuthViewHandlers(service primary.AuthPort) AuthViewHandlers {
 }
 
 func (h *authViewHandlers) LoginPage(ctx handlers.RichContext) error {
-	if ctx.AccountID() != nil && ctx.IsAdmin() {
+	if ctx.AccountID() != nil && (ctx.IsAdmin() || strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor") {
 		return ctx.Redirect(http.StatusFound, "/")
 	}
 	return ctx.Render(http.StatusOK, "auth/login", helpers.NewPageData(ctx, "Login", "", nil))

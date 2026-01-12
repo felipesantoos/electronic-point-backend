@@ -6,4 +6,5 @@ import (
 
 type InternshipFilters struct {
 	StudentID *uuid.UUID
+	TeacherID *uuid.UUID
 }

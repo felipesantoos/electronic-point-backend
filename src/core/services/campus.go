@@ -13,7 +13,7 @@ type campusServices struct {
 	repository secondary.CampusPort
 }
 
-func NewCampusServices(repository secondary.CampusPort) primary.CampusPort {
+func NewCampusService(repository secondary.CampusPort) primary.CampusPort {
 	return &campusServices{repository}
 }
 

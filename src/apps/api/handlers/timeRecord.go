@@ -53,7 +53,7 @@ func NewTimeRecordHandlers(services primary.TimeRecordPort) TimeRecordHandlers {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records [post]
 func (this *timeRecordHandlers) Create(ctx RichContext) error {
-	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
+	if ctx.RoleName() != role.STUDENT_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	var timeRecordDTO request.TimeRecord
@@ -67,7 +67,13 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 		return unprocessableEntityErrorWithMessage(validationError.String())
 	}
 	var studentID uuid.UUID
-	if ctx.ProfileID() != nil {
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		if timeRecordDTO.StudentID != nil {
+			studentID = *timeRecordDTO.StudentID
+		} else {
+			return badRequestErrorWithMessage(messages.StudentIDErrorMessage)
+		}
+	} else if ctx.ProfileID() != nil {
 		studentID = *ctx.ProfileID()
 	}
 	err := _timeRecord.SetStudentID(studentID)
@@ -103,7 +109,7 @@ func (this *timeRecordHandlers) Create(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records/{id} [put]
 func (this *timeRecordHandlers) Update(ctx RichContext) error {
-	if ctx.RoleName() != role.STUDENT_ROLE_CODE {
+	if ctx.RoleName() != role.STUDENT_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
@@ -123,7 +129,13 @@ func (this *timeRecordHandlers) Update(ctx RichContext) error {
 	}
 	_timeRecord.SetID(id)
 	var studentID uuid.UUID
-	if ctx.ProfileID() != nil {
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		if timeRecordDTO.StudentID != nil {
+			studentID = *timeRecordDTO.StudentID
+		} else {
+			return badRequestErrorWithMessage(messages.StudentIDErrorMessage)
+		}
+	} else if ctx.ProfileID() != nil {
 		studentID = *ctx.ProfileID()
 	}
 	err := _timeRecord.SetStudentID(studentID)
@@ -310,7 +322,7 @@ func (this *timeRecordHandlers) Get(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records/{id}/approve [patch]
 func (this *timeRecordHandlers) Approve(ctx RichContext) error {
-	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
@@ -318,7 +330,22 @@ func (this *timeRecordHandlers) Approve(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	approvedBy := ctx.ProfileID()
+	var approvedBy *uuid.UUID
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		var timeRecordDTO request.TimeRecord
+		if err := ctx.Bind(&timeRecordDTO); err == nil && timeRecordDTO.TeacherID != nil {
+			approvedBy = timeRecordDTO.TeacherID
+		} else if val := ctx.QueryParam("teacher_id"); val != "" {
+			if uid, err := uuid.Parse(val); err == nil {
+				approvedBy = &uid
+			}
+		}
+		if approvedBy == nil {
+			return badRequestErrorWithMessage("teacher_id is required for admin")
+		}
+	} else {
+		approvedBy = ctx.ProfileID()
+	}
 	err := this.services.Approve(id, *approvedBy)
 	if err != nil {
 		return responseFromError(err)
@@ -345,7 +372,7 @@ func (this *timeRecordHandlers) Approve(ctx RichContext) error {
 // @Failure 503 {object} response.ErrorMessage "A base de dados está temporariamente indisponível."
 // @Router /time-records/{id}/disapprove [patch]
 func (this *timeRecordHandlers) Disapprove(ctx RichContext) error {
-	if ctx.RoleName() != role.TEACHER_ROLE_CODE {
+	if ctx.RoleName() != role.TEACHER_ROLE_CODE && ctx.RoleName() != role.ADMIN_ROLE_CODE {
 		return forbiddenErrorWithMessage(messages.YouDoNotHaveAccessToThisResource)
 	}
 	id, conversionError := uuid.Parse(ctx.Param(params.ID))
@@ -353,8 +380,23 @@ func (this *timeRecordHandlers) Disapprove(ctx RichContext) error {
 		logger.Error().Msg(conversionError.Error())
 		return badRequestErrorWithMessage(conversionError.Error())
 	}
-	approvedBy := ctx.ProfileID()
-	err := this.services.Disapprove(id, *approvedBy)
+	var disapprovedBy *uuid.UUID
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		var timeRecordDTO request.TimeRecord
+		if err := ctx.Bind(&timeRecordDTO); err == nil && timeRecordDTO.TeacherID != nil {
+			disapprovedBy = timeRecordDTO.TeacherID
+		} else if val := ctx.QueryParam("teacher_id"); val != "" {
+			if uid, err := uuid.Parse(val); err == nil {
+				disapprovedBy = &uid
+			}
+		}
+		if disapprovedBy == nil {
+			return badRequestErrorWithMessage("teacher_id is required for admin")
+		}
+	} else {
+		disapprovedBy = ctx.ProfileID()
+	}
+	err := this.services.Disapprove(id, *disapprovedBy)
 	if err != nil {
 		return responseFromError(err)
 	}

@@ -10,7 +10,9 @@
     </div>
 
     <form hx-post="/time-records" hx-target="body" hx-push-url="true" class="space-y-4">
-        {{template "form-searchable-select" dict "ID" "student_id" "Name" "student_id" "Label" "Estudante" "Required" true "Placeholder" "Selecione o estudante" "Options" .Data.Students}}
+        {{if .User.IsAdmin}}
+            {{template "form-searchable-select" dict "ID" "student_id" "Name" "student_id" "Label" "Estudante" "Required" true "Placeholder" "Selecione o estudante" "Options" .Data.Students}}
+        {{end}}
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {{template "form-input" dict "ID" "date" "Name" "date" "Label" "Data" "Type" "date" "Required" true}}

@@ -23,7 +23,7 @@ func (c *CreateAccount) ToDomain() (account.Account, errors.Error) {
 	if err != nil {
 		return nil, err
 	}
-	person, err := person.New(nil, c.Name, c.BirthDate, c.Email, c.CPF, c.Phone, "", "")
+	person, err := person.New(nil, c.Name, c.Email, c.BirthDate, c.CPF, c.Phone, "", "")
 	if err != nil {
 		return nil, err
 	}

@@ -5,9 +5,11 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
+	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,17 +23,21 @@ type TimeRecordViewHandlers interface {
 }
 
 type timeRecordViewHandlers struct {
-	service        primary.TimeRecordPort
-	studentService primary.StudentPort
-	statusService  primary.TimeRecordStatusPort
+	service          primary.TimeRecordPort
+	studentService   primary.StudentPort
+	statusService    primary.TimeRecordStatusPort
+	accountService   primary.AccountPort
+	resourcesService primary.ResourcesPort
 }
 
 func NewTimeRecordViewHandlers(
 	service primary.TimeRecordPort,
 	studentService primary.StudentPort,
 	statusService primary.TimeRecordStatusPort,
+	accountService primary.AccountPort,
+	resourcesService primary.ResourcesPort,
 ) TimeRecordViewHandlers {
-	return &timeRecordViewHandlers{service, studentService, statusService}
+	return &timeRecordViewHandlers{service, studentService, statusService, accountService, resourcesService}
 }
 
 func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
@@ -56,6 +62,10 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 }
 
 func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
+	if strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor" {
+		return ctx.Redirect(http.StatusFound, "/time-records")
+	}
+
 	students, _ := h.studentService.List(filters.StudentFilters{})
 
 	data := map[string]interface{}{
@@ -70,6 +80,10 @@ func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
 }
 
 func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
+	if strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor" {
+		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Professores não podem criar registros de ponto manualmente"}})
+	}
+
 	var body struct {
 		StudentID     string `form:"student_id"`
 		Date          string `form:"date"`
@@ -107,11 +121,18 @@ func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
 		Justification: justificationPtr,
 	}
 
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		dto.StudentID = &studentID
+	}
+
 	tr, dErr := dto.ToDomain()
 	if dErr != nil {
 		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
 	}
-	tr.SetStudentID(studentID)
+
+	if ctx.RoleName() != role.ADMIN_ROLE_CODE {
+		tr.SetStudentID(studentID)
+	}
 
 	_, err := h.service.Create(tr)
 	if err != nil {
@@ -132,6 +153,21 @@ func (h *timeRecordViewHandlers) Show(ctx handlers.RichContext) error {
 	trResponse := response.TimeRecordBuilder().BuildFromDomain(tr)
 	data := map[string]interface{}{
 		"TimeRecord": trResponse,
+	}
+
+	if ctx.IsAdmin() {
+		roles, _ := h.resourcesService.ListAccountRoles()
+		var teacherRoleID *uuid.UUID
+		for _, r := range roles {
+			if strings.ToLower(r.Code()) == role.TEACHER_ROLE_CODE {
+				teacherRoleID = r.ID()
+				break
+			}
+		}
+		if teacherRoleID != nil {
+			teachers, _ := h.accountService.List(filters.AccountFilters{RoleID: teacherRoleID})
+			data["Teachers"] = helpers.ToOptions(teachers)
+		}
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/show.html", helpers.NewPageData(ctx, "Detalhes do Registro", "time-records", data).

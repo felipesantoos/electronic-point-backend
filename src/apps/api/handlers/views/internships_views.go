@@ -5,9 +5,11 @@ import (
 	"eletronic_point/src/apps/api/handlers/dto/request"
 	"eletronic_point/src/apps/api/handlers/dto/response"
 	"eletronic_point/src/apps/api/handlers/views/helpers"
+	"eletronic_point/src/core/domain/role"
 	"eletronic_point/src/core/interfaces/primary"
 	"eletronic_point/src/core/services/filters"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,17 +23,21 @@ type InternshipViewHandlers interface {
 }
 
 type internshipViewHandlers struct {
-	service         primary.InternshipPort
-	studentService  primary.StudentPort
-	locationService primary.InternshipLocationPort
+	service          primary.InternshipPort
+	studentService   primary.StudentPort
+	locationService  primary.InternshipLocationPort
+	accountService   primary.AccountPort
+	resourcesService primary.ResourcesPort
 }
 
 func NewInternshipViewHandlers(
 	service primary.InternshipPort,
 	studentService primary.StudentPort,
 	locationService primary.InternshipLocationPort,
+	accountService primary.AccountPort,
+	resourcesService primary.ResourcesPort,
 ) InternshipViewHandlers {
-	return &internshipViewHandlers{service, studentService, locationService}
+	return &internshipViewHandlers{service, studentService, locationService, accountService, resourcesService}
 }
 
 func (h *internshipViewHandlers) List(ctx handlers.RichContext) error {
@@ -65,6 +71,21 @@ func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
 		"SelectedStudentID": selectedStudentID,
 	}
 
+	if ctx.IsAdmin() {
+		roles, _ := h.resourcesService.ListAccountRoles()
+		var teacherRoleID *uuid.UUID
+		for _, r := range roles {
+			if strings.ToLower(r.Code()) == role.TEACHER_ROLE_CODE {
+				teacherRoleID = r.ID()
+				break
+			}
+		}
+		if teacherRoleID != nil {
+			teachers, _ := h.accountService.List(filters.AccountFilters{RoleID: teacherRoleID})
+			data["Teachers"] = helpers.ToOptions(teachers)
+		}
+	}
+
 	return ctx.Render(http.StatusOK, "internships/create.html", helpers.NewPageData(ctx, "Vincular Estágio", "internships", data).
 		WithBreadcrumbs(
 			helpers.Breadcrumb{Label: "Estágios", URL: "/internships"},
@@ -75,6 +96,7 @@ func (h *internshipViewHandlers) CreatePage(ctx handlers.RichContext) error {
 func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 	var body struct {
 		StudentID         string `form:"student_id"`
+		TeacherID         string `form:"teacher_id"`
 		LocationID        string `form:"location_id"`
 		StartedIn         string `form:"started_in"`
 		EndedIn           string `form:"ended_in"`
@@ -88,6 +110,17 @@ func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 	studentID, _ := uuid.Parse(body.StudentID)
 	locationID, _ := uuid.Parse(body.LocationID)
 	startedIn, _ := time.Parse("2006-01-02", body.StartedIn)
+
+	var teacherID *uuid.UUID
+	if ctx.RoleName() == role.ADMIN_ROLE_CODE {
+		if val := body.TeacherID; val != "" {
+			if uid, err := uuid.Parse(val); err == nil {
+				teacherID = &uid
+			}
+		}
+	} else {
+		teacherID = ctx.ProfileID()
+	}
 
 	var endedInPtr *time.Time
 	if body.EndedIn != "" {
@@ -113,6 +146,7 @@ func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 
 	dto := request.Internship{
 		StudentID:         studentID,
+		TeacherID:         teacherID,
 		LocationID:        locationID,
 		StartedIn:         startedIn,
 		EndedIn:           endedInPtr,

@@ -45,6 +45,7 @@ func (h *dashboardViewHandlers) Dashboard(ctx handlers.RichContext) error {
 	if ctx.RoleName() == "teacher" || ctx.RoleName() == "professor" {
 		studentFilters.TeacherID = ctx.ProfileID()
 		timeRecordFilters.TeacherID = ctx.ProfileID()
+		internshipFilters.TeacherID = ctx.ProfileID()
 	}
 
 	// Fetch data for stats

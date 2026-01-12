@@ -89,14 +89,21 @@ func (acc *account) IsValid() errors.Error {
 		errorMessages = append(errorMessages, "you must provide a valid email!")
 		metadata["fields"] = append(metadata["fields"].([]string), "email")
 	}
-	if err := acc.person.IsValid(); err != nil {
+	if acc.person == nil {
+		errorMessages = append(errorMessages, "account person is required")
+		metadata["fields"] = append(metadata["fields"].([]string), "person")
+	} else if err := acc.person.IsValid(); err != nil {
 		return err
 	}
-	if acc.professional != nil && acc.professional.IsValid() != nil {
-		return acc.professional.IsValid()
+	if acc.professional != nil {
+		if err := acc.professional.IsValid(); err != nil {
+			return err
+		}
 	}
-	if acc._student != nil && acc._student.IsValid() != nil {
-		return acc._student.IsValid()
+	if acc._student != nil {
+		if err := acc._student.IsValid(); err != nil {
+			return err
+		}
 	}
 	if len(errorMessages) != 0 {
 		return errors.NewValidationWithMetadata(errorMessages, metadata)

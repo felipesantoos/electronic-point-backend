@@ -47,10 +47,10 @@ func NewViewRouter() Router {
 			courseService,
 		),
 		accountHandlers:            views.NewAccountViewHandlers(accountService, resourcesService),
-		studentHandlers:            views.NewStudentViewHandlers(studentService, institutionService, campusService, courseService),
+		studentHandlers:            views.NewStudentViewHandlers(studentService, institutionService, campusService, courseService, accountService, resourcesService),
 		internshipLocationHandlers: views.NewInternshipLocationViewHandlers(internshipLocationService, internshipService),
-		internshipHandlers:         views.NewInternshipViewHandlers(internshipService, studentService, internshipLocationService),
-		timeRecordHandlers:         views.NewTimeRecordViewHandlers(timeRecordService, studentService, timeRecordStatusService),
+		internshipHandlers:         views.NewInternshipViewHandlers(internshipService, studentService, internshipLocationService, accountService, resourcesService),
+		timeRecordHandlers:         views.NewTimeRecordViewHandlers(timeRecordService, studentService, timeRecordStatusService, accountService, resourcesService),
 		timeRecordStatusHandlers:   views.NewTimeRecordStatusViewHandlers(timeRecordStatusService),
 	}
 }
@@ -86,24 +86,24 @@ func (r *viewRouter) Load(rootEndpoint *echo.Group) {
 
 	// Students
 	protected.GET("/students", middlewares.EnhanceContext(r.studentHandlers.List))
-	protected.GET("/students/new", middlewares.EnhanceContext(r.studentHandlers.CreatePage), middlewares.AdminAuthorize)
-	protected.POST("/students", middlewares.EnhanceContext(r.studentHandlers.Create), middlewares.AdminAuthorize)
+	protected.GET("/students/new", middlewares.EnhanceContext(r.studentHandlers.CreatePage))
+	protected.POST("/students", middlewares.EnhanceContext(r.studentHandlers.Create))
 	protected.GET("/students/:id", middlewares.EnhanceContext(r.studentHandlers.Show))
-	protected.GET("/students/:id/edit", middlewares.EnhanceContext(r.studentHandlers.EditPage), middlewares.AdminAuthorize)
-	protected.PUT("/students/:id", middlewares.EnhanceContext(r.studentHandlers.Update), middlewares.AdminAuthorize)
+	protected.GET("/students/:id/edit", middlewares.EnhanceContext(r.studentHandlers.EditPage))
+	protected.PUT("/students/:id", middlewares.EnhanceContext(r.studentHandlers.Update))
 
 	// Internship Locations
 	protected.GET("/internship-locations", middlewares.EnhanceContext(r.internshipLocationHandlers.List))
-	protected.GET("/internship-locations/new", middlewares.EnhanceContext(r.internshipLocationHandlers.CreatePage), middlewares.AdminAuthorize)
-	protected.POST("/internship-locations", middlewares.EnhanceContext(r.internshipLocationHandlers.Create), middlewares.AdminAuthorize)
+	protected.GET("/internship-locations/new", middlewares.EnhanceContext(r.internshipLocationHandlers.CreatePage))
+	protected.POST("/internship-locations", middlewares.EnhanceContext(r.internshipLocationHandlers.Create))
 	protected.GET("/internship-locations/:id", middlewares.EnhanceContext(r.internshipLocationHandlers.Show))
-	protected.GET("/internship-locations/:id/edit", middlewares.EnhanceContext(r.internshipLocationHandlers.EditPage), middlewares.AdminAuthorize)
-	protected.PUT("/internship-locations/:id", middlewares.EnhanceContext(r.internshipLocationHandlers.Update), middlewares.AdminAuthorize)
+	protected.GET("/internship-locations/:id/edit", middlewares.EnhanceContext(r.internshipLocationHandlers.EditPage))
+	protected.PUT("/internship-locations/:id", middlewares.EnhanceContext(r.internshipLocationHandlers.Update))
 
 	// Internships
 	protected.GET("/internships", middlewares.EnhanceContext(r.internshipHandlers.List))
-	protected.GET("/internships/new", middlewares.EnhanceContext(r.internshipHandlers.CreatePage), middlewares.AdminAuthorize)
-	protected.POST("/internships", middlewares.EnhanceContext(r.internshipHandlers.Create), middlewares.AdminAuthorize)
+	protected.GET("/internships/new", middlewares.EnhanceContext(r.internshipHandlers.CreatePage))
+	protected.POST("/internships", middlewares.EnhanceContext(r.internshipHandlers.Create))
 	protected.GET("/internships/:id", middlewares.EnhanceContext(r.internshipHandlers.Show))
 
 	// Time Records

@@ -132,6 +132,10 @@ func GetAccountFilters(ctx handlers.RichContext) filters.AccountFilters {
 func GetInternshipFilters(ctx handlers.RichContext) filters.InternshipFilters {
 	f := filters.InternshipFilters{}
 
+	if ctx.RoleName() == "teacher" || ctx.RoleName() == "professor" {
+		f.TeacherID = ctx.ProfileID()
+	}
+
 	if val := ctx.QueryParam(params.StudentID); val != "" {
 		if id, err := uuid.Parse(val); err == nil {
 			f.StudentID = &id

@@ -257,7 +257,7 @@ func (r *accountRepository) UpdateAccountPassword(accountID *uuid.UUID, data upd
 }
 
 func insertAccountRoleData(tx *repository.SQLTransaction, account account.Account) errors.Error {
-	if account.Role().IsAdmin() || account.Role().IsStudent() {
+	if account.Role().IsAdmin() || account.Role().IsStudent() || account.Role().IsTeacher() {
 		return nil
 	}
 	var result sql.Result

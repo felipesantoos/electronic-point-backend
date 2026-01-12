@@ -14,7 +14,7 @@ type studentServices struct {
 	repository secondary.StudentPort
 }
 
-func NewStudentServices(repository secondary.StudentPort) primary.StudentPort {
+func NewStudentService(repository secondary.StudentPort) primary.StudentPort {
 	return &studentServices{repository}
 }
 

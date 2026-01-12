@@ -11,6 +11,9 @@
 
     <form hx-post="/internships" hx-target="body" hx-push-url="true" class="space-y-4">
         {{template "form-searchable-select" dict "ID" "student_id" "Name" "student_id" "Label" "Estudante" "Required" true "Placeholder" "Selecione o estudante" "Options" .Data.Students "Selected" .Data.SelectedStudentID}}
+        {{if .User.IsAdmin}}
+            {{template "form-searchable-select" dict "ID" "teacher_id" "Name" "teacher_id" "Label" "Professor Responsável" "Required" true "Placeholder" "Selecione o professor" "Options" .Data.Teachers}}
+        {{end}}
         {{template "form-searchable-select" dict "ID" "location_id" "Name" "location_id" "Label" "Local de Estágio" "Required" true "Placeholder" "Selecione o local" "Options" .Data.Locations}}
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
