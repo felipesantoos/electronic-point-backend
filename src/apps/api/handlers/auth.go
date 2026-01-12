@@ -6,6 +6,7 @@ import (
 	"eletronic_point/src/apps/api/utils"
 	"eletronic_point/src/core/domain/authorization"
 	"eletronic_point/src/core/interfaces/primary"
+	"eletronic_point/src/core/messages"
 	"encoding/hex"
 	"net/http"
 
@@ -15,6 +16,7 @@ import (
 
 type AuthHandler interface {
 	Login(RichContext) error
+	Refresh(RichContext) error
 	Logout(RichContext) error
 	AskPasswordResetMail(RichContext) error
 	FindPasswordResetByToken(RichContext) error
@@ -63,12 +65,52 @@ func (h *authHandler) Login(context RichContext) error {
 	if vErr != nil {
 		return response.ErrorBuilder().NewFromValidationError(vErr)
 	}
-	authorization, err := h.service.Login(dto.ToDomain())
+	accessToken, refreshToken, err := h.service.Login(dto.ToDomain())
 	if err != nil {
 		return response.ErrorBuilder().NewFromDomain(err)
 	}
 	return context.JSON(http.StatusCreated,
-		response.NewAuthorizationBuilder().BuildFromDomain(authorization))
+		response.NewAuthorizationBuilder().BuildFromTokens(accessToken, refreshToken))
+}
+
+// Refresh
+// @ID Auth.Refresh
+// @Summary Atualizar o token de acesso através de um refresh token.
+// @Accept json
+// @Param json body request.RefreshToken true "JSON com o refresh token."
+// @Tags Anônimo
+// @Produce json
+// @Success 200 {object} response.Authorization "Requisição realizada com sucesso."
+// @Failure 400 {object} response.ErrorMessage "Requisição mal formulada."
+// @Failure 401 {object} response.ErrorMessage "Token inválido."
+// @Failure 500 {object} response.ErrorMessage "Ocorreu um erro inesperado."
+// @Router /auth/refresh [post]
+func (h *authHandler) Refresh(context RichContext) error {
+	var body map[string]interface{}
+	if bindErr := context.Bind(&body); bindErr != nil {
+		return response.ErrorBuilder().NewUnsupportedMediaTypeError()
+	}
+	dto, vErr := validator.ValidateDTO[request.RefreshToken](body)
+	if vErr != nil {
+		return response.ErrorBuilder().NewFromValidationError(vErr)
+	}
+
+	refreshToken := dto.ToDomain()
+	if _, ok := utils.ValidateRefreshToken(refreshToken); !ok {
+		return ctxUnauthorized(context, messages.InvalidRefreshTokenErrorMessage)
+	}
+
+	newAccessToken, newRefreshToken, err := h.service.Refresh(refreshToken)
+	if err != nil {
+		return response.ErrorBuilder().NewFromDomain(err)
+	}
+
+	return context.JSON(http.StatusOK,
+		response.NewAuthorizationBuilder().BuildFromTokens(newAccessToken, newRefreshToken))
+}
+
+func ctxUnauthorized(ctx RichContext, message string) error {
+	return ctx.JSON(http.StatusUnauthorized, map[string]string{"message": message})
 }
 
 // Logout

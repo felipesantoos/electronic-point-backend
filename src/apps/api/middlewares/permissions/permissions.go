@@ -41,6 +41,20 @@ var teacherEntries = []string{
 	`\/api\/students\/[^\r\n]*`,
 	`\/api\/time-records\/[^\r\n]*`,
 }
+var studentEntries = []string{
+	`\/`,
+	`\/api\/docs\/?[^\r\n]*`,
+	`\/api\/accounts\/profile`,
+	`\/api\/accounts\/update-password`,
+	`\/api\/auth\/logout`,
+	`\/api\/time-records\/[^\r\n]*`,
+	`\/api\/internship-locations\/[^\r\n]*`,
+	`\/api\/time-record-status\/[^\r\n]*`,
+	`\/api\/courses\/[^\r\n]*`,
+	`\/api\/campus\/[^\r\n]*`,
+	`\/api\/institutions\/[^\r\n]*`,
+	`\/api\/files\/[^\r\n]*`,
+}
 var allowAll = "*"
 
 func New() PermissionsHelper {
@@ -54,6 +68,7 @@ func (*permissionsHelper) AuthPolicies() []Policy {
 		NewEntry(role.ADMIN_ROLE_CODE, adminEntries),
 		NewEntry(role.PROFESSIONAL_ROLE_CODE, professionalEntries),
 		NewEntry(role.TEACHER_ROLE_CODE, teacherEntries),
+		NewEntry(role.STUDENT_ROLE_CODE, studentEntries),
 	}
 	for _, entry := range entries {
 		for _, obj := range entry.Objects() {

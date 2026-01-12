@@ -5,12 +5,16 @@ export PATH=$PATH:$(go env GOPATH)/bin
 
 function primary_mockgen() {
   local actor="$1"
-  mockgen -source="./src/core/interfaces/primary/${actor}.go" -destination="./src/apps/api/handlers/mocks/${actor}.go" -package="mocks"
+  if [ -f "./src/core/interfaces/primary/${actor}.go" ]; then
+    mockgen -source="./src/core/interfaces/primary/${actor}.go" -destination="./src/apps/api/handlers/mocks/${actor}.go" -package="mocks"
+  fi
 }
 
 function secondary_mockgen() {
   local actor="$1"
-  mockgen -source="./src/core/interfaces/secondary/${actor}.go" -destination="./src/core/services/mocks/${base}.go" -package="mocks"
+  if [ -f "./src/core/interfaces/secondary/${actor}.go" ]; then
+    mockgen -source="./src/core/interfaces/secondary/${actor}.go" -destination="./src/core/services/mocks/${actor}.go" -package="mocks"
+  fi
 }
 
 # Add all actors here

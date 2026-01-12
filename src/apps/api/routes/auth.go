@@ -21,6 +21,7 @@ func NewAuthRouter() Router {
 func (a *authRouter) Load(rootEndpoint *echo.Group) {
 	router := rootEndpoint.Group("/auth")
 	router.POST("/login", middlewares.EnhanceContext(a.handler.Login))
+	router.POST("/refresh", middlewares.EnhanceContext(a.handler.Refresh))
 	router.POST("/logout", middlewares.EnhanceContext(a.handler.Logout))
 	router.POST("/reset-password", middlewares.EnhanceContext(a.handler.AskPasswordResetMail))
 	router.GET("/reset-password/:token", middlewares.EnhanceContext(a.handler.FindPasswordResetByToken))

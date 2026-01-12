@@ -17,7 +17,8 @@ func AuthServices() primary.AuthPort {
 	repository := postgres.NewAuthPostgresRepository()
 	sessionRepository := redis.NewSessionRepository()
 	passwordResetRepository := redis.NewPasswordResetRepository()
-	return services.NewAuthService(repository, sessionRepository, passwordResetRepository)
+	accountRepository := postgres.NewAccountRepository()
+	return services.NewAuthService(repository, sessionRepository, passwordResetRepository, accountRepository)
 }
 
 func ResourcesServices() primary.ResourcesPort {

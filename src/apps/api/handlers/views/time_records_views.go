@@ -47,14 +47,18 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 		return ctx.Render(http.StatusOK, "time-records/list.html", helpers.PageData{Errors: []string{err.String()}})
 	}
 
-	students, _ := h.studentService.List(filters.StudentFilters{})
 	statuses, _ := h.statusService.List()
 
 	data := map[string]interface{}{
 		"TimeRecords": response.TimeRecordBuilder().BuildFromDomainList(records),
-		"Students":    helpers.ToOptions(students),
 		"Statuses":    helpers.ToOptions(statuses),
 		"Filters":     f,
+	}
+
+	roleName := strings.ToLower(ctx.RoleName())
+	if roleName != "student" && roleName != "estudante" {
+		students, _ := h.studentService.List(filters.StudentFilters{})
+		data["Students"] = helpers.ToOptions(students)
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/list.html", helpers.NewPageData(ctx, "Registros de Ponto", "time-records", data).
@@ -62,14 +66,16 @@ func (h *timeRecordViewHandlers) List(ctx handlers.RichContext) error {
 }
 
 func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
-	if strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor" {
+	roleName := strings.ToLower(ctx.RoleName())
+	if roleName == "teacher" || roleName == "professor" {
 		return ctx.Redirect(http.StatusFound, "/time-records")
 	}
 
-	students, _ := h.studentService.List(filters.StudentFilters{})
+	data := map[string]interface{}{}
 
-	data := map[string]interface{}{
-		"Students": helpers.ToOptions(students),
+	if roleName != "student" && roleName != "estudante" {
+		students, _ := h.studentService.List(filters.StudentFilters{})
+		data["Students"] = helpers.ToOptions(students)
 	}
 
 	return ctx.Render(http.StatusOK, "time-records/create.html", helpers.NewPageData(ctx, "Novo Registro", "time-records", data).

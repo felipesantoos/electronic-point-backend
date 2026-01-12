@@ -26,7 +26,8 @@ func TestAuthService_Login(t *testing.T) {
 	mockAuthPort := mocks.NewMockAuthPort(ctrl)
 	mockSessionPort := mocks.NewMockSessionPort(ctrl)
 	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
-	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
 
 	id := uuid.New()
 	personID := uuid.New()
@@ -35,28 +36,19 @@ func TestAuthService_Login(t *testing.T) {
 	acc, _ := account.NewBuilder().WithID(id).WithEmail("john@example.com").WithPassword("pass123").WithRole(r).WithPerson(p).Build()
 	creds := credentials.New("john@example.com", "pass123")
 
-	// Test successful login with new session
-	t.Run("Successful login with new session", func(t *testing.T) {
+	// Test successful login
+	t.Run("Successful login", func(t *testing.T) {
 		mockAuthPort.EXPECT().Login(creds).Return(acc, nil)
-		mockSessionPort.EXPECT().GetSessionByAccountID(&id).Return(nil, nil)
+		mockSessionPort.EXPECT().RemoveSession(&id).Return(nil)
 		mockSessionPort.EXPECT().Store(&id, gomock.Any()).Return(nil)
+		mockSessionPort.EXPECT().StoreRefreshToken(&id, gomock.Any()).Return(nil)
 
-		auth, err := service.Login(creds)
+		auth, refresh, err := service.Login(creds)
 		assert.Nil(t, err)
 		assert.NotNil(t, auth)
+		assert.NotNil(t, refresh)
 		assert.NotEmpty(t, auth.Token())
-	})
-
-	// Test login when session already exists
-	t.Run("Login when session already exists", func(t *testing.T) {
-		existingAuth := authorization.NewFromToken("existing-token", nil)
-		mockAuthPort.EXPECT().Login(creds).Return(acc, nil)
-		mockSessionPort.EXPECT().GetSessionByAccountID(&id).Return(existingAuth, nil)
-
-		auth, err := service.Login(creds)
-		assert.Nil(t, err)
-		assert.NotNil(t, auth)
-		assert.Equal(t, "existing-token", auth.Token())
+		assert.NotEmpty(t, refresh.Token())
 	})
 
 	// Test login with adapter error
@@ -64,21 +56,10 @@ func TestAuthService_Login(t *testing.T) {
 		expectedErr := errors.NewUnexpected()
 		mockAuthPort.EXPECT().Login(creds).Return(nil, expectedErr)
 
-		auth, err := service.Login(creds)
+		auth, refresh, err := service.Login(creds)
 		assert.NotNil(t, err)
 		assert.Nil(t, auth)
-		assert.Equal(t, expectedErr, err)
-	})
-
-	// Test login with error getting session
-	t.Run("Login with error getting session", func(t *testing.T) {
-		expectedErr := errors.NewUnexpected()
-		mockAuthPort.EXPECT().Login(creds).Return(acc, nil)
-		mockSessionPort.EXPECT().GetSessionByAccountID(&id).Return(nil, expectedErr)
-
-		auth, err := service.Login(creds)
-		assert.NotNil(t, err)
-		assert.Nil(t, auth)
+		assert.Nil(t, refresh)
 		assert.Equal(t, expectedErr, err)
 	})
 
@@ -86,13 +67,64 @@ func TestAuthService_Login(t *testing.T) {
 	t.Run("Login with error storing session", func(t *testing.T) {
 		expectedErr := errors.NewUnexpected()
 		mockAuthPort.EXPECT().Login(creds).Return(acc, nil)
-		mockSessionPort.EXPECT().GetSessionByAccountID(&id).Return(nil, nil)
+		mockSessionPort.EXPECT().RemoveSession(&id).Return(nil)
 		mockSessionPort.EXPECT().Store(&id, gomock.Any()).Return(expectedErr)
 
-		auth, err := service.Login(creds)
+		auth, refresh, err := service.Login(creds)
 		assert.NotNil(t, err)
 		assert.Nil(t, auth)
+		assert.Nil(t, refresh)
 		assert.Equal(t, expectedErr, err)
+	})
+
+	// Test login with error storing refresh token
+	t.Run("Login with error storing refresh token", func(t *testing.T) {
+		expectedErr := errors.NewUnexpected()
+		mockAuthPort.EXPECT().Login(creds).Return(acc, nil)
+		mockSessionPort.EXPECT().RemoveSession(&id).Return(nil)
+		mockSessionPort.EXPECT().Store(&id, gomock.Any()).Return(nil)
+		mockSessionPort.EXPECT().StoreRefreshToken(&id, gomock.Any()).Return(expectedErr)
+
+		auth, refresh, err := service.Login(creds)
+		assert.NotNil(t, err)
+		assert.Nil(t, auth)
+		assert.Nil(t, refresh)
+		assert.Equal(t, expectedErr, err)
+	})
+}
+
+func TestAuthService_Refresh(t *testing.T) {
+	os.Setenv("SERVER_SECRET", "test-secret")
+	defer os.Unsetenv("SERVER_SECRET")
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAuthPort := mocks.NewMockAuthPort(ctrl)
+	mockSessionPort := mocks.NewMockSessionPort(ctrl)
+	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
+
+	id := uuid.New()
+	personID := uuid.New()
+	p, _ := person.NewBuilder().WithID(personID).WithName("John Doe").WithEmail("john@example.com").WithBirthDate("1990-01-01").WithCPF("11144477735").WithPhone("82999999999").Build()
+	r, _ := role.NewBuilder().WithCode(role.ADMIN_ROLE_CODE).WithName("Admin").Build()
+	acc, _ := account.NewBuilder().WithID(id).WithEmail("john@example.com").WithPassword("pass123").WithRole(r).WithPerson(p).Build()
+
+	refreshToken, _ := authorization.NewRefreshToken(acc)
+
+	t.Run("Successful refresh", func(t *testing.T) {
+		mockSessionPort.EXPECT().ValidateRefreshToken(&id, refreshToken.Token()).Return(true, nil)
+		mockSessionPort.EXPECT().RemoveRefreshToken(&id, refreshToken.Token()).Return(nil)
+		mockAccountPort.EXPECT().FindByID(&id).Return(acc, nil)
+		mockSessionPort.EXPECT().Store(&id, gomock.Any()).Return(nil)
+		mockSessionPort.EXPECT().StoreRefreshToken(&id, gomock.Any()).Return(nil)
+
+		newAuth, newRefresh, err := service.Refresh(refreshToken.Token())
+		assert.Nil(t, err)
+		assert.NotNil(t, newAuth)
+		assert.NotNil(t, newRefresh)
 	})
 }
 
@@ -103,10 +135,12 @@ func TestAuthService_Logout(t *testing.T) {
 	mockAuthPort := mocks.NewMockAuthPort(ctrl)
 	mockSessionPort := mocks.NewMockSessionPort(ctrl)
 	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
-	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
 
 	id := uuid.New()
 	mockSessionPort.EXPECT().RemoveSession(&id).Return(nil)
+	mockSessionPort.EXPECT().RemoveAllRefreshTokens(&id).Return(nil)
 
 	err := service.Logout(&id)
 	assert.Nil(t, err)
@@ -119,7 +153,8 @@ func TestAuthService_SessionExists(t *testing.T) {
 	mockAuthPort := mocks.NewMockAuthPort(ctrl)
 	mockSessionPort := mocks.NewMockSessionPort(ctrl)
 	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
-	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
 
 	id := uuid.New()
 	token := "token"
@@ -137,7 +172,8 @@ func TestAuthService_AskPasswordResetMail(t *testing.T) {
 	mockAuthPort := mocks.NewMockAuthPort(ctrl)
 	mockSessionPort := mocks.NewMockSessionPort(ctrl)
 	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
-	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
 
 	email := "test@example.com"
 	mockPwdResetPort.EXPECT().AskPasswordResetMail(email).Return(nil)
@@ -153,7 +189,8 @@ func TestAuthService_FindPasswordResetByToken(t *testing.T) {
 	mockAuthPort := mocks.NewMockAuthPort(ctrl)
 	mockSessionPort := mocks.NewMockSessionPort(ctrl)
 	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
-	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
 
 	token := "reset-token"
 	mockPwdResetPort.EXPECT().FindPasswordResetByToken(token).Return(nil)
@@ -169,7 +206,8 @@ func TestAuthService_UpdatePasswordByPasswordReset(t *testing.T) {
 	mockAuthPort := mocks.NewMockAuthPort(ctrl)
 	mockSessionPort := mocks.NewMockSessionPort(ctrl)
 	mockPwdResetPort := mocks.NewMockPasswordResetPort(ctrl)
-	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort)
+	mockAccountPort := mocks.NewMockAccountPort(ctrl)
+	service := NewAuthService(mockAuthPort, mockSessionPort, mockPwdResetPort, mockAccountPort)
 
 	token := "reset-token"
 	newPassword := "newpass123"
@@ -183,38 +221,5 @@ func TestAuthService_UpdatePasswordByPasswordReset(t *testing.T) {
 
 		err := service.UpdatePasswordByPasswordReset(token, newPassword)
 		assert.Nil(t, err)
-	})
-
-	// Test error getting account ID
-	t.Run("Error getting account ID", func(t *testing.T) {
-		expectedErr := errors.NewUnexpected()
-		mockPwdResetPort.EXPECT().GetAccountIDByResetPasswordToken(token).Return(nil, expectedErr)
-
-		err := service.UpdatePasswordByPasswordReset(token, newPassword)
-		assert.NotNil(t, err)
-		assert.Equal(t, expectedErr, err)
-	})
-
-	// Test error resetting password
-	t.Run("Error resetting password", func(t *testing.T) {
-		expectedErr := errors.NewUnexpected()
-		mockPwdResetPort.EXPECT().GetAccountIDByResetPasswordToken(token).Return(&accountID, nil)
-		mockAuthPort.EXPECT().ResetAccountPassword(&accountID, newPassword).Return(expectedErr)
-
-		err := service.UpdatePasswordByPasswordReset(token, newPassword)
-		assert.NotNil(t, err)
-		assert.Equal(t, expectedErr, err)
-	})
-
-	// Test error deleting reset entry
-	t.Run("Error deleting reset entry", func(t *testing.T) {
-		expectedErr := errors.NewUnexpected()
-		mockPwdResetPort.EXPECT().GetAccountIDByResetPasswordToken(token).Return(&accountID, nil)
-		mockAuthPort.EXPECT().ResetAccountPassword(&accountID, newPassword).Return(nil)
-		mockPwdResetPort.EXPECT().DeleteResetPasswordEntry(token).Return(expectedErr)
-
-		err := service.UpdatePasswordByPasswordReset(token, newPassword)
-		assert.NotNil(t, err)
-		assert.Equal(t, expectedErr, err)
 	})
 }

@@ -28,7 +28,12 @@ func NewAuthViewHandlers(service primary.AuthPort) AuthViewHandlers {
 }
 
 func (h *authViewHandlers) LoginPage(ctx handlers.RichContext) error {
-	if ctx.AccountID() != nil && (ctx.IsAdmin() || strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor") {
+	roleName := strings.ToLower(ctx.RoleName())
+	isAuthorized := ctx.IsAdmin() ||
+		roleName == "teacher" || roleName == "professor" ||
+		roleName == "student" || roleName == "estudante"
+
+	if ctx.AccountID() != nil && isAuthorized {
 		return ctx.Redirect(http.StatusFound, "/")
 	}
 	return ctx.Render(http.StatusOK, "auth/login", helpers.NewPageData(ctx, "Login", "", nil))
@@ -47,7 +52,7 @@ func (h *authViewHandlers) Login(ctx handlers.RichContext) error {
 	}
 
 	credentials := request.Credentials{Email: body.Email, Password: body.Password}
-	authorization, err := h.service.Login(credentials.ToDomain())
+	authorization, _, err := h.service.Login(credentials.ToDomain())
 	if err != nil {
 		return ctx.Render(http.StatusUnauthorized, "auth/login", helpers.PageData{
 			Title:  "Login",

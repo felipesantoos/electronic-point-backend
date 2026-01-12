@@ -9,7 +9,8 @@ import (
 )
 
 type AuthPort interface {
-	Login(credentials.Credentials) (authorization.Authorization, errors.Error)
+	Login(credentials.Credentials) (authorization.Authorization, authorization.Authorization, errors.Error)
+	Refresh(refreshToken string) (authorization.Authorization, authorization.Authorization, errors.Error)
 	Logout(accountID *uuid.UUID) errors.Error
 	SessionExists(accountId *uuid.UUID, token string) (bool, errors.Error)
 	AskPasswordResetMail(email string) errors.Error

@@ -42,12 +42,14 @@
                         </div>
                     </div>
                     <p class="text-gray-500 font-medium text-lg">{{.Data.TimeRecord.Student.Course.Name}}</p>
+                    {{if not .User.IsStudent}}
                     <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
                         <a href="/students/{{formatUUID .Data.TimeRecord.Student.ID}}" class="inline-flex items-center text-sm text-blue-600 font-semibold hover:text-blue-800 transition-colors bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100">
                             Ver Perfil do Estudante
                             <svg class="ml-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                         </a>
                     </div>
+                    {{end}}
                 </div>
                 <div class="flex gap-2 self-start md:self-center">
                     <a href="/time-records" class="inline-flex items-center px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-bold rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all active:scale-95">

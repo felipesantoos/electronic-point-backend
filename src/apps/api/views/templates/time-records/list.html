@@ -10,13 +10,15 @@
     </div>
     <div class="p-4 border-b border-gray-200 bg-gray-50">
         <form hx-get="/time-records" hx-target="#page-content" hx-push-url="true" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+            {{if not .User.IsStudent}}
             <div class="md:col-span-2">
                 {{template "form-input" dict "ID" "search" "Name" "search" "Label" "Buscar Estudante" "Placeholder" "Nome, Matrícula ou CPF" "Value" .Data.Filters.Search}}
             </div>
             <div>
                 {{template "form-searchable-select" dict "ID" "studentID" "Name" "studentID" "Label" "Estudante" "Placeholder" "Todos" "Options" .Data.Students "Selected" .Data.Filters.StudentID}}
             </div>
-            <div>
+            {{end}}
+            <div class="{{if .User.IsStudent}}md:col-span-2{{end}}">
                 {{template "form-searchable-select" dict "ID" "statusID" "Name" "statusID" "Label" "Status" "Placeholder" "Todos" "Options" .Data.Statuses "Selected" .Data.Filters.StatusID}}
             </div>
             <div class="md:col-span-2 flex items-end pb-4 space-x-2">
@@ -41,7 +43,9 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    {{if not .User.IsStudent}}
                     {{template "table-header" "Estudante"}}
+                    {{end}}
                     {{template "table-header" "Data"}}
                     {{template "table-header" "Entrada"}}
                     {{template "table-header" "Saída"}}
@@ -52,6 +56,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 {{range .Data.TimeRecords}}
                 <tr>
+                    {{if not $.User.IsStudent}}
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 h-10 w-10">
@@ -71,6 +76,7 @@
                             </div>
                         </div>
                     </td>
+                    {{end}}
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDate .Date}}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatDateTime .EntryTime}}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{if .ExitTime}}{{formatDateTime .ExitTime}}{{else}}-{{end}}</td>
@@ -121,7 +127,7 @@
                 </tr>
                 {{else}}
                 <tr>
-                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Nenhum registro encontrado.</td>
+                    <td colspan="{{if .User.IsStudent}}5{{else}}6{{end}}" class="px-6 py-4 text-center text-sm text-gray-500">Nenhum registro encontrado.</td>
                 </tr>
                 {{end}}
             </tbody>

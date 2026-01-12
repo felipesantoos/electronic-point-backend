@@ -79,6 +79,67 @@ func (r *redisSessionRepository) RemoveSession(uID *uuid.UUID) errors.Error {
 	return nil
 }
 
+func (r *redisSessionRepository) StoreRefreshToken(uID *uuid.UUID, refreshToken string) errors.Error {
+	conn, err := getConnection()
+	if err != nil {
+		return err
+	}
+	uRefreshTokenKey := r.getUserRefreshTokenKey(uID)
+	tokenTimeout := authorization.REFRESH_TOKEN_TIMEOUT
+	if !utils.IsAPIInProdMode() {
+		tokenTimeout = time.Hour * 24 * 7
+	}
+	if err := conn.Set(uRefreshTokenKey, refreshToken, tokenTimeout).Err(); err != nil {
+		logger.Log().Msg(fmt.Sprintf("an error occurred when trying to save user refresh token: %s", err.Error()))
+		return errors.NewUnexpected()
+	}
+	return nil
+}
+
+func (r *redisSessionRepository) ValidateRefreshToken(uID *uuid.UUID, refreshToken string) (bool, errors.Error) {
+	conn, err := getConnection()
+	if err != nil {
+		return false, err
+	}
+	uRefreshTokenKey := r.getUserRefreshTokenKey(uID)
+	return valueExists(conn, uRefreshTokenKey, refreshToken)
+}
+
+func (r *redisSessionRepository) RemoveRefreshToken(uID *uuid.UUID, refreshToken string) errors.Error {
+	conn, err := getConnection()
+	if err != nil {
+		return err
+	}
+	uRefreshTokenKey := r.getUserRefreshTokenKey(uID)
+	if exists, err := valueExists(conn, uRefreshTokenKey, refreshToken); err != nil {
+		return err
+	} else if !exists {
+		return nil
+	}
+	if result := conn.Del(uRefreshTokenKey); result.Err() != nil {
+		logger.Log().Msg(fmt.Sprintf("an error occurred when removing user refresh token: %s", result.Err().Error()))
+		return errors.NewUnexpected()
+	}
+	return nil
+}
+
+func (r *redisSessionRepository) RemoveAllRefreshTokens(uID *uuid.UUID) errors.Error {
+	conn, err := getConnection()
+	if err != nil {
+		return err
+	}
+	uRefreshTokenKey := r.getUserRefreshTokenKey(uID)
+	if result := conn.Del(uRefreshTokenKey); result.Err() != nil {
+		logger.Log().Msg(fmt.Sprintf("an error occurred when removing all user refresh tokens: %s", result.Err().Error()))
+		return errors.NewUnexpected()
+	}
+	return nil
+}
+
 func (*redisSessionRepository) getUserSessionKey(uID *uuid.UUID) string {
 	return fmt.Sprintf("user_session:%s", uID.String())
+}
+
+func (*redisSessionRepository) getUserRefreshTokenKey(uID *uuid.UUID) string {
+	return fmt.Sprintf("refresh_token:%s", uID.String())
 }

@@ -42,17 +42,26 @@ func (h *dashboardViewHandlers) Dashboard(ctx handlers.RichContext) error {
 	internshipFilters := filters.InternshipFilters{}
 	timeRecordFilters := filters.TimeRecordFilters{}
 
-	if ctx.RoleName() == "teacher" || ctx.RoleName() == "professor" {
+	roleName := strings.ToLower(ctx.RoleName())
+	if roleName == "teacher" || roleName == "professor" {
 		studentFilters.TeacherID = ctx.ProfileID()
 		timeRecordFilters.TeacherID = ctx.ProfileID()
 		internshipFilters.TeacherID = ctx.ProfileID()
+	} else if roleName == "student" || roleName == "estudante" {
+		timeRecordFilters.StudentID = ctx.ProfileID()
+		internshipFilters.StudentID = ctx.ProfileID()
 	}
 
 	// Fetch data for stats
 	students, _ := h.studentService.List(studentFilters)
 	internships, _ := h.internshipService.List(internshipFilters)
 	timeRecords, _ := h.timeRecordService.List(timeRecordFilters)
-	locations, _ := h.internshipLocationService.List(filters.InternshipLocationFilters{})
+
+	locationFilters := filters.InternshipLocationFilters{}
+	if roleName == "student" || roleName == "estudante" {
+		locationFilters.StudentID = ctx.ProfileID()
+	}
+	locations, _ := h.internshipLocationService.List(locationFilters)
 
 	// Calculate stats and activity data
 	pendingCount := 0

@@ -4,6 +4,7 @@ import (
 	"eletronic_point/src/apps/api/handlers"
 	"eletronic_point/src/apps/api/handlers/params"
 	"eletronic_point/src/core/services/filters"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -40,11 +41,14 @@ func GetStudentFilters(ctx handlers.RichContext) filters.StudentFilters {
 func GetTimeRecordFilters(ctx handlers.RichContext) filters.TimeRecordFilters {
 	f := filters.TimeRecordFilters{}
 
-	if ctx.RoleName() == "teacher" || ctx.RoleName() == "professor" {
+	roleName := strings.ToLower(ctx.RoleName())
+	if roleName == "teacher" || roleName == "professor" {
 		f.TeacherID = ctx.ProfileID()
+	} else if roleName == "student" || roleName == "estudante" {
+		f.StudentID = ctx.ProfileID()
 	}
 
-	if val := ctx.QueryParam(params.StudentID); val != "" {
+	if val := ctx.QueryParam(params.StudentID); val != "" && f.StudentID == nil {
 		if id, err := uuid.Parse(val); err == nil {
 			f.StudentID = &id
 		}
@@ -132,11 +136,14 @@ func GetAccountFilters(ctx handlers.RichContext) filters.AccountFilters {
 func GetInternshipFilters(ctx handlers.RichContext) filters.InternshipFilters {
 	f := filters.InternshipFilters{}
 
-	if ctx.RoleName() == "teacher" || ctx.RoleName() == "professor" {
+	roleName := strings.ToLower(ctx.RoleName())
+	if roleName == "teacher" || roleName == "professor" {
 		f.TeacherID = ctx.ProfileID()
+	} else if roleName == "student" || roleName == "estudante" {
+		f.StudentID = ctx.ProfileID()
 	}
 
-	if val := ctx.QueryParam(params.StudentID); val != "" {
+	if val := ctx.QueryParam(params.StudentID); val != "" && f.StudentID == nil {
 		if id, err := uuid.Parse(val); err == nil {
 			f.StudentID = &id
 		}
@@ -149,7 +156,12 @@ func GetInternshipFilters(ctx handlers.RichContext) filters.InternshipFilters {
 func GetInternshipLocationFilters(ctx handlers.RichContext) filters.InternshipLocationFilters {
 	f := filters.InternshipLocationFilters{}
 
-	if val := ctx.QueryParam(params.StudentID); val != "" {
+	roleName := strings.ToLower(ctx.RoleName())
+	if roleName == "student" || roleName == "estudante" {
+		f.StudentID = ctx.ProfileID()
+	}
+
+	if val := ctx.QueryParam(params.StudentID); val != "" && f.StudentID == nil {
 		if id, err := uuid.Parse(val); err == nil {
 			f.StudentID = &id
 		}

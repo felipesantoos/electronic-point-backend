@@ -56,6 +56,30 @@ func authorizationIsValid(authToken string) (*authorization.AuthClaims, bool) {
 	return claims, true
 }
 
+func ValidateRefreshToken(refreshToken string) (*authorization.AuthClaims, bool) {
+	secret := os.Getenv("SERVER_SECRET")
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+	if err != nil {
+		logger.Error().Msg("error parsing the provided refresh token")
+		return nil, false
+	}
+	if !token.Valid || token.Claims.Valid() != nil {
+		logger.Error().Msg("the provided refresh token is invalid or expired")
+		return nil, false
+	}
+	claims, err := ExtractTokenClaims(refreshToken)
+	if err != nil {
+		return nil, false
+	}
+	if claims.Type != authorization.REFRESH_TOKEN_TYPE {
+		logger.Error().Msg("the provided token is not a refresh token")
+		return nil, false
+	}
+	return claims, true
+}
+
 func ExtractTokenClaims(authToken string) (*authorization.AuthClaims, error) {
 	if authToken == "" {
 		return nil, errors.New("empty token")
