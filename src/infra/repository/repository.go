@@ -18,7 +18,7 @@ import (
 )
 
 var logger = infra.Logger()
-var keyConstraintCompiler = regexp.MustCompile(`[^\s"']+_([^\s"']+)_(key|uk|unique)`)
+var keyConstraintCompiler = regexp.MustCompile(`"?(?:\w+_)?(\w+)_(?:key|uk|unique)"?`)
 var primaryKeyConstraintCompiler = regexp.MustCompile(`"(\w+)_pkey?`)
 var foreignKeyConstraintCompiler = regexp.MustCompile(`(\w+)_fk`)
 

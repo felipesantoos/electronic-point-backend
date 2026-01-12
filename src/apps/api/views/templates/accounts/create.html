@@ -10,12 +10,25 @@
     </div>
 
     <form hx-post="/admin/accounts" hx-target="body" hx-push-url="true" class="space-y-6">
-        <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações de Acesso</h3>
-            {{template "form-input" dict "ID" "email" "Name" "email" "Label" "Email" "Type" "email" "Required" true "Placeholder" "exemplo@email.com"}}
-            {{template "form-input" dict "ID" "password" "Name" "password" "Label" "Senha" "Type" "password" "Required" true "Placeholder" "••••••••"}}
-            
-            {{template "form-searchable-select" dict "ID" "role_id" "Name" "role_id" "Label" "Função" "Required" true "Placeholder" "Selecione uma função" "Options" .Data.Roles}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Informações Pessoais -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações Pessoais</h3>
+                {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome Completo" "Required" true}}
+                {{template "form-input" dict "ID" "email" "Name" "email" "Label" "Email" "Type" "email" "Required" true "Placeholder" "exemplo@email.com"}}
+                <div class="grid grid-cols-2 gap-4">
+                    {{template "form-input" dict "ID" "cpf" "Name" "cpf" "Label" "CPF" "Required" true}}
+                    {{template "form-input" dict "ID" "phone" "Name" "phone" "Label" "Telefone" "Required" true}}
+                </div>
+                {{template "form-input" dict "ID" "birth_date" "Name" "birth_date" "Label" "Data de Nascimento" "Type" "date" "Required" true}}
+            </div>
+
+            <!-- Informações de Acesso -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2">Informações de Acesso</h3>
+                {{template "form-input" dict "ID" "password" "Name" "password" "Label" "Senha" "Type" "password" "Required" true "Placeholder" "••••••••"}}
+                {{template "form-searchable-select" dict "ID" "role_id" "Name" "role_id" "Label" "Função" "Required" true "Placeholder" "Selecione uma função" "Options" .Data.Roles}}
+            </div>
         </div>
 
         <div class="pt-4 flex justify-end gap-3">

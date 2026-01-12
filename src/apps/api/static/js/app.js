@@ -4,13 +4,13 @@
 if (typeof window.epAppInitialized === 'undefined') {
     window.epAppInitialized = true;
 
-    // Handle HTMX errors
+    // Global HTMX error handler
     document.addEventListener('htmx:responseError', (event) => {
         const xhr = event.detail.xhr;
         const status = xhr.status;
+        const responseText = xhr.responseText;
         
-        console.error(`HTMX Response Error [${status}]:`, xhr.responseText);
-        console.log('Response Headers:', xhr.getAllResponseHeaders());
+        console.log(`[HTMX Error ${status}]`, responseText);
         
         if (status === 401) {
             window.location.href = '/login';
@@ -18,42 +18,42 @@ if (typeof window.epAppInitialized === 'undefined') {
         } 
         
         if (status === 403) {
-            showToast('error', 'Acesso negado. Você não tem permissão para realizar esta ação.');
+            showToast('error', 'Acesso negado.');
             return;
         }
 
-        // If the server sent a custom trigger (like show-toast), HTMX will handle it.
-        // We only show a generic toast if there's no HX-Trigger header.
-        const trigger = xhr.getResponseHeader('HX-Trigger');
-        if (trigger) {
-            console.log('Custom trigger detected, skipping generic error toast:', trigger);
+        // If the server sent a custom trigger (like show-toast), HTMX will handle it via 
+        // the dedicated 'show-toast' event listener below. We just return here to avoid duplicates.
+        const triggerHeader = xhr.getResponseHeader('HX-Trigger');
+        if (triggerHeader && triggerHeader.includes('show-toast')) {
+            console.log('Custom show-toast trigger detected in header, letting dedicated listener handle it.');
             return;
         }
         
-        // Try to get message from response if it's short
+        // Use response text as message if it's short and looks like a string
         let message = 'Ocorreu um erro na requisição. Tente novamente.';
-        if (xhr.responseText && xhr.responseText.length > 0 && xhr.responseText.length < 500) {
-            message = xhr.responseText;
+        if (responseText && responseText.trim().length > 0 && responseText.length < 600 && !responseText.includes('<html')) {
+            message = responseText.trim();
         }
         
         showToast('error', message);
     });
 
-    // Support for custom events from HX-Trigger header
+    // Support for custom events from HX-Trigger header (for successful responses)
     document.addEventListener('show-toast', (event) => {
+        console.log('[HTMX Trigger] show-toast', event.detail);
         const data = event.detail;
         if (data && data.message) {
             showToast(data.type || 'info', data.message);
         }
     });
 
-    // Handle HTMX beforeSwap to handle errors with custom templates
+    // HTMX beforeSwap logic
     document.addEventListener('htmx:beforeSwap', (event) => {
-        if (event.detail.xhr.status === 422) {
+        const status = event.detail.xhr.status;
+        if (status === 422) {
             event.detail.shouldSwap = true;
             event.detail.isError = false;
-        } else if (event.detail.xhr.status >= 400) {
-            console.error('HTMX error:', event.detail.xhr.status, event.detail.xhr.responseText);
         }
     });
 
@@ -188,6 +188,7 @@ function applyInputMasks() {
 }
 
 function showToast(type, message) {
+    console.log(`[Toast] ${type.toUpperCase()}: ${message}`);
     const container = document.getElementById('toast-container');
     if (!container) return;
 

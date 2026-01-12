@@ -9,6 +9,7 @@ import (
 	updatepassword "eletronic_point/src/core/domain/updatePassword"
 	"eletronic_point/src/core/interfaces/primary"
 	"net/http"
+	"regexp"
 
 	"github.com/google/uuid"
 )
@@ -83,9 +84,52 @@ func (h *accountViewHandlers) Create(ctx handlers.RichContext) error {
 		return ctx.NoContent(http.StatusForbidden)
 	}
 
-	var body request.CreateAccount
-	if err := ctx.Bind(&body); err != nil {
+	var formData struct {
+		Name      string `form:"name"`
+		Email     string `form:"email"`
+		CPF       string `form:"cpf"`
+		Phone     string `form:"phone"`
+		BirthDate string `form:"birth_date"`
+		RoleID    string `form:"role_id"`
+	}
+	if err := ctx.Bind(&formData); err != nil {
 		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
+	}
+
+	// Convert role_id to role_code
+	roleUUID, err := uuid.Parse(formData.RoleID)
+	if err != nil {
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "ID de função inválido")
+	}
+
+	allRoles, _ := h.resourcesService.ListAccountRoles()
+	var roleCode string
+	found := false
+	for _, r := range allRoles {
+		if r.ID() != nil && *r.ID() == roleUUID {
+			roleCode = r.Code()
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Função não encontrada")
+	}
+
+	// Remove non-numeric characters from CPF and phone
+	nonNumericRegex := regexp.MustCompile(`[^0-9]`)
+	cpf := nonNumericRegex.ReplaceAllString(formData.CPF, "")
+	phone := nonNumericRegex.ReplaceAllString(formData.Phone, "")
+
+	// Create the DTO with all required fields
+	body := request.CreateAccount{
+		Name:      formData.Name,
+		Email:     formData.Email,
+		CPF:       cpf,
+		Phone:     phone,
+		BirthDate: formData.BirthDate,
+		RoleCode:  roleCode,
 	}
 
 	// Manual conversion to domain for simplicity here, or use request DTO
@@ -94,9 +138,9 @@ func (h *accountViewHandlers) Create(ctx handlers.RichContext) error {
 		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
-	_, err := h.service.Create(acc)
-	if err != nil {
-		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
+	_, createErr := h.service.Create(acc)
+	if createErr != nil {
+		return helpers.HTMXError(ctx, http.StatusBadRequest, createErr.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/admin/accounts")
@@ -222,7 +266,7 @@ func (h *accountViewHandlers) UpdateProfile(ctx handlers.RichContext) error {
 		WithPhone(body.Phone).
 		WithBirthDate(body.BirthDate).
 		Build()
-	
+
 	if dErr != nil {
 		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
