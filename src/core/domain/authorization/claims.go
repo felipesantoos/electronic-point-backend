@@ -12,6 +12,7 @@ import (
 type AuthClaims struct {
 	jwt.Claims  `json:"c,omitempty"`
 	AccountID   string `json:"sub"`
+	Name        string `json:"name"`
 	ProfileID   string `json:"profile_id"`
 	RoleEntryID string `json:"role_entry_id,omitempty"`
 	Role        string `json:"role"`
@@ -22,6 +23,7 @@ type AuthClaims struct {
 func newClaims(account account.Account, typ string, exp int64) *AuthClaims {
 	return &AuthClaims{
 		AccountID:   account.ID().String(),
+		Name:        account.Person().Name(),
 		ProfileID:   account.Person().ID().String(),
 		Role:        getStringifiedRoleData(account.Role()),
 		RoleEntryID: getRoleEntryIDByAccount(account),

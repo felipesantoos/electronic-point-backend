@@ -28,6 +28,8 @@ type PageData struct {
 // UserInfo contains basic information about the logged-in user for templates
 type UserInfo struct {
 	ID        *uuid.UUID
+	Name      string
+	FirstName string
 	ProfileID *uuid.UUID
 	RoleName  string
 	IsAdmin   bool
@@ -43,10 +45,18 @@ type FlashMessage struct {
 
 // NewPageData creates a new PageData with user info and flash messages from context
 func NewPageData(ctx handlers.RichContext, title string, activeMenu string, data interface{}) PageData {
+	name := ctx.Name()
+	firstName := name
+	if strings.Contains(name, " ") {
+		firstName = strings.Split(name, " ")[0]
+	}
+
 	return PageData{
 		Title: title,
 		User: UserInfo{
 			ID:        ctx.AccountID(),
+			Name:      name,
+			FirstName: firstName,
 			ProfileID: ctx.ProfileID(),
 			RoleName:  ctx.RoleName(),
 			IsAdmin:   ctx.IsAdmin(),

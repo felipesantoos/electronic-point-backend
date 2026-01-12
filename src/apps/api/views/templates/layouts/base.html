@@ -105,9 +105,9 @@
     <div class="flex items-center space-x-4 flex-shrink-0" x-data="{ open: false }">
         <div class="relative">
             <button @click="open = !open" class="flex items-center focus:outline-none">
-                <span class="text-sm font-medium text-gray-700 mr-2 hidden sm:inline">{{.User.RoleName}}</span>
+                <span class="text-sm font-medium text-gray-700 mr-2 hidden sm:inline">{{if .User.FirstName}}{{.User.FirstName}}{{else}}{{.User.RoleName}}{{end}}</span>
                 <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                    {{if .User.RoleName}}{{slice .User.RoleName 0 1 | toUpper}}{{else}}U{{end}}
+                    {{if .User.FirstName}}{{slice .User.FirstName 0 1 | toUpper}}{{else if .User.RoleName}}{{slice .User.RoleName 0 1 | toUpper}}{{else}}U{{end}}
                 </div>
             </button>
             <div x-show="open" @click.away="open = false" x-cloak

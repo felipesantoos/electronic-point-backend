@@ -17,6 +17,7 @@ type RichContext interface {
 	echo.Context
 
 	AccountID() *uuid.UUID
+	Name() string
 	ProfileID() *uuid.UUID
 	RoleName() string
 	IsAdmin() bool
@@ -30,6 +31,7 @@ type richContext struct {
 	echo.Context
 
 	accountID *uuid.UUID
+	name      string
 	profileID *uuid.UUID
 	roleName  string
 }
@@ -39,13 +41,17 @@ func NewRichContext(ctx echo.Context, claims *authorization.AuthClaims) (RichCon
 		role, _ := utils.DecodeRoleData(claims.Role)
 		accountID, _ := uuid.Parse(claims.AccountID)
 		profileID, _ := uuid.Parse(claims.ProfileID)
-		return &richContext{ctx, &accountID, &profileID, strings.ToLower(role)}, nil
+		return &richContext{ctx, &accountID, claims.Name, &profileID, strings.ToLower(role)}, nil
 	}
-	return &richContext{ctx, nil, nil, role.ANONYMOUS_ROLE_CODE}, nil
+	return &richContext{ctx, nil, "", nil, role.ANONYMOUS_ROLE_CODE}, nil
 }
 
 func (c *richContext) AccountID() *uuid.UUID {
 	return c.accountID
+}
+
+func (c *richContext) Name() string {
+	return c.name
 }
 
 func (c *richContext) ProfileID() *uuid.UUID {
