@@ -39,7 +39,7 @@ func (*studentQueryBuilder) Update() string {
 		UPDATE student
 		SET
 			registration = $2,
-			profile_picture = $3,
+			profile_picture = COALESCE($3, student.profile_picture),
 			campus_id = $4,
 			course_id = $5,
 			total_workload = $6,

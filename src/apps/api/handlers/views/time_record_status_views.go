@@ -55,17 +55,17 @@ func (h *timeRecordStatusViewHandlers) CreatePage(ctx handlers.RichContext) erro
 func (h *timeRecordStatusViewHandlers) Create(ctx handlers.RichContext) error {
 	name := ctx.FormValue("name")
 	if name == "" {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"O nome é obrigatório"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "O nome é obrigatório")
 	}
 
 	status, err := timeRecordStatus.NewBuilder().WithName(name).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	_, err = h.service.Create(status)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/time-record-status")
@@ -99,12 +99,12 @@ func (h *timeRecordStatusViewHandlers) Update(ctx handlers.RichContext) error {
 
 	status, err := timeRecordStatus.NewBuilder().WithID(id).WithName(name).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	err = h.service.Update(status)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/time-record-status/"+id.String())

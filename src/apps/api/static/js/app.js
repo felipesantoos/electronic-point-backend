@@ -6,13 +6,44 @@ if (typeof window.epAppInitialized === 'undefined') {
 
     // Handle HTMX errors
     document.addEventListener('htmx:responseError', (event) => {
-        const status = event.detail.xhr.status;
+        const xhr = event.detail.xhr;
+        const status = xhr.status;
+        
+        console.error(`HTMX Response Error [${status}]:`, xhr.responseText);
+        console.log('Response Headers:', xhr.getAllResponseHeaders());
+        
         if (status === 401) {
             window.location.href = '/login';
-        } else if (status === 403) {
+            return;
+        } 
+        
+        if (status === 403) {
             showToast('error', 'Acesso negado. Você não tem permissão para realizar esta ação.');
-        } else {
-            showToast('error', 'Ocorreu um erro na requisição. Tente novamente.');
+            return;
+        }
+
+        // If the server sent a custom trigger (like show-toast), HTMX will handle it.
+        // We only show a generic toast if there's no HX-Trigger header.
+        const trigger = xhr.getResponseHeader('HX-Trigger');
+        if (trigger) {
+            console.log('Custom trigger detected, skipping generic error toast:', trigger);
+            return;
+        }
+        
+        // Try to get message from response if it's short
+        let message = 'Ocorreu um erro na requisição. Tente novamente.';
+        if (xhr.responseText && xhr.responseText.length > 0 && xhr.responseText.length < 500) {
+            message = xhr.responseText;
+        }
+        
+        showToast('error', message);
+    });
+
+    // Support for custom events from HX-Trigger header
+    document.addEventListener('show-toast', (event) => {
+        const data = event.detail;
+        if (data && data.message) {
+            showToast(data.type || 'info', data.message);
         }
     });
 

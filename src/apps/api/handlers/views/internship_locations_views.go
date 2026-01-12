@@ -57,17 +57,17 @@ func (h *internshipLocationViewHandlers) CreatePage(ctx handlers.RichContext) er
 func (h *internshipLocationViewHandlers) Create(ctx handlers.RichContext) error {
 	var dto request.InternshipLocation
 	if err := ctx.Bind(&dto); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	loc, dErr := dto.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
 	_, err := h.service.Create(loc)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/internship-locations")
@@ -94,18 +94,18 @@ func (h *internshipLocationViewHandlers) Update(ctx handlers.RichContext) error 
 	id, _ := uuid.Parse(ctx.Param("id"))
 	var dto request.InternshipLocation
 	if err := ctx.Bind(&dto); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	loc, dErr := dto.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 	loc.SetID(id)
 
 	err := h.service.Update(loc)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/internship-locations")

@@ -22,13 +22,13 @@ func (this institutionRepository) List(_filters filters.InstitutionFilters) ([]i
 	rows, err := repository.Queryx(query.Institution().Select().All(), _filters.Name)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	institutions, err := queryObject.Institution().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return institutions, nil
 }
@@ -37,13 +37,13 @@ func (this institutionRepository) Get(id uuid.UUID) (institution.Institution, er
 	rows, err := repository.Queryx(query.Institution().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	institutions, err := queryObject.Institution().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	if len(institutions) == 0 {
 		return nil, errors.NewFromString("institution not found")

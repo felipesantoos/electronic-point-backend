@@ -87,7 +87,7 @@ func (h *timeRecordViewHandlers) CreatePage(ctx handlers.RichContext) error {
 
 func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
 	if strings.ToLower(ctx.RoleName()) == "teacher" || strings.ToLower(ctx.RoleName()) == "professor" {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Professores não podem criar registros de ponto manualmente"}})
+		return helpers.HTMXError(ctx, http.StatusForbidden, "Professores não podem criar registros de ponto manualmente")
 	}
 
 	var body struct {
@@ -100,7 +100,7 @@ func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
 		Justification string `form:"justification"`
 	}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	studentID, _ := uuid.Parse(body.StudentID)
@@ -133,7 +133,7 @@ func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
 
 	tr, dErr := dto.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
 	if ctx.RoleName() != role.ADMIN_ROLE_CODE {
@@ -142,7 +142,7 @@ func (h *timeRecordViewHandlers) Create(ctx handlers.RichContext) error {
 
 	_, err := h.service.Create(tr)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/time-records")

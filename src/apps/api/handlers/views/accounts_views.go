@@ -85,18 +85,18 @@ func (h *accountViewHandlers) Create(ctx handlers.RichContext) error {
 
 	var body request.CreateAccount
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	// Manual conversion to domain for simplicity here, or use request DTO
 	acc, dErr := body.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
 	_, err := h.service.Create(acc)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/admin/accounts")
@@ -159,7 +159,7 @@ func (h *accountViewHandlers) Update(ctx handlers.RichContext) error {
 	id, _ := uuid.Parse(ctx.Param("id"))
 	acc, err := h.service.FindByID(&id)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Conta não encontrada"}})
+		return helpers.HTMXError(ctx, http.StatusNotFound, "Conta não encontrada")
 	}
 
 	var body struct {
@@ -167,7 +167,7 @@ func (h *accountViewHandlers) Update(ctx handlers.RichContext) error {
 		RoleID string `form:"role_id"`
 	}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	roleUUID, _ := uuid.Parse(body.RoleID)
@@ -182,7 +182,7 @@ func (h *accountViewHandlers) Update(ctx handlers.RichContext) error {
 	acc.SetEmail(body.Email)
 
 	if err := h.service.Update(acc); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/admin/accounts/"+id.String())
@@ -212,7 +212,7 @@ func (h *accountViewHandlers) UpdateProfile(ctx handlers.RichContext) error {
 		BirthDate string `form:"birth_date"`
 	}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	p, dErr := person.NewBuilder().
@@ -224,12 +224,12 @@ func (h *accountViewHandlers) UpdateProfile(ctx handlers.RichContext) error {
 		Build()
 	
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
 	err := h.service.UpdateAccountProfile(p)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
@@ -244,17 +244,17 @@ func (h *accountViewHandlers) UpdatePassword(ctx handlers.RichContext) error {
 		ConfirmPassword string `form:"confirm_password"`
 	}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	if body.NewPassword != body.ConfirmPassword {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"As senhas não coincidem"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "As senhas não coincidem")
 	}
 
 	data := updatepassword.New(body.CurrentPassword, body.NewPassword)
 	err := h.service.UpdateAccountPassword(ctx.AccountID(), data)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{

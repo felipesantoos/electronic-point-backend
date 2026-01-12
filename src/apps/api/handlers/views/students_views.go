@@ -99,7 +99,7 @@ func (h *studentViewHandlers) CreatePage(ctx handlers.RichContext) error {
 
 func (h *studentViewHandlers) Create(ctx handlers.RichContext) error {
 	if err := ctx.Request().ParseMultipartForm(10 << 20); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Erro ao processar formulário"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Erro ao processar formulário")
 	}
 
 	campusID, _ := uuid.Parse(ctx.FormValue(formData.StudentCampusID))
@@ -135,7 +135,7 @@ func (h *studentViewHandlers) Create(ctx handlers.RichContext) error {
 
 	s, dErr := dto.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
 	if teacherID != nil {
@@ -144,7 +144,7 @@ func (h *studentViewHandlers) Create(ctx handlers.RichContext) error {
 
 	_, err := h.service.Create(s)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/students")
@@ -178,14 +178,17 @@ func (h *studentViewHandlers) EditPage(ctx handlers.RichContext) error {
 func (h *studentViewHandlers) Update(ctx handlers.RichContext) error {
 	id, _ := uuid.Parse(ctx.Param("id"))
 	if err := ctx.Request().ParseMultipartForm(10 << 20); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Erro ao processar formulário"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Erro ao processar formulário")
 	}
 
 	campusID, _ := uuid.Parse(ctx.FormValue(formData.StudentCampusID))
 	courseID, _ := uuid.Parse(ctx.FormValue(formData.StudentCourseID))
 	totalWorkload, _ := strconv.Atoi(ctx.FormValue(formData.StudentTotalWorkload))
 
-	fileName, _ := helpers.SaveUploadedFile(ctx, formData.StudentProfilePicture)
+	fileName, fileErr := helpers.SaveUploadedFile(ctx, formData.StudentProfilePicture)
+	if fileErr != nil {
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Erro ao salvar foto: "+fileErr.Error())
+	}
 
 	dto := request.Student{
 		Name:           ctx.FormValue(formData.StudentName),
@@ -202,13 +205,13 @@ func (h *studentViewHandlers) Update(ctx handlers.RichContext) error {
 
 	s, dErr := dto.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 	s.SetID(&id)
 
 	err := h.service.Update(s)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/students/"+id.String())

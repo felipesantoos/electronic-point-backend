@@ -22,13 +22,13 @@ func (this campusRepository) List(_filters filters.CampusFilters) ([]campus.Camp
 	rows, err := repository.Queryx(query.Campus().Select().All(), _filters.Name)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	campuss, err := queryObject.Campus().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return campuss, nil
 }
@@ -37,13 +37,13 @@ func (this campusRepository) Get(id uuid.UUID) (campus.Campus, errors.Error) {
 	rows, err := repository.Queryx(query.Campus().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	campuses, err := queryObject.Campus().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	if len(campuses) == 0 {
 		return nil, errors.NewFromString("campus not found")

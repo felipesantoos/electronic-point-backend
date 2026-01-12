@@ -12,10 +12,8 @@ import (
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/core/services/filters"
 	"eletronic_point/src/infra/repository"
-	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/infra/repository/postgres/queryObject"
-	"strings"
 
 	"github.com/google/uuid"
 )
@@ -65,21 +63,18 @@ func (this studentRepository) Create(_student student.Student) (*uuid.UUID, erro
 		_student.ProfilePicture(), _student.Campus().ID(), _student.Course().ID(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
-			return nil, errors.NewConflictFromString(messages.StudentRegistrationIsAlreadyInUseErrorMessage)
-		}
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	err = defaultTxExecQuery(transaction, query.StudentLinkedToTeacher().Insert(), personID,
 		_student.ResponsibleTeacherID())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	commitError := transaction.Commit()
 	if commitError != nil {
 		logger.Error().Msg(commitError.String())
-		return nil, errors.NewUnexpected()
+		return nil, commitError
 	}
 	return personID, nil
 }
@@ -121,9 +116,19 @@ func (this studentRepository) Update(_student student.Student) errors.Error {
 		return err
 	}
 
-	existingStudent, getErr := this.Get(*_student.ID(), filters.StudentFilters{})
-	if getErr == nil && _student.ProfilePicture() == nil {
-		_student.SetProfilePicture(existingStudent.ProfilePicture())
+	// Preserve existing profile picture if no new one is provided
+	if _student.ProfilePicture() == nil {
+		existingStudent, getErr := this.Get(*_student.ID(), filters.StudentFilters{})
+		if getErr == nil {
+			_student.SetProfilePicture(existingStudent.ProfilePicture())
+		}
+	}
+
+	profilePictureValue := _student.ProfilePicture()
+	if profilePictureValue != nil {
+		logger.Info().Msgf("Updating student profile picture: %s", *profilePictureValue)
+	} else {
+		logger.Info().Msg("No profile picture provided, preserving existing")
 	}
 
 	err = defaultTxExecQuery(transaction, query.Student().Update(), _student.ID(),
@@ -131,15 +136,12 @@ func (this studentRepository) Update(_student student.Student) errors.Error {
 		_student.Course().ID(), _student.TotalWorkload())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		if strings.Contains(err.String(), constraints.StudentRegistrationUK) {
-			return errors.NewConflictFromString(messages.StudentRegistrationIsAlreadyInUseErrorMessage)
-		}
-		return errors.NewUnexpected()
+		return err
 	}
 	commitError := transaction.Commit()
 	if commitError != nil {
 		logger.Error().Msg(commitError.String())
-		return errors.NewUnexpected()
+		return commitError
 	}
 	return nil
 }
@@ -148,7 +150,7 @@ func (this studentRepository) Delete(id uuid.UUID) errors.Error {
 	_, err := repository.ExecQuery(query.Student().Delete(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return errors.NewUnexpected()
+		return err
 	}
 	return nil
 }
@@ -162,12 +164,12 @@ func (this studentRepository) List(_filters filters.StudentFilters) ([]student.S
 		_filters.CampusID, searchParam)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	students, err := queryObject.Student().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	for i := range students {
 		timeRecordRepository := NewTimeRecordRepository()
@@ -195,12 +197,12 @@ func (this studentRepository) Get(id uuid.UUID, _filters filters.StudentFilters)
 	rows, err := repository.Queryx(query.Student().Select().ByID(), id, _filters.TeacherID)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	students, err := queryObject.Student().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	if len(students) == 0 {
 		return nil, errors.NewFromString(messages.StudentNotFoundErrorMessage)
@@ -225,12 +227,12 @@ func (this studentRepository) Get(id uuid.UUID, _filters filters.StudentFilters)
 	internships, err := this.listInternshipsByStudent(*_student.ID())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	err = _student.SetInternshipHistory(internships)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return _student, nil
 }
@@ -239,12 +241,12 @@ func (this studentRepository) listInternshipsByStudent(studentID uuid.UUID) ([]i
 	rows, err := repository.Queryx(query.Internship().Select().ByStudentID(), studentID)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	internships, err := queryObject.Internship().FromRows(rows, false)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return internships, nil
 }

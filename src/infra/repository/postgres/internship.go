@@ -26,7 +26,7 @@ func (this internshipRepository) Create(_internship internship.Internship) (*uui
 		_internship.ScheduleEntryTime(), _internship.ScheduleExitTime())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	if !rows.Next() {
@@ -35,7 +35,7 @@ func (this internshipRepository) Create(_internship internship.Internship) (*uui
 	scanError := rows.Scan(&id)
 	if scanError != nil {
 		logger.Error().Msg(scanError.Error())
-		return nil, errors.NewUnexpected()
+		return nil, errors.NewInternal(scanError)
 	}
 	return &id, nil
 }
@@ -46,7 +46,7 @@ func (this internshipRepository) Update(_internship internship.Internship) error
 		_internship.EndedIn(), _internship.ScheduleEntryTime(), _internship.ScheduleExitTime())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return errors.NewUnexpected()
+		return err
 	}
 	return nil
 }
@@ -55,7 +55,7 @@ func (this internshipRepository) Delete(id uuid.UUID) errors.Error {
 	_, err := repository.ExecQuery(query.Internship().Delete(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return errors.NewUnexpected()
+		return err
 	}
 	return nil
 }
@@ -64,13 +64,13 @@ func (this internshipRepository) List(_filters filters.InternshipFilters) ([]int
 	rows, err := repository.Queryx(query.Internship().Select().All(), _filters.StudentID, _filters.TeacherID)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	internships, err := queryObject.Internship().FromRows(rows, true)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return internships, nil
 }
@@ -79,7 +79,7 @@ func (this internshipRepository) Get(id uuid.UUID) (internship.Internship, error
 	rows, err := repository.Queryx(query.Internship().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	if !rows.Next() {
@@ -89,12 +89,12 @@ func (this internshipRepository) Get(id uuid.UUID) (internship.Internship, error
 	nativeError := rows.MapScan(serializedInternship)
 	if nativeError != nil {
 		logger.Error().Msg(nativeError.Error())
-		return nil, errors.NewUnexpected()
+		return nil, errors.NewInternal(nativeError)
 	}
 	_internship, err := queryObject.Internship().FromMap(serializedInternship, true)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return _internship, nil
 }

@@ -22,13 +22,13 @@ func (this courseRepository) List(_filters filters.CourseFilters) ([]course.Cour
 	rows, err := repository.Queryx(query.Course().Select().All(), _filters.Name)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	courses, err := queryObject.Course().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return courses, nil
 }
@@ -37,13 +37,13 @@ func (this courseRepository) Get(id uuid.UUID) (course.Course, errors.Error) {
 	rows, err := repository.Queryx(query.Course().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	courses, err := queryObject.Course().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	if len(courses) == 0 {
 		return nil, errors.NewFromString("course not found")

@@ -93,16 +93,12 @@ func (h *authViewHandlers) AskPasswordResetMail(ctx handlers.RichContext) error 
 		Email string `form:"email"`
 	}{}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
-			Errors: []string{"E-mail inválido"},
-		})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "E-mail inválido")
 	}
 
 	err := h.service.AskPasswordResetMail(body.Email)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
-			Errors: []string{err.String()},
-		})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
@@ -127,22 +123,16 @@ func (h *authViewHandlers) UpdatePasswordByPasswordReset(ctx handlers.RichContex
 		ConfirmPassword string `form:"confirm_password"`
 	}{}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
-			Errors: []string{"Dados inválidos"},
-		})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	if body.NewPassword != body.ConfirmPassword {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
-			Errors: []string{"As senhas não coincidem"},
-		})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "As senhas não coincidem")
 	}
 
 	err := h.service.UpdatePasswordByPasswordReset(token, body.NewPassword)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{
-			Errors: []string{err.String()},
-		})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	if ctx.Request().Header.Get("HX-Request") == "true" {

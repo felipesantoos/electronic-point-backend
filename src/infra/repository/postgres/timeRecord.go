@@ -8,10 +8,8 @@ import (
 	"eletronic_point/src/core/messages"
 	"eletronic_point/src/core/services/filters"
 	"eletronic_point/src/infra/repository"
-	"eletronic_point/src/infra/repository/postgres/constraints"
 	"eletronic_point/src/infra/repository/postgres/query"
 	"eletronic_point/src/infra/repository/postgres/queryObject"
-	"strings"
 
 	"github.com/google/uuid"
 )
@@ -41,10 +39,7 @@ func (this timeRecordRepository) Create(_timeRecord timeRecord.TimeRecord) (*uui
 	)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		if strings.Contains(err.String(), constraints.TimeRecordStudentFK) {
-			return nil, errors.NewValidationFromString(messages.StudentNotFoundErrorMessage)
-		}
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	timeRecordID, convErr := uuid.Parse(id)
 	if convErr != nil {
@@ -59,12 +54,12 @@ func (this timeRecordRepository) Create(_timeRecord timeRecord.TimeRecord) (*uui
 	)
 	if movementErr != nil {
 		logger.Error().Msg(movementErr.String())
-		return nil, errors.NewUnexpected()
+		return nil, movementErr
 	}
 	err = transaction.Commit()
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return &timeRecordID, nil
 }
@@ -76,10 +71,7 @@ func (this timeRecordRepository) Update(_timeRecord timeRecord.TimeRecord) error
 	)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		if strings.Contains(err.String(), constraints.TimeRecordStudentFK) {
-			return errors.NewValidationFromString(messages.StudentNotFoundErrorMessage)
-		}
-		return errors.NewUnexpected()
+		return err
 	}
 	return nil
 }
@@ -88,7 +80,7 @@ func (this timeRecordRepository) Delete(id uuid.UUID) errors.Error {
 	_, err := repository.ExecQuery(query.TimeRecord().Delete(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return errors.NewUnexpected()
+		return err
 	}
 	return nil
 }
@@ -103,13 +95,13 @@ func (this timeRecordRepository) List(_filters filters.TimeRecordFilters) ([]tim
 		_filters.StartDate, _filters.EndDate, _filters.TeacherID, _filters.StatusID, search)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	timeRecords, err := queryObject.TimeRecord().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return timeRecords, nil
 }
@@ -118,7 +110,7 @@ func (this timeRecordRepository) Get(id uuid.UUID, _filters filters.TimeRecordFi
 	rows, err := repository.Queryx(query.TimeRecord().Select().ByID(), id, _filters.StudentID, _filters.TeacherID)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	if !rows.Next() {
@@ -128,12 +120,12 @@ func (this timeRecordRepository) Get(id uuid.UUID, _filters filters.TimeRecordFi
 	nativeError := rows.MapScan(serializedTimeRecord)
 	if nativeError != nil {
 		logger.Error().Msg(nativeError.Error())
-		return nil, errors.NewUnexpected()
+		return nil, errors.NewInternal(nativeError)
 	}
 	_timeRecord, err := queryObject.TimeRecord().FromMap(serializedTimeRecord)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return _timeRecord, nil
 }
@@ -148,7 +140,7 @@ func (this timeRecordRepository) UpdateStatus(timeRecordID uuid.UUID, updatedBy 
 	terminateErr := defaultTxExecQuery(transaction, query.TimeRecordStatusMovement().Terminate(), timeRecordID)
 	if terminateErr != nil {
 		logger.Error().Msg(terminateErr.String())
-		return errors.NewUnexpected()
+		return terminateErr
 	}
 	_, insertErr := txQueryRowReturningID(transaction, query.TimeRecordStatusMovement().Insert(),
 		timeRecordID,
@@ -158,12 +150,12 @@ func (this timeRecordRepository) UpdateStatus(timeRecordID uuid.UUID, updatedBy 
 	)
 	if insertErr != nil {
 		logger.Error().Msg(insertErr.String())
-		return errors.NewUnexpected()
+		return insertErr
 	}
 	err = transaction.Commit()
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return errors.NewUnexpected()
+		return err
 	}
 	return nil
 }

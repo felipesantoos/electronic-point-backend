@@ -76,17 +76,17 @@ func (h *resourceViewHandlers) CreateInstitutionPage(ctx handlers.RichContext) e
 func (h *resourceViewHandlers) CreateInstitution(ctx handlers.RichContext) error {
 	name := ctx.FormValue("name")
 	if name == "" {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"O nome é obrigatório"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "O nome é obrigatório")
 	}
 
 	inst, err := institution.NewBuilder().WithName(name).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	_, err = h.institutionService.Create(inst)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/institutions")
@@ -119,12 +119,12 @@ func (h *resourceViewHandlers) UpdateInstitution(ctx handlers.RichContext) error
 
 	inst, err := institution.NewBuilder().WithID(id).WithName(name).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	err = h.institutionService.Update(inst)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/institutions")
@@ -166,12 +166,12 @@ func (h *resourceViewHandlers) CreateCampus(ctx handlers.RichContext) error {
 
 	camp, err := campus.NewBuilder().WithName(name).WithInstitutionID(institutionID).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	_, err = h.campusService.Create(camp)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/campus")
@@ -206,12 +206,12 @@ func (h *resourceViewHandlers) UpdateCampus(ctx handlers.RichContext) error {
 
 	camp, err := campus.NewBuilder().WithID(id).WithName(name).WithInstitutionID(institutionID).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	err = h.campusService.Update(camp)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/campus")
@@ -247,17 +247,17 @@ func (h *resourceViewHandlers) CreateCoursePage(ctx handlers.RichContext) error 
 func (h *resourceViewHandlers) CreateCourse(ctx handlers.RichContext) error {
 	name := ctx.FormValue("name")
 	if name == "" {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"O nome é obrigatório"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "O nome é obrigatório")
 	}
 
 	c, err := course.NewBuilder().WithName(name).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	_, err = h.courseService.Create(c)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/courses")
@@ -290,12 +290,12 @@ func (h *resourceViewHandlers) UpdateCourse(ctx handlers.RichContext) error {
 
 	c, err := course.NewBuilder().WithID(id).WithName(name).Build()
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, err.String())
 	}
 
 	err = h.courseService.Update(c)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/courses")

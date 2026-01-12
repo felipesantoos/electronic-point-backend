@@ -104,7 +104,7 @@ func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 		ScheduleExitTime  string `form:"schedule_exit_time"`
 	}
 	if err := ctx.Bind(&body); err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{"Dados inválidos"}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, "Dados inválidos")
 	}
 
 	studentID, _ := uuid.Parse(body.StudentID)
@@ -156,12 +156,12 @@ func (h *internshipViewHandlers) Create(ctx handlers.RichContext) error {
 
 	intern, dErr := dto.ToDomain()
 	if dErr != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{dErr.String()}})
+		return helpers.HTMXError(ctx, http.StatusUnprocessableEntity, dErr.String())
 	}
 
 	_, err := h.service.Create(intern)
 	if err != nil {
-		return ctx.Render(http.StatusOK, "components/alerts", helpers.PageData{Errors: []string{err.String()}})
+		return helpers.HTMXError(ctx, http.StatusBadRequest, err.String())
 	}
 
 	ctx.Response().Header().Set("HX-Redirect", "/internships")

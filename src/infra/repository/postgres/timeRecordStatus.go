@@ -22,13 +22,13 @@ func (this timeRecordStatusRepository) List() ([]timeRecordStatus.TimeRecordStat
 	rows, err := repository.Queryx(query.TimeRecordStatus().Select().All())
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	timeRecordStatuses, err := queryObject.TimeRecordStatus().FromRows(rows)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return timeRecordStatuses, nil
 }
@@ -37,7 +37,7 @@ func (this timeRecordStatusRepository) Get(id uuid.UUID) (timeRecordStatus.TimeR
 	rows, err := repository.Queryx(query.TimeRecordStatus().Select().ByID(), id)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	defer rows.Close()
 	if !rows.Next() {
@@ -47,12 +47,12 @@ func (this timeRecordStatusRepository) Get(id uuid.UUID) (timeRecordStatus.TimeR
 	nativeError := rows.MapScan(serializedTimeRecordStatus)
 	if nativeError != nil {
 		logger.Error().Msg(nativeError.Error())
-		return nil, errors.NewUnexpected()
+		return nil, errors.NewInternal(nativeError)
 	}
 	_timeRecordStatus, err := queryObject.TimeRecordStatus().FromMap(serializedTimeRecordStatus)
 	if err != nil {
 		logger.Error().Msg(err.String())
-		return nil, errors.NewUnexpected()
+		return nil, err
 	}
 	return _timeRecordStatus, nil
 }
