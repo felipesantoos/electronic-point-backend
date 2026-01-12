@@ -80,7 +80,7 @@
         <input type="text" 
                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm cursor-pointer text-gray-900"
                :placeholder="label || '{{.Placeholder}}'"
-               :class="label && !search ? 'placeholder:text-gray-900 font-semibold' : 'placeholder:text-gray-400'"
+               :class="label && !search ? 'placeholder:text-gray-900' : 'placeholder:text-gray-400'"
                x-model="search"
                @click="open = true"
                @focus="open = true">
