@@ -18,13 +18,13 @@
 
         <form hx-put="/accounts/profile" hx-target="#profile-alerts" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome" "Value" .Data.Profile.Name "Required" true}}
+                {{template "form-input" dict "ID" "name" "Name" "name" "Label" "Nome" "Value" .Data.Profile.Person.Name "Required" true}}
                 {{template "form-input" dict "ID" "email" "Name" "email" "Label" "Email" "Type" "email" "Value" .Data.Profile.Email "Required" true "ReadOnly" true "HelpText" "O e-mail não pode ser alterado."}}
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {{template "form-input" dict "ID" "cpf" "Name" "cpf" "Label" "CPF" "Value" .Data.Profile.CPF "Required" true}}
-                {{template "form-input" dict "ID" "phone" "Name" "phone" "Label" "Telefone" "Value" .Data.Profile.Phone}}
-                {{template "form-input" dict "ID" "birth_date" "Name" "birth_date" "Label" "Data de Nascimento" "Type" "date" "Value" .Data.Profile.BirthDate}}
+                {{template "form-input" dict "ID" "cpf" "Name" "cpf" "Label" "CPF" "Value" .Data.Profile.Person.CPF "Required" true}}
+                {{template "form-input" dict "ID" "phone" "Name" "phone" "Label" "Telefone" "Value" .Data.Profile.Person.Phone}}
+                {{template "form-input" dict "ID" "birth_date" "Name" "birth_date" "Label" "Data de Nascimento" "Type" "date" "Value" .Data.Profile.Person.BirthDate}}
             </div>
 
             <div class="pt-4 flex justify-end">
